@@ -1,7 +1,7 @@
 name: flutter_image_compress
-description: compress image with native code(objc kotlin)
-version: 0.0.1
-author: caijinglong
+description: compress image with native code(objc kotlin), it's faster.
+version: 0.1.1
+author: caijinglong<cjl_spy@163.com>
 homepage: https://github.com/CaiJingLong/flutter_image_compress
 
 environment:

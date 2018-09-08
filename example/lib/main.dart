@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 
 void main() => runApp(new MyApp());
 
@@ -63,9 +64,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _capture() async {
-    var file = await ImagePicker.pickImage(
-      source: ImageSource.gallery,
-    );
+    var img = AssetImage("img/img.jpg");
+    print("pre compress");
+    var config = new ImageConfiguration();
+
+    AssetBundleImageKey key = await img.obtainKey(config);
+    final ByteData data = await key.bundle.load(key.name);
+    File file = File("test.png");
+    file.writeAsBytesSync(data.buffer.asUint8List());
+    
     var result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       minWidth: 2300,
