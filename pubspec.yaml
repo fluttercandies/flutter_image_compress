@@ -1,11 +1,11 @@
 name: flutter_image_compress
 description: compress image with native code(objc kotlin)
 version: 0.0.1
-author:
-homepage:
+author: caijinglong
+homepage: https://github.com/CaiJingLong/flutter_image_compress
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.0.0-dev.28.0 <3.0.0"
 
 dependencies:
   flutter:

@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() => runApp(new MyApp());
 
@@ -43,7 +44,15 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: new Center(
-          child: Image.asset("img/img.jpg"),
+          child: Column(
+            children: <Widget>[
+              Image.asset("img/img.jpg"),
+              FlatButton(
+                child: Text('capture'),
+                onPressed: _capture,
+              ),
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.computer),
@@ -51,5 +60,19 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  void _capture() async {
+    var file = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+    );
+    var result = await FlutterImageCompress.compressWithFile(
+      file.absolute.path,
+      minWidth: 2300,
+      minHeight: 1500,
+      quality: 94,
+    );
+    print(file.lengthSync());
+    print(result.length);
   }
 }

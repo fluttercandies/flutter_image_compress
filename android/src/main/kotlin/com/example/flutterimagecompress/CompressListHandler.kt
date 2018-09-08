@@ -40,10 +40,6 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
         val scaleH = h / minHeight
         val scale = Math.max(1, Math.max(scaleW, scaleH))
 
-        print("scale = $scale")
-        print("scaleW = $scaleW")
-        print("scaleH = $scaleH")
-
         val destW = w / scale
         val destH = h / scale
 
