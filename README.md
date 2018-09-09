@@ -18,50 +18,72 @@ dependencies:
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 ```
 
-
-compress with file path
+use:
 ```dart
- var img = AssetImage("img/img.jpg");
-    print("pre compress");
-    var config = new ImageConfiguration();
-
-    AssetBundleImageKey key = await img.obtainKey(config);
-    final ByteData data = await key.bundle.load(key.name);
-    File file = File("test.png");
-    file.writeAsBytesSync(data.buffer.asUint8List());
-    
+  Future<List<int>> testCompressFile(File file) async {
     var result = await FlutterImageCompress.compressWithFile(
-      file.absolute.path, // file path
-      minWidth: 2300,
-      minHeight: 1500,
-      quality: 94,
-    ); // compress
-    print(file.lengthSync());
-    print(result.length);
-```
-
-
-compress with list
-```dart
-  Future<void> compress() async {
-    var img = AssetImage("img/img.jpg");
-    print("pre compress");
-    var config = new ImageConfiguration();
-
-    AssetBundleImageKey key = await img.obtainKey(config);
-    final ByteData data = await key.bundle.load(key.name);
-
-    var beforeCompress = data.lengthInBytes;
-    print("beforeCompress = $beforeCompress");
-
-    var result =
-        await FlutterImageCompress.compressWithList(
-      data.buffer.asUint8List(), //list 
+      file.absolute.path,
       minWidth: 2300,
       minHeight: 1500,
       quality: 94,
     );
+    print(file.lengthSync());
+    print(result.length);
+    return result;
+  }
 
-    print("after = ${result?.length ?? 0}");
+  Future<File> testCompressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+        file.absolute.path, targetPath,
+        quality: 88);
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
+  Future<List<int>> testCompressAsset(String assetName) async {
+    var list = await FlutterImageCompress.compressAssetImage(
+      assetName,
+      minHeight: 1920,
+      minWidth: 1080,
+      quality: 96,
+    );
+
+    return list;
+  }
+
+  Future<List<int>> testComporessList(List<int> list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      minHeight: 1920,
+      minWidth: 1080,
+      quality: 96,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
+  }
+```
+
+
+## about List<int>
+
+use in `Image`  Widget
+```dart
+    List<int> list = await testCompressFile(file);
+    ImageProvider provider = MemoryImage(list);
+
+    Image(
+      image: provider ?? AssetImage("img/img.jpg"),
+    ),
+```
+
+write to file
+```dart
+  void writeToFile(List<int> list, String filePath) {
+    var file = File(filePath);
+    file.writeAsBytes(list, flush: true, mode: FileMode.write);
   }
 ```

@@ -20,6 +20,7 @@ class FlutterImageCompressPlugin() : MethodCallHandler {
             "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
             "compressWithList" -> CompressListHandler(call, result).handle()
             "compressWithFile" -> CompressFileHandler(call, result).handle()
+            "compressWithFileAndGetFile" -> CompressFileHandler(call, result).handleGetFile()
             else -> result.notImplemented()
         }
     }

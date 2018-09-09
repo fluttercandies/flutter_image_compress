@@ -29,4 +29,13 @@
     return array;
 }
 
+
++ (NSData *)compressDataWithUIImage:(UIImage *)image minWidth:(int)minWidth minHeight:(int)minHeight quality:(int)quality {
+    image = [image scaleWithMinWidth:minWidth minHeight:minHeight];
+
+    NSData *data = UIImageJPEGRepresentation(image, (CGFloat) quality / 100);
+    return data;
+}
+
+
 @end

@@ -30,4 +30,25 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
         }
     }
 
+    fun handleGetFile(){
+        executor.execute {
+            val args: List<Any> = call.arguments as List<Any>
+            val file = args[0] as String
+            val minWidth = args[1] as Int
+            val minHeight = args[2] as Int
+            val quality = args[3] as Int
+            val targetPath = args[4] as String
+
+            try {
+                val bitmap = BitmapFactory.decodeFile(file)
+                val array = bitmap.compress(minWidth, minHeight, quality)
+                val targetFile = File(targetPath)
+                targetFile.writeBytes(array)
+                result.success(targetPath)
+            } catch (e: Exception) {
+                result.success(null)
+            }
+        }
+    }
+
 }
