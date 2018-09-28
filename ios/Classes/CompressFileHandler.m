@@ -2,7 +2,6 @@
 // Created by cjl on 2018/9/8.
 //
 
-#import <Flutter/Flutter.h>
 #import "CompressFileHandler.h"
 #import "CompressHandler.h"
 
