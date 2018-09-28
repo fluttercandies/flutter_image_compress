@@ -3,6 +3,7 @@
 compress image with native code(objc kotlin)
 
 ## why
+
 Q：Dart has image related libraries to compress. Why use native?
 
 A：For efficiency reasons, the compression efficiency of some dart libraries is not high, and it will be stuck to UI, even if isolate is used.
@@ -11,7 +12,7 @@ A：For efficiency reasons, the compression efficiency of some dart libraries is
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.1.0
+  flutter_image_compress: ^0.1.3
 ```
 
 ```dart
@@ -19,6 +20,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 ```
 
 use:
+
 ```dart
   Future<List<int>> testCompressFile(File file) async {
     var result = await FlutterImageCompress.compressWithFile(
@@ -67,10 +69,10 @@ use:
   }
 ```
 
-
 ## about List<int>
 
-use in `Image`  Widget
+use in `Image` Widget
+
 ```dart
     List<int> list = await testCompressFile(file);
     ImageProvider provider = MemoryImage(list);
@@ -81,6 +83,7 @@ use in `Image`  Widget
 ```
 
 write to file
+
 ```dart
   void writeToFile(List<int> list, String filePath) {
     var file = File(filePath);
