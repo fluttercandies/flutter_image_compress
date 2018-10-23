@@ -12,7 +12,7 @@ A：For efficiency reasons, the compression efficiency of some dart libraries is
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.1.4
+  flutter_image_compress: ^0.1.5
 ```
 
 ```dart
