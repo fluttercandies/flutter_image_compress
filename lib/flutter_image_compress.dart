@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 
 class FlutterImageCompress {
-  static const MethodChannel _channel =
-      const MethodChannel('flutter_image_compress');
+  static const MethodChannel _channel = const MethodChannel('flutter_image_compress');
 
   static Future<List<int>> compressWithList(
     List<int> image, {
@@ -16,7 +16,7 @@ class FlutterImageCompress {
     int rotate = 0,
   }) async {
     final result = await _channel.invokeMethod("compressWithList", [
-      image,
+      Uint8List.fromList(image),
       minWidth,
       minHeight,
       quality,
@@ -54,9 +54,8 @@ class FlutterImageCompress {
     if (!File(path).existsSync()) {
       return null;
     }
-    
-    final String result =
-        await _channel.invokeMethod("compressWithFileAndGetFile", [
+
+    final String result = await _channel.invokeMethod("compressWithFileAndGetFile", [
       path,
       minWidth,
       minHeight,
@@ -81,11 +80,14 @@ class FlutterImageCompress {
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
 
+    print(data.buffer.asUint8List().length);
+
     return compressWithList(
       data.buffer.asUint8List(),
       minHeight: minHeight,
       minWidth: minWidth,
       quality: quality,
+      rotate: rotate,
     );
   }
   // static Future<List<int>> compressWithImage(BuildContext context, Image image,
@@ -120,17 +122,12 @@ class FlutterImageCompress {
   // }
 
   static List<int> convertDynamic(List<dynamic> list) {
-    return list
-        .where((item) => item is int)
-        .map((item) => item as int)
-        .toList();
+    return list.where((item) => item is int).map((item) => item as int).toList();
   }
 }
 
-Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
-    {Size size}) async {
-  final ImageConfiguration config =
-      createLocalImageConfiguration(context, size: size);
+Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider, {Size size}) async {
+  final ImageConfiguration config = createLocalImageConfiguration(context, size: size);
   final Completer<ImageInfo> completer = new Completer<ImageInfo>();
   final ImageStream stream = provider.resolve(config);
   void listener(ImageInfo image, bool sync) {

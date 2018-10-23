@@ -31,7 +31,7 @@
     int minHeight = [args[2] intValue];
     int quality = [args[3] intValue];
     NSString *targetPath = args[4];
-    int rotate = [args[4] intValue];
+    int rotate = [args[5] intValue];
     
     UIImage *img = [UIImage imageWithContentsOfFile:path];
     NSData *data = [CompressHandler compressDataWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate];

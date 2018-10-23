@@ -31,6 +31,8 @@
 }
 
 - (UIImage *)imageRotatedByDegrees:(UIImage*)oldImage deg:(CGFloat)degrees{
+//    NSLog(@"will rotate %f",degrees);
+    
     // calculate the size of the rotated view's containing box for our drawing space
     UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,oldImage.size.width, oldImage.size.height)];
     CGAffineTransform t = CGAffineTransformMakeRotation(degrees * M_PI / 180);

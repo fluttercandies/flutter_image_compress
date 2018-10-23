@@ -35,8 +35,7 @@ class _MyAppState extends State<MyApp> {
     var beforeCompress = data.lengthInBytes;
     print("beforeCompress = $beforeCompress");
 
-    var result =
-        await FlutterImageCompress.compressWithList(data.buffer.asUint8List());
+    var result = await FlutterImageCompress.compressWithList(data.buffer.asUint8List());
 
     print("after = ${result?.length ?? 0}");
   }
@@ -62,12 +61,20 @@ class _MyAppState extends State<MyApp> {
                 aspectRatio: 1 / 1,
               ),
               FlatButton(
-                child: Text('CompressFile'),
+                child: Text('CompressFile and rotate 180'),
                 onPressed: _testCompressFile,
               ),
               FlatButton(
-                child: Text('CompressAndGetFile'),
+                child: Text('CompressAndGetFile and rotate 90'),
                 onPressed: getFileImage,
+              ),
+              FlatButton(
+                child: Text('CompressAsset and rotate 135'),
+                onPressed: () => testCompressAsset("img/img.jpg"),
+              ),
+              FlatButton(
+                child: Text('CompressList and rotate 270'),
+                onPressed: compressListExample,
               ),
             ],
           ),
@@ -75,7 +82,7 @@ class _MyAppState extends State<MyApp> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.computer),
           onPressed: () => setState(() => this.provider = null),
-          tooltip: "show asset",
+          tooltip: "show origin asset",
         ),
       ),
     );
@@ -124,6 +131,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<List<int>> testCompressFile(File file) async {
+    print("testCompressFile");
     var result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       minWidth: 2300,
@@ -137,6 +145,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<File> testCompressAndGetFile(File file, String targetPath) async {
+    print("testCompressAndGetFile");
     var result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       targetPath,
@@ -152,15 +161,37 @@ class _MyAppState extends State<MyApp> {
     return result;
   }
 
-  Future<List<int>> testCompressAsset(String assetName) async {
+  Future testCompressAsset(String assetName) async {
+    print("testCompressAsset");
     var list = await FlutterImageCompress.compressAssetImage(
       assetName,
       minHeight: 1920,
       minWidth: 1080,
       quality: 96,
+      rotate: 135,
     );
 
-    return list;
+    this.provider = MemoryImage(Uint8List.fromList(list));
+    setState(() {});
+  }
+
+  Future compressListExample() async {
+    var img = AssetImage("img/img.jpg");
+    print("pre compress");
+    var config = new ImageConfiguration();
+
+    AssetBundleImageKey key = await img.obtainKey(config);
+    final ByteData data = await key.bundle.load(key.name);
+    var list = List<int>.from(data.buffer.asUint8List());
+
+    // print(list);
+
+    list = await testComporessList(list);
+
+    var memory = Uint8List.fromList(list);
+    setState(() {
+      this.provider = MemoryImage(memory);
+    });
   }
 
   Future<List<int>> testComporessList(List<int> list) async {
@@ -169,6 +200,7 @@ class _MyAppState extends State<MyApp> {
       minHeight: 1920,
       minWidth: 1080,
       quality: 96,
+      rotate: 270,
     );
     print(list.length);
     print(result.length);
