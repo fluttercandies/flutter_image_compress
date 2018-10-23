@@ -16,9 +16,10 @@
     int minWidth = [args[1] intValue];
     int minHeight = [args[2] intValue];
     int quality = [args[3] intValue];
+    int rotate = [args[4] intValue];
 
     UIImage *img = [UIImage imageWithContentsOfFile:path];
-    NSArray *array = [CompressHandler compressWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality];
+    NSArray *array = [CompressHandler compressWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate];
     result(array);
 }
 
@@ -30,9 +31,10 @@
     int minHeight = [args[2] intValue];
     int quality = [args[3] intValue];
     NSString *targetPath = args[4];
-
+    int rotate = [args[4] intValue];
+    
     UIImage *img = [UIImage imageWithContentsOfFile:path];
-    NSData *data = [CompressHandler compressDataWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality];
+    NSData *data = [CompressHandler compressDataWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate];
     [data writeToURL:[[NSURL alloc] initFileURLWithPath:targetPath] atomically:YES];
 
     result(targetPath);

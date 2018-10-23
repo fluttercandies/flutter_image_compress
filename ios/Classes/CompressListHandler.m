@@ -17,9 +17,10 @@
     int minWidth = [args[1] intValue];
     int minHeight = [args[2] intValue];
     int quality = [args[3] intValue];
+    int rotate = [args[4] intValue];
 
     NSData *data = [list data];
-    NSMutableArray *array = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality];
+    NSMutableArray *array = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate];
 
     result(array);
 }
