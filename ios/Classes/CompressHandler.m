@@ -17,7 +17,9 @@
 
 + (NSMutableArray *)compressWithUIImage:(UIImage *)image minWidth:(int)minWidth minHeight:(int)minHeight quality:(int)quality rotate:(int) rotate{
     image = [image scaleWithMinWidth:minWidth minHeight:minHeight];
-    image = [image rotate: rotate];
+    if(rotate % 360 != 0){
+        image = [image rotate: rotate];
+    }
     NSData *data = UIImageJPEGRepresentation(image, (CGFloat) quality / 100);
     NSMutableArray *array = [NSMutableArray array];
 
@@ -31,7 +33,9 @@
 
 + (NSData *)compressDataWithUIImage:(UIImage *)image minWidth:(int)minWidth minHeight:(int)minHeight quality:(int)quality rotate:(int) rotate{
     image = [image scaleWithMinWidth:minWidth minHeight:minHeight];
-    image = [image rotate: rotate];
+    if(rotate % 360 != 0){
+        image = [image rotate: rotate];
+    }
     NSData *data = UIImageJPEGRepresentation(image, (CGFloat) quality / 100);
     return data;
 }
