@@ -8,6 +8,10 @@ Q：Dart has image related libraries to compress. Why use native?
 
 A：For efficiency reasons, the compression efficiency of some dart libraries is not high, and it will be stuck to UI, even if isolate is used.
 
+## about android
+
+maybe, you need update your kotlin version to `1.2.71` or higher.
+
 ## use
 
 ```yaml
@@ -104,3 +108,17 @@ write to file
     file.writeAsBytes(list, flush: true, mode: FileMode.write);
   }
 ```
+
+## android build error
+```
+Caused by: org.gradle.internal.event.ListenerNotificationException: Failed to notify project evaluation listener.
+        at org.gradle.internal.event.AbstractBroadcastDispatch.dispatch(AbstractBroadcastDispatch.java:86)
+        ...
+Caused by: java.lang.AbstractMethodError
+        at org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt.resolveSubpluginArtifacts(KotlinPlugin.kt:776)
+        ...
+```
+
+see the [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues/21473#issuecomment-420434339)
+
+you need edit your kotlin version to 1.2.71+
