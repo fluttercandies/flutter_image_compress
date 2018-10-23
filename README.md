@@ -16,7 +16,7 @@ maybe, you need update your kotlin version to `1.2.71` or higher.
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.1.5
+  flutter_image_compress: ^0.2.0
 ```
 
 ```dart
@@ -110,6 +110,7 @@ write to file
 ```
 
 ## android build error
+
 ```
 Caused by: org.gradle.internal.event.ListenerNotificationException: Failed to notify project evaluation listener.
         at org.gradle.internal.event.AbstractBroadcastDispatch.dispatch(AbstractBroadcastDispatch.java:86)
