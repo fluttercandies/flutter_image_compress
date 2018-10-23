@@ -20,7 +20,7 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
             val minWidth = args[1] as Int
             val minHeight = args[2] as Int
             val quality = args[3] as Int
-            val rotate = args[3] as Int
+            val rotate = args[4] as Int
             try {
                 val bitmap = BitmapFactory.decodeFile(file)
                 val array = bitmap.compress(minWidth, minHeight, quality, rotate)
@@ -39,7 +39,7 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
             val minHeight = args[2] as Int
             val quality = args[3] as Int
             val targetPath = args[4] as String
-            val rotate = args[3] as Int
+            val rotate = args[5] as Int
             try {
                 val bitmap = BitmapFactory.decodeFile(file)
                 val array = bitmap.compress(minWidth, minHeight, quality, rotate)

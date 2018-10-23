@@ -21,7 +21,7 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
             val minWidth = args[1] as Int
             val minHeight = args[2] as Int
             val quality = args[3] as Int
-            val rotate = args[3] as Int
+            val rotate = args[4] as Int
             try {
                 result.success(compress(arr, minWidth, minHeight, quality, rotate))
             } catch (e: Exception) {

@@ -54,7 +54,7 @@ class FlutterImageCompress {
     if (!File(path).existsSync()) {
       return null;
     }
-
+    
     final String result =
         await _channel.invokeMethod("compressWithFileAndGetFile", [
       path,

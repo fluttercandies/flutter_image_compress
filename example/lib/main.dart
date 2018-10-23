@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
@@ -5,7 +7,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
-// import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 // import 'package:image_picker/image_picker.dart';
 
 void main() => runApp(new MyApp());
@@ -51,15 +53,20 @@ class _MyAppState extends State<MyApp> {
         body: new Center(
           child: Column(
             children: <Widget>[
-              Image(
-                image: provider ?? AssetImage("img/img.jpg"),
+              AspectRatio(
+                child: Image(
+                  image: provider ?? AssetImage("img/img.jpg"),
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                ),
+                aspectRatio: 1 / 1,
               ),
               FlatButton(
-                child: Text('capture'),
-                onPressed: _capture,
+                child: Text('CompressFile'),
+                onPressed: _testCompressFile,
               ),
               FlatButton(
-                child: Text('file image'),
+                child: Text('CompressAndGetFile'),
                 onPressed: getFileImage,
               ),
             ],
@@ -67,30 +74,32 @@ class _MyAppState extends State<MyApp> {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.computer),
-          onPressed: _capture,
+          onPressed: () => setState(() => this.provider = null),
+          tooltip: "show asset",
         ),
       ),
     );
   }
 
   Future<Directory> getTemporaryDirectory() async {
-    return Directory.current;
+    return Directory.systemTemp;
   }
 
-  void _capture() async {
+  void _testCompressFile() async {
     var img = AssetImage("img/img.jpg");
     print("pre compress");
     var config = new ImageConfiguration();
 
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
-    var dir = await getTemporaryDirectory();
+    var dir = await path_provider.getTemporaryDirectory();
+    print('dir = $dir');
 
     File file = File("${dir.absolute.path}/test.png");
     file.writeAsBytesSync(data.buffer.asUint8List());
 
     List<int> list = await testCompressFile(file);
-    ImageProvider provider = MemoryImage(list);
+    ImageProvider provider = MemoryImage(Uint8List.fromList(list));
     this.provider = provider;
     setState(() {});
   }
@@ -102,7 +111,7 @@ class _MyAppState extends State<MyApp> {
 
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
-    var dir = await getTemporaryDirectory();
+    var dir = await path_provider.getTemporaryDirectory();
 
     File file = File("${dir.absolute.path}/test.png");
     file.writeAsBytesSync(data.buffer.asUint8List());
@@ -120,6 +129,7 @@ class _MyAppState extends State<MyApp> {
       minWidth: 2300,
       minHeight: 1500,
       quality: 94,
+      rotate: 180,
     );
     print(file.lengthSync());
     print(result.length);
@@ -128,8 +138,13 @@ class _MyAppState extends State<MyApp> {
 
   Future<File> testCompressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
-        file.absolute.path, targetPath,
-        quality: 88);
+      file.absolute.path,
+      targetPath,
+      quality: 90,
+      minWidth: 1024,
+      minHeight: 1024,
+      rotate: 90,
+    );
 
     print(file.lengthSync());
     print(result.lengthSync());
