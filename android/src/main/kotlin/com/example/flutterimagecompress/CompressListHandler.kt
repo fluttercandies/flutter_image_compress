@@ -21,15 +21,16 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
             val minWidth = args[1] as Int
             val minHeight = args[2] as Int
             val quality = args[3] as Int
+            val rotate = args[4] as Int
             try {
-                result.success(compress(arr, minWidth, minHeight, quality))
+                result.success(compress(arr, minWidth, minHeight, quality, rotate))
             } catch (e: Exception) {
                 result.success(null)
             }
         }
     }
 
-    fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int): ByteArray {
+    fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0): ByteArray {
         val bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.count())
         val baos = ByteArrayOutputStream()
 
@@ -43,7 +44,10 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
         val destW = w / scale
         val destH = h / scale
 
-        Bitmap.createScaledBitmap(bitmap, destW, destH, true).compress(Bitmap.CompressFormat.JPEG, quality, baos)
+        Bitmap.createScaledBitmap(bitmap, destW, destH, true)
+                .rotate(rotate)
+                .compress(Bitmap.CompressFormat.JPEG, quality, baos)
+
         return baos.toByteArray()
     }
 

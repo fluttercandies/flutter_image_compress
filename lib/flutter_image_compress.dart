@@ -1,37 +1,68 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 
 class FlutterImageCompress {
-  static const MethodChannel _channel =
-      const MethodChannel('flutter_image_compress');
+  static const MethodChannel _channel = const MethodChannel('flutter_image_compress');
 
-  static Future<List<int>> compressWithList(List<int> image,
-      {int minWidth = 1920, int minHeight = 1080, int quality = 95}) async {
-    final result = await _channel.invokeMethod(
-        "compressWithList", [image, minWidth, minHeight, quality]);
+  static Future<List<int>> compressWithList(
+    List<int> image, {
+    int minWidth = 1920,
+    int minHeight = 1080,
+    int quality = 95,
+    int rotate = 0,
+  }) async {
+    final result = await _channel.invokeMethod("compressWithList", [
+      Uint8List.fromList(image),
+      minWidth,
+      minHeight,
+      quality,
+      rotate,
+    ]);
 
     return convertDynamic(result);
   }
 
-  static Future<List<int>> compressWithFile(String path,
-      {int minWidth = 1920, int minHeight = 1080, int quality = 95}) async {
-    final result = await _channel
-        .invokeMethod("compressWithFile", [path, minWidth, minHeight, quality]);
+  static Future<List<int>> compressWithFile(
+    String path, {
+    int minWidth = 1920,
+    int minHeight = 1080,
+    int quality = 95,
+    int rotate = 0,
+  }) async {
+    final result = await _channel.invokeMethod("compressWithFile", [
+      path,
+      minWidth,
+      minHeight,
+      quality,
+      rotate,
+    ]);
     return convertDynamic(result);
   }
 
-  static Future<File> compressAndGetFile(String path, String targetPath,
-      {int minWidth = 1920, int minHeight = 1080, int quality = 95}) async {
+  static Future<File> compressAndGetFile(
+    String path,
+    String targetPath, {
+    int minWidth = 1920,
+    int minHeight = 1080,
+    int quality = 95,
+    int rotate = 0,
+  }) async {
     if (!File(path).existsSync()) {
       return null;
     }
 
-    final String result = await _channel.invokeMethod(
-        "compressWithFileAndGetFile",
-        [path, minWidth, minHeight, quality, targetPath]);
+    final String result = await _channel.invokeMethod("compressWithFileAndGetFile", [
+      path,
+      minWidth,
+      minHeight,
+      quality,
+      targetPath,
+      rotate,
+    ]);
 
     return File(result);
   }
@@ -41,6 +72,7 @@ class FlutterImageCompress {
     int minWidth = 1920,
     int minHeight = 1080,
     int quality = 95,
+    int rotate = 0,
   }) async {
     var img = AssetImage(assetName);
     var config = new ImageConfiguration();
@@ -48,11 +80,14 @@ class FlutterImageCompress {
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
 
+    print(data.buffer.asUint8List().length);
+
     return compressWithList(
       data.buffer.asUint8List(),
       minHeight: minHeight,
       minWidth: minWidth,
       quality: quality,
+      rotate: rotate,
     );
   }
   // static Future<List<int>> compressWithImage(BuildContext context, Image image,
@@ -87,17 +122,12 @@ class FlutterImageCompress {
   // }
 
   static List<int> convertDynamic(List<dynamic> list) {
-    return list
-        .where((item) => item is int)
-        .map((item) => item as int)
-        .toList();
+    return list.where((item) => item is int).map((item) => item as int).toList();
   }
 }
 
-Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
-    {Size size}) async {
-  final ImageConfiguration config =
-      createLocalImageConfiguration(context, size: size);
+Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider, {Size size}) async {
+  final ImageConfiguration config = createLocalImageConfiguration(context, size: size);
   final Completer<ImageInfo> completer = new Completer<ImageInfo>();
   final ImageStream stream = provider.resolve(config);
   void listener(ImageInfo image, bool sync) {

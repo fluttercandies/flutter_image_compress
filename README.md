@@ -12,7 +12,7 @@ A：For efficiency reasons, the compression efficiency of some dart libraries is
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.1.3
+  flutter_image_compress: ^0.1.4
 ```
 
 ```dart
@@ -21,6 +21,8 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 use:
 
+[see whole example code](https://github.com/OpenFlutter/flutter_image_compress/blob/master/example/lib/main.dart)
+
 ```dart
   Future<List<int>> testCompressFile(File file) async {
     var result = await FlutterImageCompress.compressWithFile(
@@ -28,6 +30,7 @@ use:
       minWidth: 2300,
       minHeight: 1500,
       quality: 94,
+      rotate: 90,
     );
     print(file.lengthSync());
     print(result.length);
@@ -37,7 +40,9 @@ use:
   Future<File> testCompressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
         file.absolute.path, targetPath,
-        quality: 88);
+        quality: 88,
+        rotate: 180,
+      );
 
     print(file.lengthSync());
     print(result.lengthSync());
@@ -51,6 +56,7 @@ use:
       minHeight: 1920,
       minWidth: 1080,
       quality: 96,
+      rotate: 180,
     );
 
     return list;
@@ -62,6 +68,7 @@ use:
       minHeight: 1920,
       minWidth: 1080,
       quality: 96,
+      rotate: 135,
     );
     print(list.length);
     print(result.length);
@@ -71,11 +78,18 @@ use:
 
 ## about List<int>
 
+you maybe need convert `List<int>` to 'Uint8List'
+
+```dart
+var u8 = Uint8List.fromList(list)
+ImageProvider provider = MemoryImage(Uint8List.fromList(list));
+```
+
 use in `Image` Widget
 
 ```dart
     List<int> list = await testCompressFile(file);
-    ImageProvider provider = MemoryImage(list);
+    ImageProvider provider = MemoryImage(Uint8List.fromList(list));
 
     Image(
       image: provider ?? AssetImage("img/img.jpg"),
