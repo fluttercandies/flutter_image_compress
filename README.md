@@ -1,5 +1,8 @@
 # flutter_image_compress
 
+[![pub package](https://img.shields.io/pub/v/photo_manager.svg)](https://pub.dartlang.org/packages/flutter_image_compress)
+![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
+
 compress image with native code(objc kotlin)
 
 ## why
