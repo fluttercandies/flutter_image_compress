@@ -5,6 +5,8 @@
 
 compress image with native code(objc kotlin)
 
+This library can work on android/ios. 
+
 ## why
 
 Q：Dart has image related libraries to compress. Why use native?
@@ -14,6 +16,10 @@ A：For efficiency reasons, the compression efficiency of some dart libraries is
 ## about android
 
 maybe, you need update your kotlin version to `1.2.71` or higher.
+
+## about ios
+
+No problems found at present.
 
 ## use
 
@@ -126,3 +132,5 @@ Caused by: java.lang.AbstractMethodError
 see the [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues/21473#issuecomment-420434339)
 
 you need edit your kotlin version to 1.2.71+
+
+If flutter supports more platforms (windows, mac, linux, other) in the future and you use this library, propose issue / PR
