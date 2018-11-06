@@ -2,16 +2,17 @@
 
 [![pub package](https://img.shields.io/pub/v/flutter_image_compress.svg)](https://pub.dartlang.org/packages/flutter_image_compress)
 ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
+[![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Stars)](https://github.com/OpenFlutter/flutter_image_compress)
 
 compress image with native code(objc kotlin)
 
-This library can work on android/ios. 
+This library can work on android/ios.
 
 ## why
 
 Q：Dart has image related libraries to compress. Why use native?
 
-A：For efficiency reasons, the compression efficiency of some dart libraries is not high, and it will be stuck to UI, even if isolate is used.
+A：For reasons unknown, using dart language is not efficient, even in release version, using isolate can not solve the problem.
 
 ## about android
 
@@ -25,7 +26,7 @@ No problems found at present.
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.2.0
+  flutter_image_compress: ^0.2.1
 ```
 
 ```dart

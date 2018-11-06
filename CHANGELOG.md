@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.1
+
+update readme
+
 ## 0.2.0
 
 The version number is updated so that people who can use the higher version of gradle can use it. see pr #8
