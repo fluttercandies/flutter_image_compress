@@ -135,3 +135,6 @@ see the [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues
 you need edit your kotlin version to 1.2.71+
 
 If flutter supports more platforms (windows, mac, linux, other) in the future and you use this library, propose issue / PR
+
+## ABOUT EXIF 
+Using this library, EXIF information will be removed.
