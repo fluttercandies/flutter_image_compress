@@ -90,9 +90,13 @@ use:
   }
 ```
 
-## about List<int>
+## about List<int> or Uint8List
 
-you maybe need convert `List<int>` to 'Uint8List'
+you maybe need convert `List<int>` to 'Uint8List' to display image
+
+use Uint8List need import package to your code like this
+
+![](https://ws1.sinaimg.cn/large/844036b9ly1fxhyu2opqqj20j802c3yr.jpg)
 
 ```dart
 var u8 = Uint8List.fromList(list)
@@ -118,6 +122,8 @@ write to file
     file.writeAsBytes(list, flush: true, mode: FileMode.write);
   }
 ```
+
+
 
 ## android build error
 
