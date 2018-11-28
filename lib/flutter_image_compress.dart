@@ -5,9 +5,30 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 
+/// Image Compress
+///
+/// static method will help you compress image
+///
+/// most method will return [List<int>]
+///
+/// convert List<int> to [Uint8List] and use [Image.memory(uint8List)] to display image
+/// ```dart
+/// var u8 = Uint8List.fromList(list)
+/// ImageProvider provider = MemoryImage(Uint8List.fromList(list));
+/// ```
+///
+/// The returned image will retain the proportion of the original image.
+///
+/// Compress image will remove EXIF.
+///
+/// image result is jpeg format.
+///
+/// support rotate
+///
 class FlutterImageCompress {
   static const MethodChannel _channel = const MethodChannel('flutter_image_compress');
 
+  /// compress image from [List<int>] to [List<int>]
   static Future<List<int>> compressWithList(
     List<int> image, {
     int minWidth = 1920,
@@ -26,6 +47,7 @@ class FlutterImageCompress {
     return convertDynamic(result);
   }
 
+  /// compress file of [path] to [List<int>]
   static Future<List<int>> compressWithFile(
     String path, {
     int minWidth = 1920,
@@ -43,6 +65,7 @@ class FlutterImageCompress {
     return convertDynamic(result);
   }
 
+  /// from [path] to [targetPath]
   static Future<File> compressAndGetFile(
     String path,
     String targetPath, {
@@ -67,6 +90,7 @@ class FlutterImageCompress {
     return File(result);
   }
 
+  /// from [asset] to [List<int>]
   static Future<List<int>> compressAssetImage(
     String assetName, {
     int minWidth = 1920,
@@ -121,11 +145,13 @@ class FlutterImageCompress {
   //   );
   // }
 
+  /// convert [List<dynamic>] to [List<int>]
   static List<int> convertDynamic(List<dynamic> list) {
     return list.where((item) => item is int).map((item) => item as int).toList();
   }
 }
 
+/// get [ImageInfo] from [ImageProvider]
 Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider, {Size size}) async {
   final ImageConfiguration config = createLocalImageConfiguration(context, size: size);
   final Completer<ImageInfo> completer = new Completer<ImageInfo>();
