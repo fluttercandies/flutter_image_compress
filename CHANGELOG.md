@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.2
+
+add some dart doc
+
 ## 0.2.1
 
 update readme

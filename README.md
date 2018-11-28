@@ -26,7 +26,7 @@ No problems found at present.
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.2.1
+  flutter_image_compress: ^0.2.2
 ```
 
 ```dart
@@ -123,8 +123,6 @@ write to file
   }
 ```
 
-
-
 ## android build error
 
 ```
@@ -142,5 +140,6 @@ you need edit your kotlin version to 1.2.71+
 
 If flutter supports more platforms (windows, mac, linux, other) in the future and you use this library, propose issue / PR
 
-## ABOUT EXIF 
+## ABOUT EXIF
+
 Using this library, EXIF information will be removed.
