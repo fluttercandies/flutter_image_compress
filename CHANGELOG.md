@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.3
+
+change iOS return type
+
 ## 0.2.2
 
 add some dart doc

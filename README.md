@@ -26,7 +26,7 @@ No problems found at present.
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.2.2
+  flutter_image_compress: ^0.2.3
 ```
 
 ```dart
