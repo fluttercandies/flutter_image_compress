@@ -19,8 +19,8 @@
     int rotate = [args[4] intValue];
 
     UIImage *img = [UIImage imageWithContentsOfFile:path];
-    NSArray *array = [CompressHandler compressWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate];
-    result(array);
+    NSData *data = [CompressHandler compressWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate];
+    result([FlutterStandardTypedData typedDataWithBytes:data]);
 }
 
 - (void)handleCompressFileToFile:(FlutterMethodCall *)call result:(FlutterResult)result {
