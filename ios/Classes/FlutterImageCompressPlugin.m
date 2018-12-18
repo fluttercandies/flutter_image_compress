@@ -6,7 +6,7 @@
 static dispatch_queue_t serial_queue;
 
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
-    serial_queue = dispatch_queue_create("com.jerry.SerialQueue", NULL);
+    serial_queue = dispatch_queue_create("com.github.flutter_compress.SerialQueue", NULL);
 
     FlutterMethodChannel *channel = [FlutterMethodChannel
             methodChannelWithName:@"flutter_image_compress"

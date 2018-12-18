@@ -20,9 +20,9 @@
     int rotate = [args[4] intValue];
 
     NSData *data = [list data];
-    NSMutableArray *array = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate];
+    NSData *compressedData = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate];
 
-    result(array);
+    result([FlutterStandardTypedData typedDataWithBytes:compressedData]);
 }
 
 
