@@ -104,7 +104,7 @@ class FlutterImageCompress {
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
 
-    print(data.buffer.asUint8List().length);
+//    print(data.buffer.asUint8List().length);
 
     return compressWithList(
       data.buffer.asUint8List(),
