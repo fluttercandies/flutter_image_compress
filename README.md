@@ -124,6 +124,12 @@ write to file
   }
 ```
 
+## compress return null
+
+Sometimes, compress method will return null. You should check you can read/write file and the parent folder of the target file must exist.
+
+For example, use the [path_provider](https://pub.dartlang.org/packages/path_provide) plugin to access some application folders , use a permission plugin to request permission to access sdcard on android/iOS.
+
 ## android build error
 
 ```
