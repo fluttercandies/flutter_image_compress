@@ -5,25 +5,25 @@
 [![GitHub stars](https://img.shields.io/github/stars/OpenFlutter/flutter_image_compress.svg?style=social&label=Stars)](https://github.com/OpenFlutter/flutter_image_compress)
 [![Awesome](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://stackoverflow.com/questions/tagged/flutter?sort=votes)
 
-compress image with native code(objc kotlin)
+Compresses image as native plugin (Obj-C/Kotlin)
 
-This library can work on android/ios.
+This library can works on Android and iOS.
 
-## why
+## Why
 
-Q：Dart has image related libraries to compress. Why use native?
+Q：Dart already has image compression libraries. Why use native?
 
-A：For reasons unknown, using dart language is not efficient, even in release version, using isolate can not solve the problem.
+A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
 
-## about android
+## Android
 
-maybe, you need update your kotlin version to `1.2.71` or higher.
+You may need to update Kotlin to version `1.2.71` or higher.
 
-## about ios
+## iOS
 
-No problems found at present.
+No problems currently found.
 
-## use
+## Usage
 
 ```yaml
 dependencies:
@@ -34,9 +34,9 @@ dependencies:
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 ```
 
-use:
+Use as:
 
-[see whole example code](https://github.com/OpenFlutter/flutter_image_compress/blob/master/example/lib/main.dart)
+[See full example](https://github.com/OpenFlutter/flutter_image_compress/blob/master/example/lib/main.dart)
 
 ```dart
   Future<List<int>> testCompressFile(File file) async {
@@ -91,46 +91,48 @@ use:
   }
 ```
 
-## about List<int> or Uint8List
+## About `List<int>` vs `Uint8List`
 
-you maybe need convert `List<int>` to 'Uint8List' to display image
+You may need to convert `List<int>` to `Uint8List` to display images.
 
-use Uint8List need import package to your code like this
+To use `Uint8List`, you need import package to your code like so:
 
 ![](https://ws1.sinaimg.cn/large/844036b9ly1fxhyu2opqqj20j802c3yr.jpg)
 
 ```dart
-var u8 = Uint8List.fromList(list)
-ImageProvider provider = MemoryImage(Uint8List.fromList(list));
+final image = Uint8List.fromList(imageList)
+ImageProvider provider = MemoryImage(Uint8List.fromList(imageList));
 ```
 
-use in `Image` Widget
+Usage in `Image` Widget:
 
 ```dart
-    List<int> list = await testCompressFile(file);
-    ImageProvider provider = MemoryImage(Uint8List.fromList(list));
+List<int> image = await testCompressFile(file);
+ImageProvider provider = MemoryImage(Uint8List.fromList(image));
 
-    Image(
-      image: provider ?? AssetImage("img/img.jpg"),
-    ),
+Image(
+  image: provider ?? AssetImage("img/img.jpg"),
+),
 ```
 
-write to file
+Write to file usage:
 
 ```dart
-  void writeToFile(List<int> list, String filePath) {
-    var file = File(filePath);
-    file.writeAsBytes(list, flush: true, mode: FileMode.write);
-  }
+void writeToFile(List<int> image, String filePath) {
+  final file = File(filePath);
+  file.writeAsBytes(image, flush: true, mode: FileMode.write);
+}
 ```
 
-## compress return null
+## Troubleshooting
 
-Sometimes, compress method will return null. You should check you can read/write file and the parent folder of the target file must exist.
+### Compressing returns `null`
 
-For example, use the [path_provider](https://pub.dartlang.org/packages/path_provide) plugin to access some application folders , use a permission plugin to request permission to access sdcard on android/iOS.
+Sometimes, compressing will return null. You should check if you can read/write the file, and the parent folder of the target file must exist.
 
-## android build error
+For example, use the [path_provider](https://pub.dartlang.org/packages/path_provide) plugin to access some application folders, and use a permission plugin to request permission to access SD cards on Android/iOS.
+
+## Android build error
 
 ```
 Caused by: org.gradle.internal.event.ListenerNotificationException: Failed to notify project evaluation listener.
@@ -141,12 +143,12 @@ Caused by: java.lang.AbstractMethodError
         ...
 ```
 
-see the [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues/21473#issuecomment-420434339)
+See [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues/21473#issuecomment-420434339)
 
-you need edit your kotlin version to 1.2.71+
+You need to upgrade your Kotlin version to `1.2.71+`.
 
-If flutter supports more platforms (windows, mac, linux, other) in the future and you use this library, propose issue / PR
+If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and you use this library, propose an issue or PR!
 
-## ABOUT EXIF
+## About EXIF information
 
 Using this library, EXIF information will be removed.
