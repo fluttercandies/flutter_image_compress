@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.3.1
+
+Fix:
+
+- Android close file output stream.
+
 ## 0.3.0
 
 Fix:

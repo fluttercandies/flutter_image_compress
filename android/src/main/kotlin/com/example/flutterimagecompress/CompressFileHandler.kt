@@ -43,7 +43,9 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
             try {
                 val bitmap = BitmapFactory.decodeFile(file)
                 val outputStream = File(targetPath).outputStream()
-                bitmap.compress(minWidth, minHeight, quality, rotate, outputStream)
+                outputStream.use {
+                    bitmap.compress(minWidth, minHeight, quality, rotate, outputStream)
+                }
                 result.success(targetPath)
             } catch (e: Exception) {
                 result.success(null)
