@@ -53,6 +53,8 @@ double calcScale({
 
 ```
 
+If your image width is smaller than minWidth or height samller than minHeight, scale will be 1, that is, the size will not change.
+
 ## Android
 
 You may need to update Kotlin to version `1.2.71`(Recommend 1.3.21) or higher.
