@@ -3,6 +3,7 @@
 //
 
 #import "UIImage+scale.h"
+#import "FlutterImageCompressPlugin.h"
 
 @implementation UIImage (scale)
 - (UIImage *)scaleWithMinWidth:(CGFloat)minWidth minHeight:(CGFloat)minHeight {
@@ -12,7 +13,7 @@
     float sW = w / minWidth;
     float sH = h / minHeight;
 
-    float scale = fmaxf(fmaxf(sW, sH), 1);
+    float scale = fmaxf(fminf(sW, sH), 1);
 
     CGSize s = CGSizeMake(w / scale, h / scale);
     UIGraphicsBeginImageContext(s);
@@ -22,6 +23,14 @@
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 
     UIGraphicsEndImageContext();
+    
+    if([FlutterImageCompressPlugin showLog]){
+        NSLog(@"scale width = %.2f",sW);
+        NSLog(@"scale height = %.2f",sH);
+        NSLog(@"scale = %.2f", scale);
+        NSLog(@"dst width = %.2f", w / scale);
+        NSLog(@"dst height = %.2f", h / scale);
+    }
 
     return newImage;
 }
@@ -31,7 +40,9 @@
 }
 
 - (UIImage *)imageRotatedByDegrees:(UIImage*)oldImage deg:(CGFloat)degrees{
-//    NSLog(@"will rotate %f",degrees);
+    if([FlutterImageCompressPlugin showLog]) {
+        NSLog(@"will rotate %f",degrees);
+    }
     
     // calculate the size of the rotated view's containing box for our drawing space
     UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,oldImage.size.width, oldImage.size.height)];

@@ -10,7 +10,7 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
 
     companion object {
         @JvmStatic
-        val executor = Executors.newFixedThreadPool(5)
+        private val executor = Executors.newFixedThreadPool(5)
     }
 
     fun handle() {
@@ -42,9 +42,8 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
             val rotate = args[5] as Int
             try {
                 val bitmap = BitmapFactory.decodeFile(file)
-                val array = bitmap.compress(minWidth, minHeight, quality, rotate)
-                val targetFile = File(targetPath)
-                targetFile.writeBytes(array)
+                val outputStream = File(targetPath).outputStream()
+                bitmap.compress(minWidth, minHeight, quality, rotate, outputStream)
                 result.success(targetPath)
             } catch (e: Exception) {
                 result.success(null)

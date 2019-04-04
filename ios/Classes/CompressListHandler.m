@@ -8,6 +8,7 @@
 #import <Flutter/Flutter.h>
 #import "CompressListHandler.h"
 #import "CompressHandler.h"
+#import "FlutterImageCompressPlugin.h"
 
 @implementation CompressListHandler
 

@@ -15,9 +15,47 @@ Q：Dart already has image compression libraries. Why use native?
 
 A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
 
+## About params
+
+MinWidth and minHeight are constraints on image scaling.
+
+For example, a 4000\*2000 image, minWidth set to 1920, minHeight set to 1080, the calculation is as follows:
+
+```dart
+// Using dart as an example, the actual implementation is Kotlin or OC.
+import 'dart:math' as math;
+
+void main() {
+  var scale = calcScale(
+    srcWidth: 4000,
+    srcHeight: 2000,
+    minWidth: 1920,
+    minHeight: 1080,
+  );
+
+  print("scale = $scale"); // scale = 1.8518518518518519
+  print("target width = ${4000 / scale}, height = ${2000 / scale}"); // target width = 2160.0, height = 1080.0
+}
+
+double calcScale({
+  double srcWidth,
+  double srcHeight,
+  double minWidth,
+  double minHeight,
+}) {
+  var scaleW = srcWidth / minWidth;
+  var scaleH = srcHeight / minHeight;
+
+  var scale = math.max(1.0, math.min(scaleW, scaleH));
+
+  return scale;
+}
+
+```
+
 ## Android
 
-You may need to update Kotlin to version `1.2.71` or higher.
+You may need to update Kotlin to version `1.2.71`(Recommend 1.3.21) or higher.
 
 ## iOS
 
@@ -97,7 +135,7 @@ You may need to convert `List<int>` to `Uint8List` to display images.
 
 To use `Uint8List`, you need import package to your code like so:
 
-![](https://ws1.sinaimg.cn/large/844036b9ly1fxhyu2opqqj20j802c3yr.jpg)
+![img](https://ws1.sinaimg.cn/large/844036b9ly1fxhyu2opqqj20j802c3yr.jpg)
 
 ```dart
 final image = Uint8List.fromList(imageList)
@@ -134,7 +172,7 @@ For example, use the [path_provider](https://pub.dartlang.org/packages/path_prov
 
 ## Android build error
 
-```
+```groovy
 Caused by: org.gradle.internal.event.ListenerNotificationException: Failed to notify project evaluation listener.
         at org.gradle.internal.event.AbstractBroadcastDispatch.dispatch(AbstractBroadcastDispatch.java:86)
         ...

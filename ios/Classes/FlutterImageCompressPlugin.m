@@ -2,6 +2,8 @@
 #import "CompressListHandler.h"
 #import "CompressFileHandler.h"
 
+BOOL showLog = false;
+
 @implementation FlutterImageCompressPlugin
 static dispatch_queue_t serial_queue;
 
@@ -26,11 +28,22 @@ static dispatch_queue_t serial_queue;
         } else if ([@"compressWithFileAndGetFile" isEqualToString:call.method]) {
             CompressFileHandler *handler = [[CompressFileHandler alloc] init];
             [handler handleCompressFileToFile:call result:result];
+        } else if ([@"showLog" isEqualToString:call.method]) {
+            [self setShowLog:[call arguments]];
+            result(@1);
         } else {
             result(FlutterMethodNotImplemented);
         }
     });
 
+}
+
++ (BOOL)showLog{
+    return showLog;
+}
+
+- (void)setShowLog:(BOOL)log{
+    showLog = log;
 }
 
 @end

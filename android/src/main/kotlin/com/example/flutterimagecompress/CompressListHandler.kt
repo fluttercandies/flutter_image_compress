@@ -11,7 +11,7 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
 
     companion object {
         @JvmStatic
-        val executor = Executors.newFixedThreadPool(5)
+        private val executor = Executors.newFixedThreadPool(5)
     }
 
     fun handle() {
@@ -30,25 +30,37 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
         }
     }
 
-    fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0): ByteArray {
+    private fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0): ByteArray {
         val bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.count())
-        val baos = ByteArrayOutputStream()
+        val outputStream = ByteArrayOutputStream()
 
-        val w = bitmap.width
-        val h = bitmap.height
+        val w = bitmap.width.toFloat()
+        val h = bitmap.height.toFloat()
 
-        val scaleW = w / minWidth
-        val scaleH = h / minHeight
-        val scale = Math.max(1, Math.max(scaleW, scaleH))
+        log("src width = $w")
+        log("src height = $h")
+
+        val scale = bitmap.calcScale(minWidth, minHeight)
+
+        log("scale = $scale")
 
         val destW = w / scale
         val destH = h / scale
 
-        Bitmap.createScaledBitmap(bitmap, destW, destH, true)
-                .rotate(rotate)
-                .compress(Bitmap.CompressFormat.JPEG, quality, baos)
+        log("dst width = $destW")
+        log("dst height = $destH")
 
-        return baos.toByteArray()
+        Bitmap.createScaledBitmap(bitmap, destW.toInt(), destH.toInt(), true)
+                .rotate(rotate)
+                .compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+
+        return outputStream.toByteArray()
     }
 
+}
+
+private fun log(any: Any?) {
+    if (FlutterImageCompressPlugin.showLog) {
+        println(any ?: "null")
+    }
 }
