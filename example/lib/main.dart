@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
@@ -10,7 +10,10 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 // import 'package:image_picker/image_picker.dart';
 
-void main() => runApp(new MyApp());
+void main() {
+  runApp(new MyApp());
+  FlutterImageCompress.showNativeLog = true;
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -35,7 +38,8 @@ class _MyAppState extends State<MyApp> {
     var beforeCompress = data.lengthInBytes;
     print("beforeCompress = $beforeCompress");
 
-    var result = await FlutterImageCompress.compressWithList(data.buffer.asUint8List());
+    var result =
+        await FlutterImageCompress.compressWithList(data.buffer.asUint8List());
 
     print("after = ${result?.length ?? 0}");
   }
@@ -211,4 +215,18 @@ class _MyAppState extends State<MyApp> {
     var file = File(filePath);
     file.writeAsBytes(list, flush: true, mode: FileMode.write);
   }
+}
+
+double calcScale({
+  double srcWidth,
+  double srcHeight,
+  double minWidth,
+  double minHeight,
+}) {
+  var scaleW = srcWidth / minWidth;
+  var scaleH = srcHeight / minHeight;
+
+  var scale = math.max(1.0, math.min(scaleW, scaleH));
+
+  return scale;
 }

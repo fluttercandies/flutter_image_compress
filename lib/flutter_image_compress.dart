@@ -26,7 +26,12 @@ import 'package:flutter/services.dart';
 /// support rotate
 ///
 class FlutterImageCompress {
-  static const MethodChannel _channel = const MethodChannel('flutter_image_compress');
+  static const MethodChannel _channel =
+      const MethodChannel('flutter_image_compress');
+
+  static set showNativeLog(bool value) {
+    _channel.invokeMethod("showLog", value);
+  }
 
   /// compress image from [List<int>] to [List<int>]
   static Future<List<int>> compressWithList(
@@ -78,7 +83,8 @@ class FlutterImageCompress {
       return null;
     }
 
-    final String result = await _channel.invokeMethod("compressWithFileAndGetFile", [
+    final String result =
+        await _channel.invokeMethod("compressWithFileAndGetFile", [
       path,
       minWidth,
       minHeight,
@@ -147,13 +153,18 @@ class FlutterImageCompress {
 
   /// convert [List<dynamic>] to [List<int>]
   static List<int> convertDynamic(List<dynamic> list) {
-    return list.where((item) => item is int).map((item) => item as int).toList();
+    return list
+        .where((item) => item is int)
+        .map((item) => item as int)
+        .toList();
   }
 }
 
 /// get [ImageInfo] from [ImageProvider]
-Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider, {Size size}) async {
-  final ImageConfiguration config = createLocalImageConfiguration(context, size: size);
+Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
+    {Size size}) async {
+  final ImageConfiguration config =
+      createLocalImageConfiguration(context, size: size);
   final Completer<ImageInfo> completer = new Completer<ImageInfo>();
   final ImageStream stream = provider.resolve(config);
   void listener(ImageInfo image, bool sync) {

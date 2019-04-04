@@ -4,7 +4,7 @@
 
 #import "CompressFileHandler.h"
 #import "CompressHandler.h"
-
+#import "FlutterImageCompressPlugin.h"
 
 @implementation CompressFileHandler {
 
