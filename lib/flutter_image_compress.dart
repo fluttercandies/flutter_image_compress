@@ -33,7 +33,7 @@ class FlutterImageCompress {
     _channel.invokeMethod("showLog", value);
   }
 
-  /// compress image from [List<int>] to [List<int>]
+  /// Compress image from [List<int>] to [List<int>]
   static Future<List<int>> compressWithList(
     List<int> image, {
     int minWidth = 1920,
@@ -41,6 +41,16 @@ class FlutterImageCompress {
     int quality = 95,
     int rotate = 0,
   }) async {
+    assert(
+      image != null,
+      "A non-null List<int> must be provided to FlutterImageCompress.",
+    );
+    if (image == null) {
+      return [];
+    }
+    if (image.isEmpty) {
+      return [];
+    }
     final result = await _channel.invokeMethod("compressWithList", [
       Uint8List.fromList(image),
       minWidth,
@@ -52,7 +62,7 @@ class FlutterImageCompress {
     return convertDynamic(result);
   }
 
-  /// compress file of [path] to [List<int>]
+  /// Compress file of [path] to [List<int>].
   static Future<List<int>> compressWithFile(
     String path, {
     int minWidth = 1920,
@@ -60,6 +70,13 @@ class FlutterImageCompress {
     int quality = 95,
     int rotate = 0,
   }) async {
+    assert(
+      path != null,
+      "A non-null String must be provided to FlutterImageCompress.",
+    );
+    if (path == null || !File(path).existsSync()) {
+      return [];
+    }
     final result = await _channel.invokeMethod("compressWithFile", [
       path,
       minWidth,
@@ -70,7 +87,7 @@ class FlutterImageCompress {
     return convertDynamic(result);
   }
 
-  /// from [path] to [targetPath]
+  /// From [path] to [targetPath]
   static Future<File> compressAndGetFile(
     String path,
     String targetPath, {
@@ -79,7 +96,11 @@ class FlutterImageCompress {
     int quality = 95,
     int rotate = 0,
   }) async {
-    if (!File(path).existsSync()) {
+    assert(
+      path != null,
+      "A non-null String must be provided to FlutterImageCompress.",
+    );
+    if (path == null || !File(path).existsSync()) {
       return null;
     }
 
@@ -93,10 +114,14 @@ class FlutterImageCompress {
       rotate,
     ]);
 
+    if (result == null) {
+      return null;
+    }
+
     return File(result);
   }
 
-  /// from [asset] to [List<int>]
+  /// From [asset] to [List<int>]
   static Future<List<int>> compressAssetImage(
     String assetName, {
     int minWidth = 1920,
@@ -104,55 +129,41 @@ class FlutterImageCompress {
     int quality = 95,
     int rotate = 0,
   }) async {
+    assert(
+      assetName != null,
+      "A non-null String must be provided to FlutterImageCompress.",
+    );
+    if (assetName == null) {
+      return [];
+    }
+
     var img = AssetImage(assetName);
     var config = new ImageConfiguration();
 
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
 
-//    print(data.buffer.asUint8List().length);
+    var uint8List = data.buffer.asUint8List();
+
+    if (uint8List == null || uint8List.isEmpty) {
+      return [];
+    }
 
     return compressWithList(
-      data.buffer.asUint8List(),
+      uint8List,
       minHeight: minHeight,
       minWidth: minWidth,
       quality: quality,
       rotate: rotate,
     );
   }
-  // static Future<List<int>> compressWithImage(BuildContext context, Image image,
-  //     {int minWidth = 1920, int minHeight = 1080, int quality = 95}) async {
-  //   var info = await getImageInfo(context, image.image);
-  //   var data = await info.image.toByteData(format: ImageByteFormat.png);
-  //   var list = data.buffer.asUint8List().toList();
-  //   // print(list);
-  //   var result = await compressWithList(
-  //     list,
-  //     minWidth: minWidth,
-  //     minHeight: minHeight,
-  //     quality: quality,
-  //   );
-  //   print(result.length);
-  //   return [];
-  // }
-
-  // static Future<List<int>> _compressWithImageProvider(
-  //     BuildContext context, ImageProvider provider,
-  //     {int minWidth = 1920, int minHeight = 1080, int quality = 95}) async {
-  //   var info = await getImageInfo(context, provider);
-  //   var data = await info.image.toByteData();
-  //   var list = data.buffer.asUint8List().toList();
-
-  //   return compressWithList(
-  //     list,
-  //     minWidth: minWidth,
-  //     minHeight: minHeight,
-  //     quality: quality,
-  //   );
-  // }
 
   /// convert [List<dynamic>] to [List<int>]
   static List<int> convertDynamic(List<dynamic> list) {
+    if (list == null || list.isEmpty) {
+      return [];
+    }
+
     return list
         .where((item) => item is int)
         .map((item) => item as int)

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.0
+
+Some code has been added to ensure that parameters that do not pass in native do not trigger crash.
+
 ## 0.3.1
 
 Fix:
