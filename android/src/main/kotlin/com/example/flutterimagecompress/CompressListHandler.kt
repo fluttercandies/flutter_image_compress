@@ -25,6 +25,7 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
             try {
                 result.success(compress(arr, minWidth, minHeight, quality, rotate))
             } catch (e: Exception) {
+                if(FlutterImageCompressPlugin.showLog) e.printStackTrace()
                 result.success(null)
             }
         }

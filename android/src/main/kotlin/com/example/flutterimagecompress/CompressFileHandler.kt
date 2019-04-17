@@ -26,6 +26,7 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
                 val array = bitmap.compress(minWidth, minHeight, quality, rotate)
                 result.success(array)
             } catch (e: Exception) {
+                if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
                 result.success(null)
             }
         }
@@ -48,6 +49,7 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
                 }
                 result.success(targetPath)
             } catch (e: Exception) {
+                if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
                 result.success(null)
             }
         }

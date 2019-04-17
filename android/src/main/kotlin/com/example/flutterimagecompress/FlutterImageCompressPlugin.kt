@@ -6,7 +6,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class FlutterImageCompressPlugin() : MethodCallHandler {
+class FlutterImageCompressPlugin : MethodCallHandler {
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar): Unit {
@@ -30,7 +30,7 @@ class FlutterImageCompressPlugin() : MethodCallHandler {
 
     private fun handleLog(call: MethodCall): Int {
         val arg = call.arguments<Boolean>()
-        FlutterImageCompressPlugin.showLog = (arg == true)
+        showLog = (arg == true)
         return 1
     }
 }
