@@ -16,6 +16,19 @@ Q：Dart already has image compression libraries. Why use native?
 
 A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
 
+- [flutter_image_compress](#flutterimagecompress)
+  - [Why](#why)
+  - [About params](#about-params)
+  - [Android](#android)
+  - [iOS](#ios)
+  - [Usage](#usage)
+  - [Result](#result)
+    - [About `List<int>` and `Uint8List`](#about-listint-and-uint8list)
+  - [Troubleshooting](#troubleshooting)
+    - [Compressing returns `null`](#compressing-returns-null)
+  - [Android build error](#android-build-error)
+  - [About EXIF information](#about-exif-information)
+
 ## About params
 
 MinWidth and minHeight are constraints on image scaling.
@@ -68,7 +81,7 @@ No problems currently found.
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.2.4
+  flutter_image_compress: ^0.4.0
 ```
 
 ```dart
@@ -132,7 +145,13 @@ Use as:
   }
 ```
 
-## About `List<int>` vs `Uint8List`
+## Result
+
+The result of returning a List collection will not have null, but will always be an empty array.
+
+The returned file may be null. In addition, please decide for yourself whether the file exists.
+
+### About `List<int>` and `Uint8List`
 
 You may need to convert `List<int>` to `Uint8List` to display images.
 
