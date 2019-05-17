@@ -185,7 +185,7 @@ Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
   void errorListener(dynamic exception, StackTrace stackTrace) {
     completer.complete(null);
     FlutterError.reportError(new FlutterErrorDetails(
-      context: 'image load failed ',
+      context: DiagnosticsNode.message('image load failed '),
       library: 'flutter_image_compress',
       exception: exception,
       stack: stackTrace,
