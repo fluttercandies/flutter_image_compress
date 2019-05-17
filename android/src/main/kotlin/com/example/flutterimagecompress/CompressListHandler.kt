@@ -51,8 +51,10 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
         log("dst width = $destW")
         log("dst height = $destH")
 
+        val exifRotate = Exif.getRotationDegrees(arr)
+
         Bitmap.createScaledBitmap(bitmap, destW.toInt(), destH.toInt(), true)
-                .rotate(rotate)
+                .rotate(rotate + exifRotate)
                 .compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
 
         return outputStream.toByteArray()
