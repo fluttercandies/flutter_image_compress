@@ -183,7 +183,7 @@ You may need to convert `List<int>` to `Uint8List` to display images.
 
 To use `Uint8List`, you need import package to your code like so:
 
-![img](https://ws1.sinaimg.cn/large/844036b9ly1fxhyu2opqqj20j802c3yr.jpg)
+![img](https://raw.githubusercontent.com/CaiJingLong/asset_for_picgo/master/20190519111735.png)
 
 ```dart
 final image = Uint8List.fromList(imageList)
