@@ -21,6 +21,7 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
   - [About version](#about-version)
   - [Breaking change at version 0.5.0](#breaking-change-at-version-050)
   - [About params](#about-params)
+    - [minWidth and minHeight](#minwidth-and-minheight)
     - [autoCorrectionAngle](#autocorrectionangle)
   - [Android](#android)
   - [iOS](#ios)
@@ -49,9 +50,11 @@ So, I decided to increase the version number of middles to accommodate this modi
 
 ## About params
 
-MinWidth and minHeight are constraints on image scaling.
+### minWidth and minHeight
 
-For example, a 4000\*2000 image, minWidth set to 1920, minHeight set to 1080, the calculation is as follows:
+`minWidth` and `minHeight` are constraints on image scaling.
+
+For example, a 4000\*2000 image, `minWidth` set to 1920, `minHeight` set to 1080, the calculation is as follows:
 
 ```dart
 // Using dart as an example, the actual implementation is Kotlin or OC.
