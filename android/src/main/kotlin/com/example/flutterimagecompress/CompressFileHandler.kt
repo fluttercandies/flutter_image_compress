@@ -6,7 +6,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.File
 import java.util.concurrent.Executors
 
-class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result) {
+class CompressFileHandler(private var call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
 
     companion object {
         @JvmStatic
@@ -21,13 +21,23 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
             val minHeight = args[2] as Int
             val quality = args[3] as Int
             val rotate = args[4] as Int
+            val autoCorrectionAngle = args[5] as Boolean
+
+            val exifRotate =
+                    if (autoCorrectionAngle) {
+                        val bytes = File(file).readBytes()
+                        Exif.getRotationDegrees(bytes)
+                    } else {
+                        0
+                    }
+
             try {
                 val bitmap = BitmapFactory.decodeFile(file)
-                val array = bitmap.compress(minWidth, minHeight, quality, rotate)
-                result.success(array)
+                val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate)
+                reply(array)
             } catch (e: Exception) {
                 if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
-                result.success(null)
+                reply(null)
             }
         }
     }
@@ -41,16 +51,24 @@ class CompressFileHandler(var call: MethodCall, var result: MethodChannel.Result
             val quality = args[3] as Int
             val targetPath = args[4] as String
             val rotate = args[5] as Int
+            val autoCorrectionAngle = args[6] as Boolean
+            val exifRotate =
+                    if (autoCorrectionAngle) {
+                        val bytes = File(file).readBytes()
+                        Exif.getRotationDegrees(bytes)
+                    } else {
+                        0
+                    }
             try {
                 val bitmap = BitmapFactory.decodeFile(file)
                 val outputStream = File(targetPath).outputStream()
                 outputStream.use {
-                    bitmap.compress(minWidth, minHeight, quality, rotate, outputStream)
+                    bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, outputStream)
                 }
-                result.success(targetPath)
+                reply(targetPath)
             } catch (e: Exception) {
                 if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
-                result.success(null)
+                reply(null)
             }
         }
     }

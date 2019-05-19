@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_image_compress_example/const/resource.dart';
 
 import 'package:path_provider/path_provider.dart' as path_provider;
 // import 'package:image_picker/image_picker.dart';
@@ -80,6 +81,10 @@ class _MyAppState extends State<MyApp> {
                 child: Text('CompressList and rotate 270'),
                 onPressed: compressListExample,
               ),
+              FlatButton(
+                child: Text('test compress auto angle'),
+                onPressed: _compressAssetAndAutoRotate,
+              )
             ],
           ),
         ),
@@ -214,6 +219,18 @@ class _MyAppState extends State<MyApp> {
   void writeToFile(List<int> list, String filePath) {
     var file = File(filePath);
     file.writeAsBytes(list, flush: true, mode: FileMode.write);
+  }
+
+  void _compressAssetAndAutoRotate() async {
+    var result = await FlutterImageCompress.compressAssetImage(
+      R.IMG_AUTO_ANGLE_JPG,
+      minWidth: 1000,
+      quality: 95,
+      // autoCorrectionAngle: false,
+    );
+    var u8list = Uint8List.fromList(result);
+    this.provider = MemoryImage(u8list);
+    setState(() {});
   }
 }
 

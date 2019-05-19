@@ -20,7 +20,6 @@ class FlutterImageCompressPlugin : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: Result): Unit {
         when (call.method) {
             "showLog" -> result.success(handleLog(call))
-            "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
             "compressWithList" -> CompressListHandler(call, result).handle()
             "compressWithFile" -> CompressFileHandler(call, result).handle()
             "compressWithFileAndGetFile" -> CompressFileHandler(call, result).handleGetFile()
@@ -33,4 +32,5 @@ class FlutterImageCompressPlugin : MethodCallHandler {
         showLog = (arg == true)
         return 1
     }
+
 }

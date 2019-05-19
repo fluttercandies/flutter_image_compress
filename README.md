@@ -16,9 +16,12 @@ Q：Dart already has image compression libraries. Why use native?
 
 A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
 
-- [flutter_image_compress](#flutterimagecompress)
+- [flutter_image_compress](#flutter_image_compress)
   - [Why](#why)
+  - [About version](#about-version)
+  - [Breaking change at version 0.5.0](#breaking-change-at-version-050)
   - [About params](#about-params)
+    - [autoCorrectionAngle](#autocorrectionangle)
   - [Android](#android)
   - [iOS](#ios)
   - [Usage](#usage)
@@ -28,6 +31,21 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
     - [Compressing returns `null`](#compressing-returns-null)
   - [Android build error](#android-build-error)
   - [About EXIF information](#about-exif-information)
+
+## About version
+
+| flutter version | plugin version |
+| --------------- | -------------- |
+| 1.5.9+          | use 0.5.x+     |
+| 1.5.8 or low    | 0.4.0          |
+
+## Breaking change at version 0.5.0
+
+Because [#46](https://github.com/OpenFlutter/flutter_image_compress/pull/46) and subsequent changes have caused the image Angle to be automatically corrected based on Exif" this default behavior conflicts with the previous argument 'rotate' to rotate the Angle based on Exif information, so I think this is a destructive change.
+
+Because the context parameter type in Flutter ErrorDetails was modified in version 1.5.9 of flutter SDK (which has been deleted and is now modified to 1.6.0), errors will be reported in 1.5.8 and previous versions, including the current stable version (1.5.4-hotfix-2).
+
+So, I decided to increase the version number of middles to accommodate this modification and add flutter SDK constraints.
 
 ## About params
 
@@ -68,6 +86,14 @@ double calcScale({
 ```
 
 If your image width is smaller than minWidth or height samller than minHeight, scale will be 1, that is, the size will not change.
+
+### autoCorrectionAngle
+
+This property only exists in the version after 0.5.0.
+
+And for historical reasons, there may be conflicts with rotate attributes, which need to be self-corrected.
+
+Modify rotate to 0 or autoCorrectionAngle to false.
 
 ## Android
 
@@ -212,3 +238,5 @@ If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and 
 ## About EXIF information
 
 Using this library, EXIF information will be removed.
+
+Although it will not be retained, over version 0.5.0, there will be the option of "automatic angle correction", which will be turned on by default.

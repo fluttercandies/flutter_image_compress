@@ -41,6 +41,7 @@ class FlutterImageCompress {
     int minHeight = 1080,
     int quality = 95,
     int rotate = 0,
+    bool autoCorrectionAngle = true,
   }) async {
     assert(
       image != null,
@@ -58,6 +59,7 @@ class FlutterImageCompress {
       minHeight,
       quality,
       rotate,
+      autoCorrectionAngle,
     ]);
 
     return convertDynamic(result);
@@ -70,6 +72,7 @@ class FlutterImageCompress {
     int minHeight = 1080,
     int quality = 95,
     int rotate = 0,
+    bool autoCorrectionAngle = true,
   }) async {
     assert(
       path != null,
@@ -84,6 +87,7 @@ class FlutterImageCompress {
       minHeight,
       quality,
       rotate,
+      autoCorrectionAngle,
     ]);
     return convertDynamic(result);
   }
@@ -96,6 +100,7 @@ class FlutterImageCompress {
     int minHeight = 1080,
     int quality = 95,
     int rotate = 0,
+    bool autoCorrectionAngle = true,
   }) async {
     assert(
       path != null,
@@ -113,6 +118,7 @@ class FlutterImageCompress {
       quality,
       targetPath,
       rotate,
+      autoCorrectionAngle,
     ]);
 
     if (result == null) {
@@ -129,6 +135,7 @@ class FlutterImageCompress {
     int minHeight = 1080,
     int quality = 95,
     int rotate = 0,
+    bool autoCorrectionAngle = true,
   }) async {
     assert(
       assetName != null,
@@ -156,6 +163,7 @@ class FlutterImageCompress {
       minWidth: minWidth,
       quality: quality,
       rotate: rotate,
+      autoCorrectionAngle: autoCorrectionAngle,
     );
   }
 

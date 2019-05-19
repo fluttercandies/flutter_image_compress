@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.5.0
+
+**Breaking Change:**
+Because `FlutterError.reportError` method's param `context` type changed.
+So this library will add the constraints of flutter SDK so that users before 1.5.9 will not use version 0.5.0 incorrectly.
+
 ## 0.4.0
 
 Some code has been added to ensure that parameters that do not pass in native do not trigger crash.

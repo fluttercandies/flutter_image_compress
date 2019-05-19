@@ -7,7 +7,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 
-class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result) {
+class CompressListHandler(var call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
 
     companion object {
         @JvmStatic
@@ -22,16 +22,17 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
             val minHeight = args[2] as Int
             val quality = args[3] as Int
             val rotate = args[4] as Int
+            val autoCorrectionAngle = args[5] as Boolean
             try {
-                result.success(compress(arr, minWidth, minHeight, quality, rotate))
+                reply(compress(arr, minWidth, minHeight, quality, rotate, autoCorrectionAngle))
             } catch (e: Exception) {
-                if(FlutterImageCompressPlugin.showLog) e.printStackTrace()
-                result.success(null)
+                if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
+                reply(null)
             }
         }
     }
 
-    private fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0): ByteArray {
+    private fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, autoCorrectionAngle: Boolean): ByteArray {
         val bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.count())
         val outputStream = ByteArrayOutputStream()
 
@@ -51,7 +52,7 @@ class CompressListHandler(var call: MethodCall, var result: MethodChannel.Result
         log("dst width = $destW")
         log("dst height = $destH")
 
-        val exifRotate = Exif.getRotationDegrees(arr)
+        val exifRotate = if (autoCorrectionAngle) Exif.getRotationDegrees(arr) else 0
 
         Bitmap.createScaledBitmap(bitmap, destW.toInt(), destH.toInt(), true)
                 .rotate(rotate + exifRotate)
