@@ -16,7 +16,7 @@ Q：Dart already has image compression libraries. Why use native?
 
 A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
 
-- [flutter_image_compress](#flutter_image_compress)
+- [flutter_image_compress](#flutterimagecompress)
   - [Why](#why)
   - [About version](#about-version)
   - [Breaking change at version 0.5.0](#breaking-change-at-version-050)
@@ -35,10 +35,23 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 
 ## About version
 
-| flutter version | plugin version |
-| --------------- | -------------- |
-| 1.5.9+          | use 0.5.x+     |
-| 1.5.8 or low    | 0.4.0          |
+| flutter version | plugin version          |
+| --------------- | ----------------------- |
+| 1.5.9+          | use git version(0.5.0+) |
+| 1.5.8 or low    | 0.4.0                   |
+
+For reasons in this [issue](https://github.com/dart-lang/pub-dartlang-dart/issues/2290), version 0.5.0 is not compatible with pub and cannot be searched on pub.
+If you want to use version 0.5.0, use git dependencies.
+
+Incompatibility between flutter SDK.
+
+```yaml
+dependencies:
+  flutter_image_compress:
+    git:
+      url: https://github.com/OpenFlutter/flutter_image_compress.git
+      ref: 5a545f7e5409d091cd18f5891a8b07426f390729
+```
 
 ## Breaking change at version 0.5.0
 
