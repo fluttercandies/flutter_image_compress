@@ -146,7 +146,7 @@ class FlutterImageCompress {
     }
 
     var img = AssetImage(assetName);
-    var config = new ImageConfiguration();
+    var config = ImageConfiguration();
 
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
@@ -185,7 +185,7 @@ Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
     {Size size}) async {
   final ImageConfiguration config =
       createLocalImageConfiguration(context, size: size);
-  final Completer<ImageInfo> completer = new Completer<ImageInfo>();
+  final Completer<ImageInfo> completer = Completer<ImageInfo>();
   final ImageStream stream = provider.resolve(config);
   void listener(ImageInfo image, bool sync) {
     completer.complete(image);
@@ -193,8 +193,8 @@ Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
 
   void errorListener(dynamic exception, StackTrace stackTrace) {
     completer.complete(null);
-    FlutterError.reportError(new FlutterErrorDetails(
-      context: DiagnosticsNode.message('image load failed '),
+    FlutterError.reportError(FlutterErrorDetails(
+      context: 'image load failed ',
       library: 'flutter_image_compress',
       exception: exception,
       stack: stackTrace,

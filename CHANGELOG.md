@@ -1,6 +1,15 @@
 # CHANGELOG
 
+## 0.5.1
+
+Change `reportError` with flutter stable version.
+
+**Breaking Change:**
+The autoCorrectionAngle parameter causes a number of situations to behave differently than `0.4.0`. See readme for details.
+
 ## 0.5.0
+
+(don't use)
 
 **Breaking Change:**
 Because `FlutterError.reportError` method's param `context` type changed.
