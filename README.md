@@ -19,7 +19,7 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 - [flutter_image_compress](#flutter_image_compress)
   - [Why](#why)
   - [About version](#about-version)
-  - [Breaking change at version 0.5.0](#breaking-change-at-version-050)
+  - [Breaking change at version 0.5.1](#breaking-change-at-version-051)
   - [About params](#about-params)
     - [minWidth and minHeight](#minwidth-and-minheight)
     - [autoCorrectionAngle](#autocorrectionangle)
@@ -35,13 +35,13 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 
 ## About version
 
-| flutter version | plugin version |
-| --------------- | -------------- |
-| 1.5.9+          | use git ref    |
-| 1.5.8 or low    | 0.5.1          |
+| flutter sdk version | plugin version |
+| ------------------- | -------------- |
+| 1.5.9+              | use git ref    |
+| 1.5.8 or low        | 0.5.1          |
 
 For reasons in this [issue](https://github.com/dart-lang/pub-dartlang-dart/issues/2290), version 0.5.0 is not compatible with pub and cannot be searched on pub.
-If you want to use version 0.5.0, use git dependencies.
+If you want to support flutter 1.6.0 use git ref.
 
 Incompatibility between flutter SDK.
 
@@ -53,13 +53,9 @@ dependencies:
       ref: 5a545f7e5409d091cd18f5891a8b07426f390729
 ```
 
-## Breaking change at version 0.5.0
+## Breaking change at version 0.5.1
 
 Because [#46](https://github.com/OpenFlutter/flutter_image_compress/pull/46) and subsequent changes have caused the image Angle to be automatically corrected based on Exif" this default behavior conflicts with the previous argument 'rotate' to rotate the Angle based on Exif information, so I think this is a destructive change.
-
-Because the context parameter type in Flutter ErrorDetails was modified in version 1.5.9 of flutter SDK (which has been deleted and is now modified to 1.6.0), errors will be reported in 1.5.8 and previous versions, including the current stable version (1.5.4-hotfix-2).
-
-So, I decided to increase the version number of middles to accommodate this modification and add flutter SDK constraints.
 
 ## About params
 
