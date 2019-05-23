@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:flutter_image_compress_example/const/resource.dart';
+import 'const/resource.dart';
 
 import 'package:path_provider/path_provider.dart' as path_provider;
 // import 'package:image_picker/image_picker.dart';
@@ -54,39 +54,41 @@ class _MyAppState extends State<MyApp> {
         appBar: new AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: new Center(
-          child: Column(
-            children: <Widget>[
-              AspectRatio(
-                child: Image(
-                  image: provider ?? AssetImage("img/img.jpg"),
-                  width: double.infinity,
-                  fit: BoxFit.contain,
-                ),
-                aspectRatio: 1 / 1,
+        body: ListView(
+          children: <Widget>[
+            AspectRatio(
+              child: Image(
+                image: provider ?? AssetImage("img/img.jpg"),
+                width: double.infinity,
+                fit: BoxFit.contain,
               ),
-              FlatButton(
-                child: Text('CompressFile and rotate 180'),
-                onPressed: _testCompressFile,
-              ),
-              FlatButton(
-                child: Text('CompressAndGetFile and rotate 90'),
-                onPressed: getFileImage,
-              ),
-              FlatButton(
-                child: Text('CompressAsset and rotate 135'),
-                onPressed: () => testCompressAsset("img/img.jpg"),
-              ),
-              FlatButton(
-                child: Text('CompressList and rotate 270'),
-                onPressed: compressListExample,
-              ),
-              FlatButton(
-                child: Text('test compress auto angle'),
-                onPressed: _compressAssetAndAutoRotate,
-              )
-            ],
-          ),
+              aspectRatio: 1 / 1,
+            ),
+            FlatButton(
+              child: Text('CompressFile and rotate 180'),
+              onPressed: _testCompressFile,
+            ),
+            FlatButton(
+              child: Text('CompressAndGetFile and rotate 90'),
+              onPressed: getFileImage,
+            ),
+            FlatButton(
+              child: Text('CompressAsset and rotate 135'),
+              onPressed: () => testCompressAsset("img/img.jpg"),
+            ),
+            FlatButton(
+              child: Text('CompressList and rotate 270'),
+              onPressed: compressListExample,
+            ),
+            FlatButton(
+              child: Text('test compress auto angle'),
+              onPressed: _compressAssetAndAutoRotate,
+            ),
+            FlatButton(
+              child: Text('test png '),
+              onPressed: _compressPngImage,
+            ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.computer),
@@ -228,6 +230,15 @@ class _MyAppState extends State<MyApp> {
       quality: 95,
       // autoCorrectionAngle: false,
     );
+    var u8list = Uint8List.fromList(result);
+    this.provider = MemoryImage(u8list);
+    setState(() {});
+  }
+
+  void _compressPngImage() async {
+    var result = await FlutterImageCompress.compressAssetImage(R.IMG_HEADER_PNG,
+        minWidth: 300);
+
     var u8list = Uint8List.fromList(result);
     this.provider = MemoryImage(u8list);
     setState(() {});
