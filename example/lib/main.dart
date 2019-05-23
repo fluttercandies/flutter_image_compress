@@ -236,8 +236,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _compressPngImage() async {
-    var result = await FlutterImageCompress.compressAssetImage(R.IMG_HEADER_PNG,
-        minWidth: 300);
+    var result = await FlutterImageCompress.compressAssetImage(
+      R.IMG_HEADER_PNG,
+      minWidth: 300,
+      minHeight: 500,
+    );
 
     var u8list = Uint8List.fromList(result);
     this.provider = MemoryImage(u8list);
