@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.5.2
+
+Fix:
+
+- [#49](https://github.com/OpenFlutter/flutter_image_compress/issues/49): A problem of reading Exif information.
+
 ## 0.5.1
 
 Change `reportError` with flutter stable version.
