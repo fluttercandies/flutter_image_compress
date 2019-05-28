@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 
 /// Image Compress
@@ -194,7 +194,7 @@ Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
   void errorListener(dynamic exception, StackTrace stackTrace) {
     completer.complete(null);
     FlutterError.reportError(FlutterErrorDetails(
-      context: 'image load failed ',
+      context: DiagnosticsNode.message('image load failed '),
       library: 'flutter_image_compress',
       exception: exception,
       stack: stackTrace,
