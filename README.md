@@ -16,10 +16,11 @@ Q：Dart already has image compression libraries. Why use native?
 
 A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
 
-- [flutter_image_compress](#flutter_image_compress)
+- [flutter_image_compress](#flutterimagecompress)
   - [Why](#why)
   - [About version](#about-version)
-  - [Breaking change at version 0.5.1](#breaking-change-at-version-051)
+    - [flutter 1.6.0](#flutter-160)
+    - [flutter 1.6.3](#flutter-163)
   - [About params](#about-params)
     - [minWidth and minHeight](#minwidth-and-minheight)
     - [autoCorrectionAngle](#autocorrectionangle)
@@ -35,27 +36,34 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 
 ## About version
 
-| flutter sdk version | plugin version |
-| ------------------- | -------------- |
-| 1.5.9+              | use git ref    |
-| 1.5.8 or low        | 0.5.1          |
+| flutter sdk version | plugin version  |
+| ------------------- | --------------- |
+| 1.5.9+              | use git ref     |
+| 1.5.8 or low        | use pub version |
 
-For reasons in this [issue](https://github.com/dart-lang/pub-dartlang-dart/issues/2290), version 0.5.0 is not compatible with pub and cannot be searched on pub.
-If you want to support flutter 1.6.0 use git ref.
+For reasons in this [issue](https://github.com/dart-lang/pub-dartlang-dart/issues/2290)
 
-Incompatibility between flutter SDK.
+So, in line with the official pub distribution strategy, I will open a [branch](https://github.com/OpenFlutter/flutter_image_compress/tree/follow-flutter-dev) to track the dev version of Flutter support, and the master version is not supported for the time being due to frequent changes and incompatibilities.
+
+### flutter 1.6.0
 
 ```yaml
 dependencies:
   flutter_image_compress:
     git:
       url: https://github.com/OpenFlutter/flutter_image_compress.git
-      ref: 5a545f7e5409d091cd18f5891a8b07426f390729
+      ref: c3c891d0be54f0892bcb4e9c4608d7ad1498e73c
 ```
 
-## Breaking change at version 0.5.1
+### flutter 1.6.3
 
-Because [#46](https://github.com/OpenFlutter/flutter_image_compress/pull/46) and subsequent changes have caused the image Angle to be automatically corrected based on Exif" this default behavior conflicts with the previous argument 'rotate' to rotate the Angle based on Exif information, so I think this is a destructive change.
+```yaml
+dependencies:
+  flutter_image_compress:
+    git:
+      url: https://github.com/OpenFlutter/flutter_image_compress.git
+      ref: 173ce7d73835ce35f695ac859bdabf471d1160e6
+```
 
 ## About params
 
