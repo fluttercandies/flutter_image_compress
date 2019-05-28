@@ -187,9 +187,6 @@ Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
       createLocalImageConfiguration(context, size: size);
   final Completer<ImageInfo> completer = Completer<ImageInfo>();
   final ImageStream stream = provider.resolve(config);
-  void listener(ImageInfo image, bool sync) {
-    completer.complete(image);
-  }
 
   void errorListener(dynamic exception, StackTrace stackTrace) {
     completer.complete(null);
@@ -202,7 +199,14 @@ Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
     ));
   }
 
-  stream.addListener(listener, onError: errorListener);
+  void onSuccess(ImageInfo image, bool sync) {
+    completer.complete(image);
+  }
+
+  final ImageStreamListener listener =
+      ImageStreamListener(onSuccess, onError: errorListener);
+
+  stream.addListener(listener);
   completer.future.then((ImageInfo info) {
     stream.removeListener(listener);
   });
