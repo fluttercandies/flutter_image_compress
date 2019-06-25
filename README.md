@@ -18,6 +18,7 @@ This library can works on Android and iOS.
     - [rotate](#rotate)
     - [autoCorrectionAngle](#autoCorrectionAngle)
     - [quality](#quality)
+    - [format](#format)
   - [Result](#Result)
     - [About `List<int>` and `Uint8List`](#About-Listint-and-Uint8List)
   - [Android](#Android)
@@ -161,6 +162,10 @@ Modify rotate to 0 or autoCorrectionAngle to false.
 
 Quality of target image.
 
+### format
+
+Supports jpeg or png, default is jpeg.
+
 ## Result
 
 The result of returning a List collection will not have null, but will always be an empty array.
@@ -229,7 +234,7 @@ Caused by: java.lang.AbstractMethodError
 
 See [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues/21473#issuecomment-420434339)
 
-You need to upgrade your Kotlin version to `1.2.71+`.
+You need to upgrade your Kotlin version to `1.2.71+`(recommended 1.3.31).
 
 If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and you use this library, propose an issue or PR!
 
