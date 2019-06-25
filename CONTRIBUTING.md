@@ -1,5 +1,5 @@
 # CONTRIBUTING
 
-Because of the pub policy, if you add functionality available for all versions, open PR in master.
+Please submit changes to master branch.
 
-If it is incompatible with flutter breaking change, please submit it it to branch follow-flutter-dev, and I will merge the branch code to master after that version becomes stable.
+And make sure your code is willing to comply with MIT style.

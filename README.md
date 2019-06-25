@@ -162,6 +162,8 @@ Modify rotate to 0 or autoCorrectionAngle to false.
 
 Quality of target image.
 
+If `format` is png, the param will be ignored in iOS.
+
 ### format
 
 Supports jpeg or png, default is jpeg.

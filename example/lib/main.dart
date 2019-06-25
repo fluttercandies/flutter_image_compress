@@ -1,14 +1,14 @@
-import 'dart:typed_data';
-import 'dart:math' as math;
-import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'const/resource.dart';
-
 import 'package:path_provider/path_provider.dart' as path_provider;
+
+import 'const/resource.dart';
 // import 'package:image_picker/image_picker.dart';
 
 void main() {
@@ -87,6 +87,14 @@ class _MyAppState extends State<MyApp> {
             FlatButton(
               child: Text('test png '),
               onPressed: _compressPngImage,
+            ),
+            FlatButton(
+              child: Text('format transparent PNG'),
+              onPressed: _compressTransPNG,
+            ),
+            FlatButton(
+              child: Text('restore transparent PNG'),
+              onPressed: _restoreTransPNG,
             ),
           ],
         ),
@@ -244,6 +252,24 @@ class _MyAppState extends State<MyApp> {
 
     var u8list = Uint8List.fromList(result);
     this.provider = MemoryImage(u8list);
+    setState(() {});
+  }
+
+  void _compressTransPNG() async {
+    var result = await FlutterImageCompress.compressAssetImage(
+      R.IMG_TRANSPARENT_BACKGROUND_PNG,
+      minHeight: 100,
+      minWidth: 100,
+      format: CompressFormat.png,
+    );
+
+    var u8list = Uint8List.fromList(result);
+    this.provider = MemoryImage(u8list);
+    setState(() {});
+  }
+
+  void _restoreTransPNG() async {
+    this.provider = AssetImage(R.IMG_TRANSPARENT_BACKGROUND_PNG);
     setState(() {});
   }
 }
