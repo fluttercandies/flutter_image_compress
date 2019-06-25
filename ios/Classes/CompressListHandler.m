@@ -19,9 +19,10 @@
     int minHeight = [args[2] intValue];
     int quality = [args[3] intValue];
     int rotate = [args[4] intValue];
+    int formatType = [args[6] intValue];
 
     NSData *data = [list data];
-    NSData *compressedData = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate];
+    NSData *compressedData = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
 
     result([FlutterStandardTypedData typedDataWithBytes:compressedData]);
 }

@@ -22,6 +22,8 @@ class CompressFileHandler(private var call: MethodCall, result: MethodChannel.Re
             val quality = args[3] as Int
             val rotate = args[4] as Int
             val autoCorrectionAngle = args[5] as Boolean
+            val format = args[6] as Int
+
 
             val exifRotate =
                     if (autoCorrectionAngle) {
@@ -33,7 +35,7 @@ class CompressFileHandler(private var call: MethodCall, result: MethodChannel.Re
 
             try {
                 val bitmap = BitmapFactory.decodeFile(file)
-                val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate)
+                val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, format)
                 reply(array)
             } catch (e: Exception) {
                 if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
@@ -59,11 +61,13 @@ class CompressFileHandler(private var call: MethodCall, result: MethodChannel.Re
                     } else {
                         0
                     }
+
+            val format = args[7] as Int
             try {
                 val bitmap = BitmapFactory.decodeFile(file)
                 val outputStream = File(targetPath).outputStream()
                 outputStream.use {
-                    bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, outputStream)
+                    bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, outputStream, format)
                 }
                 reply(targetPath)
             } catch (e: Exception) {

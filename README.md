@@ -10,62 +10,100 @@ Compresses image as native plugin (Obj-C/Kotlin)
 
 This library can works on Android and iOS.
 
-## Why
+- [flutter_image_compress](#flutterimagecompress)
+  - [Why don't you use dart to do it](#Why-dont-you-use-dart-to-do-it)
+  - [Usage](#Usage)
+  - [About common params](#About-common-params)
+    - [minWidth and minHeight](#minWidth-and-minHeight)
+    - [rotate](#rotate)
+    - [autoCorrectionAngle](#autoCorrectionAngle)
+    - [quality](#quality)
+  - [Result](#Result)
+    - [About `List<int>` and `Uint8List`](#About-Listint-and-Uint8List)
+  - [Android](#Android)
+  - [iOS](#iOS)
+  - [Troubleshooting or common error](#Troubleshooting-or-common-error)
+    - [Compressing returns `null`](#Compressing-returns-null)
+    - [Android build error](#Android-build-error)
+    - [About EXIF information](#About-EXIF-information)
+
+## Why don't you use dart to do it
 
 Q：Dart already has image compression libraries. Why use native?
 
 A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
 
-- [flutter_image_compress](#flutterimagecompress)
-  - [Why](#why)
-  - [About version](#about-version)
-    - [flutter 1.6.0](#flutter-160)
-    - [flutter 1.6.3](#flutter-163)
-  - [About params](#about-params)
-    - [minWidth and minHeight](#minwidth-and-minheight)
-    - [autoCorrectionAngle](#autocorrectionangle)
-  - [Android](#android)
-  - [iOS](#ios)
-  - [Usage](#usage)
-  - [Result](#result)
-    - [About `List<int>` and `Uint8List`](#about-listint-and-uint8list)
-  - [Troubleshooting](#troubleshooting)
-    - [Compressing returns `null`](#compressing-returns-null)
-  - [Android build error](#android-build-error)
-  - [About EXIF information](#about-exif-information)
+## Usage
 
-## About version
-
-| flutter sdk version | plugin version  |
-| ------------------- | --------------- |
-| 1.5.9+              | use git ref     |
-| 1.5.8 or low        | use pub version |
-
-For reasons in this [issue](https://github.com/dart-lang/pub-dartlang-dart/issues/2290)
-
-So, in line with the official pub distribution strategy, I will open a [branch](https://github.com/OpenFlutter/flutter_image_compress/tree/follow-flutter-dev) to track the dev version of Flutter support, and the master version is not supported for the time being due to frequent changes and incompatibilities.
-
-### flutter 1.6.0
-
-```yaml
-dependencies:
-  flutter_image_compress:
-    git:
-      url: https://github.com/OpenFlutter/flutter_image_compress.git
-      ref: c3c891d0be54f0892bcb4e9c4608d7ad1498e73c
+```dart
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 ```
 
-### flutter 1.6.3
+Use as:
 
-```yaml
-dependencies:
-  flutter_image_compress:
-    git:
-      url: https://github.com/OpenFlutter/flutter_image_compress.git
-      ref: 173ce7d73835ce35f695ac859bdabf471d1160e6
+[See full example](https://github.com/OpenFlutter/flutter_image_compress/blob/master/example/lib/main.dart)
+
+There are several ways to use the library api.
+
+```dart
+
+  // 1. compress file and get a List<int>
+  Future<List<int>> testCompressFile(File file) async {
+    var result = await FlutterImageCompress.compressWithFile(
+      file.absolute.path,
+      minWidth: 2300,
+      minHeight: 1500,
+      quality: 94,
+      rotate: 90,
+    );
+    print(file.lengthSync());
+    print(result.length);
+    return result;
+  }
+
+  // 2. compress file and get file.
+  Future<File> testCompressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+        file.absolute.path, targetPath,
+        quality: 88,
+        rotate: 180,
+      );
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
+  // 3. compress asset and get List<int>.
+  Future<List<int>> testCompressAsset(String assetName) async {
+    var list = await FlutterImageCompress.compressAssetImage(
+      assetName,
+      minHeight: 1920,
+      minWidth: 1080,
+      quality: 96,
+      rotate: 180,
+    );
+
+    return list;
+  }
+
+  // 4. compress List<int> and get another List<int>.
+  Future<List<int>> testComporessList(List<int> list) async {
+    var result = await FlutterImageCompress.compressWithList(
+      list,
+      minHeight: 1920,
+      minWidth: 1080,
+      quality: 96,
+      rotate: 135,
+    );
+    print(list.length);
+    print(result.length);
+    return result;
+  }
 ```
 
-## About params
+## About common params
 
 ### minWidth and minHeight
 
@@ -107,6 +145,10 @@ double calcScale({
 
 If your image width is smaller than minWidth or height samller than minHeight, scale will be 1, that is, the size will not change.
 
+### rotate
+
+If you need to rotate the picture, use this parameter.
+
 ### autoCorrectionAngle
 
 This property only exists in the version after 0.5.0.
@@ -115,81 +157,9 @@ And for historical reasons, there may be conflicts with rotate attributes, which
 
 Modify rotate to 0 or autoCorrectionAngle to false.
 
-## Android
+### quality
 
-You may need to update Kotlin to version `1.2.71`(Recommend 1.3.21) or higher.
-
-## iOS
-
-No problems currently found.
-
-## Usage
-
-```yaml
-dependencies:
-  flutter_image_compress: ^0.5.1
-```
-
-```dart
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-```
-
-Use as:
-
-[See full example](https://github.com/OpenFlutter/flutter_image_compress/blob/master/example/lib/main.dart)
-
-```dart
-  Future<List<int>> testCompressFile(File file) async {
-    var result = await FlutterImageCompress.compressWithFile(
-      file.absolute.path,
-      minWidth: 2300,
-      minHeight: 1500,
-      quality: 94,
-      rotate: 90,
-    );
-    print(file.lengthSync());
-    print(result.length);
-    return result;
-  }
-
-  Future<File> testCompressAndGetFile(File file, String targetPath) async {
-    var result = await FlutterImageCompress.compressAndGetFile(
-        file.absolute.path, targetPath,
-        quality: 88,
-        rotate: 180,
-      );
-
-    print(file.lengthSync());
-    print(result.lengthSync());
-
-    return result;
-  }
-
-  Future<List<int>> testCompressAsset(String assetName) async {
-    var list = await FlutterImageCompress.compressAssetImage(
-      assetName,
-      minHeight: 1920,
-      minWidth: 1080,
-      quality: 96,
-      rotate: 180,
-    );
-
-    return list;
-  }
-
-  Future<List<int>> testComporessList(List<int> list) async {
-    var result = await FlutterImageCompress.compressWithList(
-      list,
-      minHeight: 1920,
-      minWidth: 1080,
-      quality: 96,
-      rotate: 135,
-    );
-    print(list.length);
-    print(result.length);
-    return result;
-  }
-```
+Quality of target image.
 
 ## Result
 
@@ -201,7 +171,7 @@ The returned file may be null. In addition, please decide for yourself whether t
 
 You may need to convert `List<int>` to `Uint8List` to display images.
 
-To use `Uint8List`, you need import package to your code like so:
+To use `Uint8List`, you need import package to your code like this:
 
 ![img](https://raw.githubusercontent.com/CaiJingLong/asset_for_picgo/master/20190519111735.png)
 
@@ -230,7 +200,15 @@ void writeToFile(List<int> image, String filePath) {
 }
 ```
 
-## Troubleshooting
+## Android
+
+You may need to update Kotlin to version `1.2.71`(Recommend 1.3.21) or higher.
+
+## iOS
+
+No problems currently found.
+
+## Troubleshooting or common error
 
 ### Compressing returns `null`
 
@@ -238,7 +216,7 @@ Sometimes, compressing will return null. You should check if you can read/write 
 
 For example, use the [path_provider](https://pub.dartlang.org/packages/path_provide) plugin to access some application folders, and use a permission plugin to request permission to access SD cards on Android/iOS.
 
-## Android build error
+### Android build error
 
 ```groovy
 Caused by: org.gradle.internal.event.ListenerNotificationException: Failed to notify project evaluation listener.
@@ -255,7 +233,7 @@ You need to upgrade your Kotlin version to `1.2.71+`.
 
 If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and you use this library, propose an issue or PR!
 
-## About EXIF information
+### About EXIF information
 
 Using this library, EXIF information will be removed.
 

@@ -5,14 +5,14 @@ import android.graphics.Matrix
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 
-fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0): ByteArray {
+fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, format: Int): ByteArray {
     val outputStream = ByteArrayOutputStream()
-    compress(minWidth, minHeight, quality, rotate, outputStream)
+    compress(minWidth, minHeight, quality, rotate, outputStream,format)
     return outputStream.toByteArray()
 }
 
 
-fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, outputStream: OutputStream) {
+fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, outputStream: OutputStream, format: Int = 0) {
     val w = this.width.toFloat()
     val h = this.height.toFloat()
 
@@ -29,9 +29,11 @@ fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0
     log("dst width = $destW")
     log("dst height = $destH")
 
+
+
     Bitmap.createScaledBitmap(this, destW.toInt(), destH.toInt(), true)
             .rotate(rotate)
-            .compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            .compress(convertFormatIndexToFormat(format), quality, outputStream)
 }
 
 private fun log(any: Any?) {
@@ -62,4 +64,8 @@ fun Bitmap.calcScale(minWidth: Int, minHeight: Int): Float {
     log("height scale = $scaleH")
 
     return Math.max(1f, Math.min(scaleW, scaleH))
+}
+
+fun convertFormatIndexToFormat(type: Int): Bitmap.CompressFormat {
+    return if (type == 1) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
 }
