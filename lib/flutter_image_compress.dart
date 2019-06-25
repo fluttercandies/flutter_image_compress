@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Image Compress
@@ -42,6 +41,7 @@ class FlutterImageCompress {
     int quality = 95,
     int rotate = 0,
     bool autoCorrectionAngle = true,
+    CompressFormat format = CompressFormat.jpeg,
   }) async {
     assert(
       image != null,
@@ -60,6 +60,7 @@ class FlutterImageCompress {
       quality,
       rotate,
       autoCorrectionAngle,
+      _convertTypeToInt(format),
     ]);
 
     return convertDynamic(result);
@@ -73,6 +74,7 @@ class FlutterImageCompress {
     int quality = 95,
     int rotate = 0,
     bool autoCorrectionAngle = true,
+    CompressFormat format = CompressFormat.jpeg,
   }) async {
     assert(
       path != null,
@@ -88,6 +90,7 @@ class FlutterImageCompress {
       quality,
       rotate,
       autoCorrectionAngle,
+      _convertTypeToInt(format),
     ]);
     return convertDynamic(result);
   }
@@ -101,6 +104,7 @@ class FlutterImageCompress {
     int quality = 95,
     int rotate = 0,
     bool autoCorrectionAngle = true,
+    CompressFormat format = CompressFormat.jpeg,
   }) async {
     assert(
       path != null,
@@ -119,6 +123,7 @@ class FlutterImageCompress {
       targetPath,
       rotate,
       autoCorrectionAngle,
+      _convertTypeToInt(format),
     ]);
 
     if (result == null) {
@@ -136,6 +141,7 @@ class FlutterImageCompress {
     int quality = 95,
     int rotate = 0,
     bool autoCorrectionAngle = true,
+    CompressFormat format = CompressFormat.jpeg,
   }) async {
     assert(
       assetName != null,
@@ -164,6 +170,7 @@ class FlutterImageCompress {
       quality: quality,
       rotate: rotate,
       autoCorrectionAngle: autoCorrectionAngle,
+      format: format,
     );
   }
 
@@ -180,31 +187,9 @@ class FlutterImageCompress {
   }
 }
 
-/// get [ImageInfo] from [ImageProvider]
-Future<ImageInfo> getImageInfo(BuildContext context, ImageProvider provider,
-    {Size size}) async {
-  final ImageConfiguration config =
-      createLocalImageConfiguration(context, size: size);
-  final Completer<ImageInfo> completer = Completer<ImageInfo>();
-  final ImageStream stream = provider.resolve(config);
-  void listener(ImageInfo image, bool sync) {
-    completer.complete(image);
-  }
+enum CompressFormat { jpeg, png }
 
-  void errorListener(dynamic exception, StackTrace stackTrace) {
-    completer.complete(null);
-    FlutterError.reportError(FlutterErrorDetails(
-      context: 'image load failed ',
-      library: 'flutter_image_compress',
-      exception: exception,
-      stack: stackTrace,
-      silent: true,
-    ));
-  }
+int _convertTypeToInt(CompressFormat format) => format.index;
 
-  stream.addListener(listener, onError: errorListener);
-  completer.future.then((ImageInfo info) {
-    stream.removeListener(listener);
-  });
-  return completer.future;
-}
+// CompressFormat _convertIntToFormatType(int typeIndex) =>
+//     CompressFormat.values[typeIndex];

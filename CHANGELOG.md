@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.6.0
+
+**BREAKING CHANGE** : remove method `getImageInfo`.
+
+For the time being, the follow-dev branch is no longer used, but only the master branch is needed to unify the pub version number.
+
+New Feature:
+
+It is now supported to set the compression target to png format.
+
 ## 0.5.2
 
 Fix:

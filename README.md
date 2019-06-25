@@ -11,69 +11,28 @@ Compresses image as native plugin (Obj-C/Kotlin)
 This library can works on Android and iOS.
 
 - [flutter_image_compress](#flutterimagecompress)
-  - [Why don't you use dart to do it](#why-dont-you-use-dart-to-do-it)
-  - [Choose version](#choose-version)
-    - [Flutter Stable Version(1.5.4-hotfix2)](#flutter-stable-version154-hotfix2)
-    - [Flutter 1.5.9~1.6.2](#flutter-159162)
-    - [Flutter 1.6.3](#flutter-163)
-  - [Usage](#usage)
-  - [About common params](#about-common-params)
-    - [minWidth and minHeight](#minwidth-and-minheight)
+  - [Why don't you use dart to do it](#Why-dont-you-use-dart-to-do-it)
+  - [Usage](#Usage)
+  - [About common params](#About-common-params)
+    - [minWidth and minHeight](#minWidth-and-minHeight)
     - [rotate](#rotate)
-    - [autoCorrectionAngle](#autocorrectionangle)
+    - [autoCorrectionAngle](#autoCorrectionAngle)
     - [quality](#quality)
-  - [Result](#result)
-    - [About `List<int>` and `Uint8List`](#about-listint-and-uint8list)
-  - [Android](#android)
-  - [iOS](#ios)
-  - [Troubleshooting](#troubleshooting)
-    - [Compressing returns `null`](#compressing-returns-null)
-  - [Android build error](#android-build-error)
-  - [About EXIF information](#about-exif-information)
+    - [format](#format)
+  - [Result](#Result)
+    - [About `List<int>` and `Uint8List`](#About-Listint-and-Uint8List)
+  - [Android](#Android)
+  - [iOS](#iOS)
+  - [Troubleshooting or common error](#Troubleshooting-or-common-error)
+    - [Compressing returns `null`](#Compressing-returns-null)
+    - [Android build error](#Android-build-error)
+    - [About EXIF information](#About-EXIF-information)
 
 ## Why don't you use dart to do it
 
 Q：Dart already has image compression libraries. Why use native?
 
 A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
-
-## Choose version
-
-| flutter sdk version | plugin version  |
-| ------------------- | --------------- |
-| 1.5.9+              | use git ref     |
-| 1.5.8 or low        | use pub version |
-
-For reasons in this [issue](https://github.com/dart-lang/pub-dartlang-dart/issues/2290)
-
-So, in line with the official pub distribution strategy, I will open a [branch](https://github.com/OpenFlutter/flutter_image_compress/tree/follow-flutter-dev) to track the dev version of Flutter support, and the master version is not supported for the time being due to frequent changes and incompatibilities.
-
-### Flutter Stable Version(1.5.4-hotfix2)
-
-```yaml
-dependencies:
-  flutter_image_compress: ^0.5.2 # use pub latest version
-```
-
-### Flutter 1.5.9~1.6.2
-
-```yaml
-dependencies:
-  flutter_image_compress:
-    git:
-      url: https://github.com/OpenFlutter/flutter_image_compress.git
-      ref: c3c891d0be54f0892bcb4e9c4608d7ad1498e73c
-```
-
-### Flutter 1.6.3
-
-```yaml
-dependencies:
-  flutter_image_compress:
-    git:
-      url: https://github.com/OpenFlutter/flutter_image_compress.git
-      ref: 173ce7d73835ce35f695ac859bdabf471d1160e6
-```
 
 ## Usage
 
@@ -203,6 +162,10 @@ Modify rotate to 0 or autoCorrectionAngle to false.
 
 Quality of target image.
 
+### format
+
+Supports jpeg or png, default is jpeg.
+
 ## Result
 
 The result of returning a List collection will not have null, but will always be an empty array.
@@ -250,7 +213,7 @@ You may need to update Kotlin to version `1.2.71`(Recommend 1.3.21) or higher.
 
 No problems currently found.
 
-## Troubleshooting
+## Troubleshooting or common error
 
 ### Compressing returns `null`
 
@@ -258,7 +221,7 @@ Sometimes, compressing will return null. You should check if you can read/write 
 
 For example, use the [path_provider](https://pub.dartlang.org/packages/path_provide) plugin to access some application folders, and use a permission plugin to request permission to access SD cards on Android/iOS.
 
-## Android build error
+### Android build error
 
 ```groovy
 Caused by: org.gradle.internal.event.ListenerNotificationException: Failed to notify project evaluation listener.
@@ -271,11 +234,11 @@ Caused by: java.lang.AbstractMethodError
 
 See [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues/21473#issuecomment-420434339)
 
-You need to upgrade your Kotlin version to `1.2.71+`.
+You need to upgrade your Kotlin version to `1.2.71+`(recommended 1.3.31).
 
 If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and you use this library, propose an issue or PR!
 
-## About EXIF information
+### About EXIF information
 
 Using this library, EXIF information will be removed.
 

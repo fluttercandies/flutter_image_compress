@@ -14,11 +14,11 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" inherit-compiler-output="true">
+  <component name="NewModuleRootManager" inherit-compiler-output="$ENABLE_FLUTTER_DESKTOP$">
     <exclude-output />
     <content url="file://$MODULE_DIR$/android">
       <sourceFolder url="file://$MODULE_DIR$/android/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/android/gen" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/android/gen" isTestSource="false" generated="$ENABLE_FLUTTER_DESKTOP$" />
     </content>
     <content url="file://$MODULE_DIR$/example/android">
       <sourceFolder url="file://$MODULE_DIR$/example/android/app/src/main/java" isTestSource="false" />
@@ -26,5 +26,6 @@
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Flutter for Android" level="project" />
+    <orderEntry type="library" name="Dart SDK" level="project" />
   </component>
 </module>
