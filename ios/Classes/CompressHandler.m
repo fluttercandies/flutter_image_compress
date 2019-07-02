@@ -5,6 +5,7 @@
 #import "CompressHandler.h"
 #import "UIImage+scale.h"
 #import "FlutterImageCompressPlugin.h"
+#import <SYPictureMetadata/SYMetadata.h>
 
 @implementation CompressHandler {
 
@@ -25,12 +26,14 @@
         NSLog(@"minHeight = %d",minHeight);
         NSLog(@"format = %d", format);
     }
-    
+
     image = [image scaleWithMinWidth:minWidth minHeight:minHeight];
     if(rotate % 360 != 0){
         image = [image rotate: rotate];
     }
-    return [self compressDataWithImage:image quality:quality format:format];
+    NSData *resultData = [self compressDataWithImage:image quality:quality format:format keepExif:keepExif];
+
+    return resultData;
 }
 
 
@@ -40,10 +43,10 @@
     if(rotate % 360 != 0){
         image = [image rotate: rotate];
     }
-    return [self compressDataWithImage:image quality:quality format:format];
+    return [self compressDataWithImage:image quality:quality format:format keepExif:keepExif];
 }
 
-+ (NSData *)compressDataWithImage:(UIImage *)image quality:(float)quality format:(int)format {
++ (NSData *)compressDataWithImage:(UIImage *)image quality:(float)quality format:(int)format keepExif:(BOOL)keepExif {
     NSData *data;
     if (format != 1) {
         data = UIImageJPEGRepresentation(image, (CGFloat) quality / 100);
