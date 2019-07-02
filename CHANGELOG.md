@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.6.1
+
+Fix:
+
+- autoCorrectionAngle switches image width and height.
+
+New feature:
+
+- Keep exif (no have orientation), use `keepExif`
+
 ## 0.6.0
 
 **BREAKING CHANGE** :

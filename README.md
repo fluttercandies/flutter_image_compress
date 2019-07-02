@@ -19,6 +19,7 @@ This library can works on Android and iOS.
     - [autoCorrectionAngle](#autoCorrectionAngle)
     - [quality](#quality)
     - [format](#format)
+    - [keepExif](#keepExif)
   - [Result](#Result)
     - [About `List<int>` and `Uint8List`](#About-Listint-and-Uint8List)
   - [Android](#Android)
@@ -35,6 +36,11 @@ Q：Dart already has image compression libraries. Why use native?
 A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
 
 ## Usage
+
+```yaml
+dependencies:
+  flutter_image_compress: ^0.6.1
+```
 
 ```dart
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -168,6 +174,16 @@ If `format` is png, the param will be ignored in iOS.
 
 Supports jpeg or png, default is jpeg.
 
+### keepExif
+
+If this parameter is true, EXIF information is saved in the compressed result.
+
+Attention should be paid to the following points:
+
+1. Default value is false.
+2. Even if set to true, the direction attribute is not included.
+3. Only support jpg format, PNG format does not support.
+
 ## Result
 
 The result of returning a List collection will not have null, but will always be an empty array.
@@ -242,6 +258,6 @@ If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and 
 
 ### About EXIF information
 
-Using this library, EXIF information will be removed.
+Using this library, EXIF information will be removed by default.
 
-Although it will not be retained, over version 0.5.0, there will be the option of "automatic angle correction", which will be turned on by default.
+EXIF information can be retained by setting keepExif to true, but not `direction` information.

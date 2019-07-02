@@ -289,10 +289,10 @@ class _MyAppState extends State<MyApp> {
     this.provider = MemoryImage(Uint8List.fromList(result));
     setState(() {});
 
-    var dir = (await path_provider.getTemporaryDirectory()).path;
-    var f = File("$dir/tmp.jpg");
-    f.writeAsBytesSync(result);
-    print("f.path = ${f.path}");
+    // var dir = (await path_provider.getTemporaryDirectory()).path;
+    // var f = File("$dir/tmp.jpg");
+    // f.writeAsBytesSync(result);
+    // print("f.path = ${f.path}");
   }
 }
 
