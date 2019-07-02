@@ -6,7 +6,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.File
 import java.util.concurrent.Executors
 
-class CompressFileHandler(private var call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
+class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
 
     companion object {
         @JvmStatic
@@ -17,8 +17,8 @@ class CompressFileHandler(private var call: MethodCall, result: MethodChannel.Re
         executor.execute {
             val args: List<Any> = call.arguments as List<Any>
             val file = args[0] as String
-            val minWidth = args[1] as Int
-            val minHeight = args[2] as Int
+            var minWidth = args[1] as Int
+            var minHeight = args[2] as Int
             val quality = args[3] as Int
             val rotate = args[4] as Int
             val autoCorrectionAngle = args[5] as Boolean
@@ -34,6 +34,11 @@ class CompressFileHandler(private var call: MethodCall, result: MethodChannel.Re
                     }
 
             try {
+                if (exifRotate == 270 || exifRotate == 90) {
+                    val tmp = minWidth
+                    minWidth = minHeight
+                    minHeight = tmp
+                }
                 val bitmap = BitmapFactory.decodeFile(file)
                 val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, format)
                 reply(array)
@@ -48,8 +53,8 @@ class CompressFileHandler(private var call: MethodCall, result: MethodChannel.Re
         executor.execute {
             val args: List<Any> = call.arguments as List<Any>
             val file = args[0] as String
-            val minWidth = args[1] as Int
-            val minHeight = args[2] as Int
+            var minWidth = args[1] as Int
+            var minHeight = args[2] as Int
             val quality = args[3] as Int
             val targetPath = args[4] as String
             val rotate = args[5] as Int
@@ -67,6 +72,11 @@ class CompressFileHandler(private var call: MethodCall, result: MethodChannel.Re
                 val bitmap = BitmapFactory.decodeFile(file)
                 val outputStream = File(targetPath).outputStream()
                 outputStream.use {
+                    if (exifRotate == 270 || exifRotate == 90) {
+                        val tmp = minWidth
+                        minWidth = minHeight
+                        minHeight = tmp
+                    }
                     bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, outputStream, format)
                 }
                 reply(targetPath)
