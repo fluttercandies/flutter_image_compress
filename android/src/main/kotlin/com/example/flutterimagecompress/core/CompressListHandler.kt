@@ -1,7 +1,14 @@
-package com.example.flutterimagecompress
+package com.example.flutterimagecompress.core
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.example.flutterimagecompress.FlutterImageCompressPlugin
+import com.example.flutterimagecompress.exif.Exif
+import com.example.flutterimagecompress.exif.ExifKeeper
+import com.example.flutterimagecompress.ext.calcScale
+import com.example.flutterimagecompress.ext.convertFormatIndexToFormat
+import com.example.flutterimagecompress.ext.rotate
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
@@ -14,7 +21,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
         private val executor = Executors.newFixedThreadPool(5)
     }
 
-    fun handle() {
+    fun handle(activity: Activity) {
         executor.execute {
             val args: List<Any> = call.arguments as List<Any>
             val arr = args[0] as ByteArray
@@ -24,7 +31,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
             val rotate = args[4] as Int
             val autoCorrectionAngle = args[5] as Boolean
             val format = args[6] as Int
-
+            val keepExif = args[7] as Boolean
 
             val exifRotate = if (autoCorrectionAngle) Exif.getRotationDegrees(arr) else 0
 
@@ -35,7 +42,17 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
             }
 
             try {
-                reply(compress(arr, minWidth, minHeight, quality, rotate + exifRotate, format))
+                val bytes = compress(arr, minWidth, minHeight, quality, rotate + exifRotate, format)
+
+                if (keepExif) {
+                    val keeper = ExifKeeper(arr)
+                    val outputStream = ByteArrayOutputStream().apply { write(bytes) }
+                    val resultStream = keeper.writeToOutputStream(activity, outputStream)
+                    reply(resultStream.toByteArray())
+                    return@execute
+                }
+
+                reply(bytes)
             } catch (e: Exception) {
                 if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
                 reply(null)

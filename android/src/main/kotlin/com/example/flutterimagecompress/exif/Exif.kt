@@ -1,4 +1,4 @@
-package com.example.flutterimagecompress
+package com.example.flutterimagecompress.exif
 
 import androidx.exifinterface.media.ExifInterface
 import java.io.ByteArrayInputStream

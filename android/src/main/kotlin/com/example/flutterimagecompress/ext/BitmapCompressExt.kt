@@ -1,7 +1,8 @@
-package com.example.flutterimagecompress
+package com.example.flutterimagecompress.ext
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import com.example.flutterimagecompress.FlutterImageCompressPlugin
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 
