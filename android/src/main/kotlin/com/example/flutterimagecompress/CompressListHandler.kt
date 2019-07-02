@@ -7,7 +7,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 
-class CompressListHandler(var call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
+class CompressListHandler(private val call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
 
     companion object {
         @JvmStatic
@@ -18,14 +18,24 @@ class CompressListHandler(var call: MethodCall, result: MethodChannel.Result) : 
         executor.execute {
             val args: List<Any> = call.arguments as List<Any>
             val arr = args[0] as ByteArray
-            val minWidth = args[1] as Int
-            val minHeight = args[2] as Int
+            var minWidth = args[1] as Int
+            var minHeight = args[2] as Int
             val quality = args[3] as Int
             val rotate = args[4] as Int
             val autoCorrectionAngle = args[5] as Boolean
             val format = args[6] as Int
+
+
+            val exifRotate = if (autoCorrectionAngle) Exif.getRotationDegrees(arr) else 0
+
+            if (exifRotate == 270 || exifRotate == 90) {
+                val tmp = minWidth
+                minWidth = minHeight
+                minHeight = tmp
+            }
+
             try {
-                reply(compress(arr, minWidth, minHeight, quality, rotate, autoCorrectionAngle, format))
+                reply(compress(arr, minWidth, minHeight, quality, rotate + exifRotate, format))
             } catch (e: Exception) {
                 if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
                 reply(null)
@@ -33,7 +43,7 @@ class CompressListHandler(var call: MethodCall, result: MethodChannel.Result) : 
         }
     }
 
-    private fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, autoCorrectionAngle: Boolean, format: Int): ByteArray {
+    private fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, format: Int): ByteArray {
         val bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.count())
         val outputStream = ByteArrayOutputStream()
 
@@ -53,10 +63,8 @@ class CompressListHandler(var call: MethodCall, result: MethodChannel.Result) : 
         log("dst width = $destW")
         log("dst height = $destH")
 
-        val exifRotate = if (autoCorrectionAngle) Exif.getRotationDegrees(arr) else 0
-
         Bitmap.createScaledBitmap(bitmap, destW.toInt(), destH.toInt(), true)
-                .rotate(rotate + exifRotate)
+                .rotate(rotate)
                 .compress(convertFormatIndexToFormat(format), quality, outputStream)
 
         return outputStream.toByteArray()
