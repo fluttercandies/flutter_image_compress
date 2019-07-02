@@ -31,7 +31,7 @@
     if(rotate % 360 != 0){
         image = [image rotate: rotate];
     }
-    NSData *resultData = [self compressDataWithImage:image quality:quality format:format keepExif:keepExif];
+    NSData *resultData = [self compressDataWithImage:image quality:quality format:format];
 
     return resultData;
 }
@@ -43,10 +43,10 @@
     if(rotate % 360 != 0){
         image = [image rotate: rotate];
     }
-    return [self compressDataWithImage:image quality:quality format:format keepExif:keepExif];
+    return [self compressDataWithImage:image quality:quality format:format];
 }
 
-+ (NSData *)compressDataWithImage:(UIImage *)image quality:(float)quality format:(int)format keepExif:(BOOL)keepExif {
++ (NSData *)compressDataWithImage:(UIImage *)image quality:(float)quality format:(int)format  {
     NSData *data;
     if (format != 1) {
         data = UIImageJPEGRepresentation(image, (CGFloat) quality / 100);
