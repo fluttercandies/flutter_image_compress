@@ -42,6 +42,7 @@ class FlutterImageCompress {
     int rotate = 0,
     bool autoCorrectionAngle = true,
     CompressFormat format = CompressFormat.jpeg,
+    bool keepExif = false,
   }) async {
     assert(
       image != null,
@@ -61,6 +62,7 @@ class FlutterImageCompress {
       rotate,
       autoCorrectionAngle,
       _convertTypeToInt(format),
+      keepExif,
     ]);
 
     return convertDynamic(result);
@@ -75,6 +77,7 @@ class FlutterImageCompress {
     int rotate = 0,
     bool autoCorrectionAngle = true,
     CompressFormat format = CompressFormat.jpeg,
+    bool keepExif = false,
   }) async {
     assert(
       path != null,
@@ -91,6 +94,7 @@ class FlutterImageCompress {
       rotate,
       autoCorrectionAngle,
       _convertTypeToInt(format),
+      keepExif,
     ]);
     return convertDynamic(result);
   }
@@ -105,6 +109,7 @@ class FlutterImageCompress {
     int rotate = 0,
     bool autoCorrectionAngle = true,
     CompressFormat format = CompressFormat.jpeg,
+    bool keepExif = false,
   }) async {
     assert(
       path != null,
@@ -124,6 +129,7 @@ class FlutterImageCompress {
       rotate,
       autoCorrectionAngle,
       _convertTypeToInt(format),
+      keepExif,
     ]);
 
     if (result == null) {
@@ -142,6 +148,7 @@ class FlutterImageCompress {
     int rotate = 0,
     bool autoCorrectionAngle = true,
     CompressFormat format = CompressFormat.jpeg,
+    bool keepExif = false,
   }) async {
     assert(
       assetName != null,
@@ -171,6 +178,7 @@ class FlutterImageCompress {
       rotate: rotate,
       autoCorrectionAngle: autoCorrectionAngle,
       format: format,
+      keepExif: keepExif,
     );
   }
 

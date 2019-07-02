@@ -1,4 +1,4 @@
-package com.example.flutterimagecompress
+package com.example.flutterimagecompress.core
 
 import android.os.Handler
 import android.os.Looper

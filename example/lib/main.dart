@@ -85,16 +85,20 @@ class _MyAppState extends State<MyApp> {
               onPressed: _compressAssetAndAutoRotate,
             ),
             FlatButton(
-              child: Text('test png '),
+              child: Text('Test png '),
               onPressed: _compressPngImage,
             ),
             FlatButton(
-              child: Text('format transparent PNG'),
+              child: Text('Format transparent PNG'),
               onPressed: _compressTransPNG,
             ),
             FlatButton(
-              child: Text('restore transparent PNG'),
+              child: Text('Restore transparent PNG'),
               onPressed: _restoreTransPNG,
+            ),
+            FlatButton(
+              child: Text('Keep exif image'),
+              onPressed: _compressImageAndKeepExif,
             ),
           ],
         ),
@@ -271,6 +275,24 @@ class _MyAppState extends State<MyApp> {
   void _restoreTransPNG() async {
     this.provider = AssetImage(R.IMG_TRANSPARENT_BACKGROUND_PNG);
     setState(() {});
+  }
+
+  void _compressImageAndKeepExif() async {
+    var result = await FlutterImageCompress.compressAssetImage(
+      R.IMG_AUTO_ANGLE_JPG,
+      minWidth: 500,
+      minHeight: 600,
+      // autoCorrectionAngle: false,
+      keepExif: true,
+    );
+
+    this.provider = MemoryImage(Uint8List.fromList(result));
+    setState(() {});
+
+    var dir = (await path_provider.getTemporaryDirectory()).path;
+    var f = File("$dir/tmp.jpg");
+    f.writeAsBytesSync(result);
+    print("f.path = ${f.path}");
   }
 }
 

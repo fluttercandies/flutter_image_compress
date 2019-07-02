@@ -8,7 +8,7 @@
 #import <Flutter/Flutter.h>
 #import "CompressListHandler.h"
 #import "CompressHandler.h"
-#import "FlutterImageCompressPlugin.h"
+#import <SYPictureMetadata/SYMetadata.h>
 
 @implementation CompressListHandler
 
@@ -21,8 +21,16 @@
     int rotate = [args[4] intValue];
     int formatType = [args[6] intValue];
 
+    BOOL keepExif = [args[7] boolValue];
+
     NSData *data = [list data];
     NSData *compressedData = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
+
+    if (keepExif) {
+        SYMetadata *metadata = [SYMetadata metadataWithImageData:data];
+        metadata.orientation = @0;
+        compressedData = [SYMetadata dataWithImageData:compressedData andMetadata:metadata];
+    }
 
     result([FlutterStandardTypedData typedDataWithBytes:compressedData]);
 }
