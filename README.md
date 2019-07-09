@@ -10,7 +10,7 @@ Compresses image as native plugin (Obj-C/Kotlin)
 
 This library can works on Android and iOS.
 
-- [flutter_image_compress](#flutterimagecompress)
+- [flutter_image_compress](#flutter_image_compress)
   - [Why don't you use dart to do it](#Why-dont-you-use-dart-to-do-it)
   - [Usage](#Usage)
   - [About common params](#About-common-params)
@@ -28,6 +28,7 @@ This library can works on Android and iOS.
     - [Compressing returns `null`](#Compressing-returns-null)
     - [Android build error](#Android-build-error)
     - [About EXIF information](#About-EXIF-information)
+      - [About Exif handle code](#About-Exif-handle-code)
 
 ## Why don't you use dart to do it
 
@@ -261,3 +262,9 @@ If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and 
 Using this library, EXIF information will be removed by default.
 
 EXIF information can be retained by setting keepExif to true, but not `direction` information.
+
+#### About Exif handle code
+
+The iOS code was copied from [dvkch/SYPictureMetadata](https://github.com/dvkch/SYPictureMetadata), [LICENSE](https://github.com/dvkch/SYPictureMetadata/blob/master/LICENSE.md)
+
+The android code was copied from flutter/plugin/image_picker and edit some. (BSD 3 style)
