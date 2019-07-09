@@ -2,9 +2,9 @@
 // Created by cjl on 2018/9/8.
 //
 
-#import <SYPictureMetadata/SYMetadata.h>
 #import "CompressFileHandler.h"
 #import "CompressHandler.h"
+#import "SYMetadata.h"
 
 @implementation CompressFileHandler {
 

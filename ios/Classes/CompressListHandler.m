@@ -8,7 +8,7 @@
 #import <Flutter/Flutter.h>
 #import "CompressListHandler.h"
 #import "CompressHandler.h"
-#import <SYPictureMetadata/SYMetadata.h>
+#import "SYMetadata.h"
 
 @implementation CompressListHandler
 

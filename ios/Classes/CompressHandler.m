@@ -5,7 +5,6 @@
 #import "CompressHandler.h"
 #import "UIImage+scale.h"
 #import "FlutterImageCompressPlugin.h"
-#import <SYPictureMetadata/SYMetadata.h>
 
 @implementation CompressHandler {
 
