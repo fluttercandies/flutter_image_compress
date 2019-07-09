@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.6.2
+
+Optimization:
+
+- Reduce the speed required for ios to add dependencies by copying the `SYPictureMetadata` source code into the project.
+
 ## 0.6.1
 
 Fix:
