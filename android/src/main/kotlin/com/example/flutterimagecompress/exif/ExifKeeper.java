@@ -1,7 +1,7 @@
 package com.example.flutterimagecompress.exif;
 /// create 2019-07-02 by cai
 
-import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.exifinterface.media.ExifInterface;
@@ -55,10 +55,26 @@ public class ExifKeeper {
         this.oldExif = new ExifInterface(new ByteArrayInputStream(buf));
     }
 
-    public ByteArrayOutputStream writeToOutputStream(Activity activity, ByteArrayOutputStream outputStream) {
+    private static void copyExif(ExifInterface oldExif, ExifInterface newExif) {
+        for (String attribute : attributes) {
+            setIfNotNull(oldExif, newExif, attribute);
+        }
+        try {
+            newExif.saveAttributes();
+        } catch (IOException e) {
+        }
+    }
+
+    private static void setIfNotNull(ExifInterface oldExif, ExifInterface newExif, String property) {
+        if (oldExif.getAttribute(property) != null) {
+            newExif.setAttribute(property, oldExif.getAttribute(property));
+        }
+    }
+
+    public ByteArrayOutputStream writeToOutputStream(Context context, ByteArrayOutputStream outputStream) {
         try {
             String uuid = UUID.randomUUID().toString();
-            File file = new File(activity.getCacheDir(), uuid + ".jpg");
+            File file = new File(context.getCacheDir(), uuid + ".jpg");
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             IOUtils.write(outputStream.toByteArray(), fileOutputStream);
             fileOutputStream.close();
@@ -83,16 +99,6 @@ public class ExifKeeper {
         }
     }
 
-    private static void copyExif(ExifInterface oldExif, ExifInterface newExif) {
-        for (String attribute : attributes) {
-            setIfNotNull(oldExif, newExif, attribute);
-        }
-        try {
-            newExif.saveAttributes();
-        } catch (IOException e) {
-        }
-    }
-
     public void copyExifToFile(File file) {
         try {
             ExifInterface newExif = new ExifInterface(file.getAbsolutePath());
@@ -102,11 +108,5 @@ public class ExifKeeper {
             return;
         }
 
-    }
-
-    private static void setIfNotNull(ExifInterface oldExif, ExifInterface newExif, String property) {
-        if (oldExif.getAttribute(property) != null) {
-            newExif.setAttribute(property, oldExif.getAttribute(property));
-        }
     }
 }
