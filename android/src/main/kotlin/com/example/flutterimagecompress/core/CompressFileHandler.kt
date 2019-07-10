@@ -1,6 +1,5 @@
 package com.example.flutterimagecompress.core
 
-import android.app.Activity
 import android.graphics.BitmapFactory
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
 import com.example.flutterimagecompress.exif.Exif
@@ -8,6 +7,7 @@ import com.example.flutterimagecompress.exif.ExifKeeper
 import com.example.flutterimagecompress.ext.compress
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.PluginRegistry
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executors
@@ -19,7 +19,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
         private val executor = Executors.newFixedThreadPool(5)
     }
 
-    fun handle(activity: Activity) {
+    fun handle(registrar: PluginRegistry.Registrar) {
         executor.execute {
             val args: List<Any> = call.arguments as List<Any>
             val file = args[0] as String
@@ -52,7 +52,10 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                 if (keepExif) {
                     val byteArrayOutputStream = ByteArrayOutputStream()
                     byteArrayOutputStream.write(array)
-                    val outputStream = ExifKeeper(file).writeToOutputStream(activity, byteArrayOutputStream)
+                    val outputStream = ExifKeeper(file).writeToOutputStream(
+                            registrar.context().applicationContext,
+                            byteArrayOutputStream
+                    )
                     reply(outputStream.toByteArray())
                     return@execute
                 }
