@@ -10,7 +10,7 @@ Compresses image as native plugin (Obj-C/Kotlin)
 
 This library can works on Android and iOS.
 
-- [flutter_image_compress](#flutter_image_compress)
+- [flutter_image_compress](#flutterimagecompress)
   - [Why don't you use dart to do it](#Why-dont-you-use-dart-to-do-it)
   - [Usage](#Usage)
   - [About common params](#About-common-params)
@@ -40,7 +40,7 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.6.2
+  flutter_image_compress: ^0.6.3
 ```
 
 ```dart

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.6.3
+
+Fix:
+
+- Android: When the register of the calling plugin is not in the main process or there is no Activity.
+
 ## 0.6.2
 
 Optimization:
