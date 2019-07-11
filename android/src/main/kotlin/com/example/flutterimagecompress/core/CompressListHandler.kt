@@ -1,6 +1,5 @@
 package com.example.flutterimagecompress.core
 
-import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
@@ -11,6 +10,7 @@ import com.example.flutterimagecompress.ext.convertFormatIndexToFormat
 import com.example.flutterimagecompress.ext.rotate
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.PluginRegistry
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 
@@ -21,7 +21,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
         private val executor = Executors.newFixedThreadPool(5)
     }
 
-    fun handle(activity: Activity) {
+    fun handle(registrar: PluginRegistry.Registrar) {
         executor.execute {
             val args: List<Any> = call.arguments as List<Any>
             val arr = args[0] as ByteArray
@@ -47,7 +47,10 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
                 if (keepExif) {
                     val keeper = ExifKeeper(arr)
                     val outputStream = ByteArrayOutputStream().apply { write(bytes) }
-                    val resultStream = keeper.writeToOutputStream(activity, outputStream)
+                    val resultStream = keeper.writeToOutputStream(
+                            registrar.context().applicationContext,
+                            outputStream
+                    )
                     reply(resultStream.toByteArray())
                     return@execute
                 }

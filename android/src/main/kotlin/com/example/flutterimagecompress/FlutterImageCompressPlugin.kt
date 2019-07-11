@@ -8,7 +8,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class FlutterImageCompressPlugin(val registrar: Registrar) : MethodCallHandler {
+class FlutterImageCompressPlugin(private val registrar: Registrar) : MethodCallHandler {
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar): Unit {
@@ -22,8 +22,8 @@ class FlutterImageCompressPlugin(val registrar: Registrar) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: Result): Unit {
         when (call.method) {
             "showLog" -> result.success(handleLog(call))
-            "compressWithList" -> CompressListHandler(call, result).handle(registrar.activity())
-            "compressWithFile" -> CompressFileHandler(call, result).handle(registrar.activity())
+            "compressWithList" -> CompressListHandler(call, result).handle(registrar)
+            "compressWithFile" -> CompressFileHandler(call, result).handle(registrar)
             "compressWithFileAndGetFile" -> CompressFileHandler(call, result).handleGetFile()
             else -> result.notImplemented()
         }
