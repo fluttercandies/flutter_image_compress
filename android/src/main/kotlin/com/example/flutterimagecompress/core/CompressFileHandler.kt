@@ -10,6 +10,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
 import java.util.concurrent.Executors
 
 class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
@@ -21,7 +22,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
 
     fun handle(registrar: PluginRegistry.Registrar) {
         executor.execute {
-            val args: List<Any> = call.arguments as List<Any>
+            @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
             val file = args[0] as String
             var minWidth = args[1] as Int
             var minHeight = args[2] as Int
@@ -39,28 +40,32 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                         0
                     }
 
+
             try {
                 if (exifRotate == 270 || exifRotate == 90) {
                     val tmp = minWidth
                     minWidth = minHeight
                     minHeight = tmp
                 }
+                val fileInputStream = FileInputStream(file)
 
-                val bitmap = BitmapFactory.decodeFile(file)
-                val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, format)
+                fileInputStream.use {
+                    val bitmap = BitmapFactory.decodeStream(it)
+                    val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, format)
 
-                if (keepExif) {
-                    val byteArrayOutputStream = ByteArrayOutputStream()
-                    byteArrayOutputStream.write(array)
-                    val outputStream = ExifKeeper(file).writeToOutputStream(
-                            registrar.context().applicationContext,
-                            byteArrayOutputStream
-                    )
-                    reply(outputStream.toByteArray())
-                    return@execute
+                    if (keepExif) {
+                        val byteArrayOutputStream = ByteArrayOutputStream()
+                        byteArrayOutputStream.write(array)
+                        val outputStream = ExifKeeper(file).writeToOutputStream(
+                                registrar.context().applicationContext,
+                                byteArrayOutputStream
+                        )
+                        reply(outputStream.toByteArray())
+                        return@execute
+                    }
+
+                    reply(array)
                 }
-
-                reply(array)
             } catch (e: Exception) {
                 if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
                 reply(null)
@@ -70,7 +75,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
 
     fun handleGetFile() {
         executor.execute {
-            val args: List<Any> = call.arguments as List<Any>
+            @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
             val file = args[0] as String
             var minWidth = args[1] as Int
             var minHeight = args[2] as Int
@@ -89,23 +94,25 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
             val keepExif = args[8] as Boolean
 
             try {
-                val bitmap = BitmapFactory.decodeFile(file)
-                val outputStream = File(targetPath).outputStream()
-                outputStream.use {
-                    if (exifRotate == 270 || exifRotate == 90) {
-                        val tmp = minWidth
-                        minWidth = minHeight
-                        minHeight = tmp
+                val fileInputStream = FileInputStream(file)
+                fileInputStream.use {
+                    val bitmap = BitmapFactory.decodeStream(it)
+                    val outputStream = File(targetPath).outputStream()
+                    outputStream.use {
+                        if (exifRotate == 270 || exifRotate == 90) {
+                            val tmp = minWidth
+                            minWidth = minHeight
+                            minHeight = tmp
+                        }
+                        bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, outputStream, format)
                     }
-                    bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, outputStream, format)
-                }
 
-                if (keepExif) {
-                    ExifKeeper(file).copyExifToFile(File(targetPath))
-                    return@execute
+                    if (keepExif) {
+                        ExifKeeper(file).copyExifToFile(File(targetPath))
+                        return@execute
+                    }
+                    reply(targetPath)
                 }
-
-                reply(targetPath)
             } catch (e: Exception) {
                 if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
                 reply(null)

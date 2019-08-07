@@ -5,10 +5,12 @@ import android.graphics.Matrix
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
+import kotlin.math.max
+import kotlin.math.min
 
 fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, format: Int): ByteArray {
     val outputStream = ByteArrayOutputStream()
-    compress(minWidth, minHeight, quality, rotate, outputStream,format)
+    compress(minWidth, minHeight, quality, rotate, outputStream, format)
     return outputStream.toByteArray()
 }
 
@@ -29,8 +31,6 @@ fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0
 
     log("dst width = $destW")
     log("dst height = $destH")
-
-
 
     Bitmap.createScaledBitmap(this, destW.toInt(), destH.toInt(), true)
             .rotate(rotate)
@@ -64,7 +64,7 @@ fun Bitmap.calcScale(minWidth: Int, minHeight: Int): Float {
     log("width scale = $scaleW")
     log("height scale = $scaleH")
 
-    return Math.max(1f, Math.min(scaleW, scaleH))
+    return max(1f, min(scaleW, scaleH))
 }
 
 fun convertFormatIndexToFormat(type: Int): Bitmap.CompressFormat {

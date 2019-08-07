@@ -23,7 +23,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
 
     fun handle(registrar: PluginRegistry.Registrar) {
         executor.execute {
-            val args: List<Any> = call.arguments as List<Any>
+            @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
             val arr = args[0] as ByteArray
             var minWidth = args[1] as Int
             var minHeight = args[2] as Int

@@ -18,6 +18,7 @@ abstract class ResultHandler(private var result: MethodChannel.Result?) {
         }
     }
 
+    @Suppress("unused")
     fun replyError(code: String, message: String? = null, obj: Any? = null) {
         val result = this.result
         this.result = null

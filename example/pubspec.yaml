@@ -10,7 +10,7 @@ description: Demonstrates how to use the flutter_image_compress plugin.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: '>=2.0.0-dev.68.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -22,8 +22,8 @@ dependencies:
 
   flutter_image_compress:
     path: ../
-    
-  path_provider: ^0.4.1    
+
+  path_provider: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -34,7 +34,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -42,17 +41,13 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - img/
+    - img/
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
-
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.io/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
