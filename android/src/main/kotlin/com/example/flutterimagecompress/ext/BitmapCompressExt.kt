@@ -37,7 +37,7 @@ fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0
             .compress(convertFormatIndexToFormat(format), quality, outputStream)
 }
 
-private fun log(any: Any?) {
+fun log(any: Any?) {
     if (FlutterImageCompressPlugin.showLog) {
         println(any ?: "null")
     }
@@ -55,6 +55,10 @@ fun Bitmap.rotate(rotate: Int): Bitmap {
 }
 
 fun Bitmap.calcScale(minWidth: Int, minHeight: Int): Float {
+    return calcScale(width, height, minWidth, minHeight)
+}
+
+fun calcScale(width: Int, height: Int, minWidth: Int, minHeight: Int): Float {
     val w = width.toFloat()
     val h = height.toFloat()
 
@@ -66,6 +70,7 @@ fun Bitmap.calcScale(minWidth: Int, minHeight: Int): Float {
 
     return max(1f, min(scaleW, scaleH))
 }
+
 
 fun convertFormatIndexToFormat(type: Int): Bitmap.CompressFormat {
     return if (type == 1) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG

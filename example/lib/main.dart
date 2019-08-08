@@ -100,6 +100,10 @@ class _MyAppState extends State<MyApp> {
               child: Text('Keep exif image'),
               onPressed: _compressImageAndKeepExif,
             ),
+            FlatButton(
+              child: Text("download and compress big image"),
+              onPressed: _downloadAndCompressBigImage,
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -293,6 +297,40 @@ class _MyAppState extends State<MyApp> {
     // var f = File("$dir/tmp.jpg");
     // f.writeAsBytesSync(result);
     // print("f.path = ${f.path}");
+  }
+
+  void _downloadAndCompressBigImage() async {
+    final url = "http://172.16.100.245:5000/1.jpg";
+    final tmpDir = await path_provider.getExternalStorageDirectory();
+    final resultFile = File("${tmpDir.path}/tmp.jpg");
+    if (resultFile.existsSync()) {
+      resultFile.deleteSync();
+    }
+    final client = HttpClient();
+    final req = await client.getUrl(Uri.parse(url));
+    final resp = await req.close();
+    print(resultFile.path);
+    resp.listen((data) {
+      resultFile.writeAsBytesSync(data, mode: FileMode.append);
+    }).onDone(() async {
+      try {
+        final result = await FlutterImageCompress.compressAndGetFile(
+          resultFile.path,
+          "${tmpDir.path}/result.jpg",
+        );
+        if (result == null) {
+          return;
+        }
+        print(result.lengthSync());
+        print(result.path);
+      } on Exception catch (e) {
+        print(e);
+      } on Error catch (e) {
+        print(e);
+      } finally {
+        client.close();
+      }
+    });
   }
 }
 
