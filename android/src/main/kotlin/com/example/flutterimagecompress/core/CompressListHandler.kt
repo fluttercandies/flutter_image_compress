@@ -64,7 +64,11 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
     }
 
     private fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, format: Int): ByteArray {
-        val bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.count())
+        val optWrapper = OptionsWrapper()
+        BitmapFactory.decodeByteArray(arr, 0, arr.count(), optWrapper.options)
+        optWrapper.calculateInSampleSize(minWidth, minHeight)
+
+        val bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.count(), optWrapper.options)
         val outputStream = ByteArrayOutputStream()
 
         val w = bitmap.width.toFloat()
