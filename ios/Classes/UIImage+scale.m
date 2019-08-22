@@ -65,6 +65,13 @@
     
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+//    CGImageRef newImageRef = CGBitmapContextCreateImage(bitmap);
+//    UIImage *newImage = [UIImage imageWithCGImage:newImageRef];
+//    
+//    CGImageRelease(newImageRef);
+//    
+    CGContextRelease(bitmap);
+    
     return newImage;
 }
 
