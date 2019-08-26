@@ -188,10 +188,7 @@ class FlutterImageCompress {
       return [];
     }
 
-    return list
-        .where((item) => item is int)
-        .map((item) => item as int)
-        .toList();
+    return list.whereType<int>().toList();
   }
 }
 
