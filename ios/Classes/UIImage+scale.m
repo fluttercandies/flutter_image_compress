@@ -6,32 +6,35 @@
 #import "FlutterImageCompressPlugin.h"
 
 @implementation UIImage (scale)
-- (UIImage *)scaleWithMinWidth:(CGFloat)minWidth minHeight:(CGFloat)minHeight {
-    float w = self.size.width;
-    float h = self.size.height;
-
-    float sW = w / minWidth;
-    float sH = h / minHeight;
-
-    float scale = fmaxf(fminf(sW, sH), 1);
-
-    CGSize s = CGSizeMake(w / scale, h / scale);
-    UIGraphicsBeginImageContext(s);
-
-    [self drawInRect:CGRectMake(0, 0, s.width, s.height)];
-
+-(UIImage *)scaleWithMinWidth: (CGFloat)minWidth minHeight:(CGFloat)minHeight {
+    float actualHeight = self.size.height;
+    float actualWidth = self.size.width;
+    float imgRatio = actualWidth/actualHeight;
+    float maxRatio = minWidth/minHeight;
+    
+    if(imgRatio != maxRatio) {
+        if(imgRatio < maxRatio) {
+            imgRatio = minWidth / actualHeight;
+            actualWidth = round(imgRatio * actualWidth);
+            actualHeight = minWidth;
+        } else {
+            imgRatio = minHeight / actualWidth;
+            actualHeight = round(imgRatio * actualHeight);
+            actualWidth = minHeight;
+        }
+    }
+    CGRect rect = CGRectMake(0.0, 0.0, floor(actualWidth), floor(actualHeight));
+    UIGraphicsBeginImageContext(rect.size);
+    [self drawInRect:rect];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-
     UIGraphicsEndImageContext();
     
     if([FlutterImageCompressPlugin showLog]){
-        NSLog(@"scale width = %.2f",sW);
-        NSLog(@"scale height = %.2f",sH);
-        NSLog(@"scale = %.2f", scale);
-        NSLog(@"dst width = %.2f", w / scale);
-        NSLog(@"dst height = %.2f", h / scale);
+        NSLog(@"scale = %.2f", imgRatio);
+        NSLog(@"dst width = %.2f", rect.size.width);
+        NSLog(@"dst height = %.2f", rect.size.height);
     }
-
+    
     return newImage;
 }
 
