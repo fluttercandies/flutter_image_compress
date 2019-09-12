@@ -1,6 +1,7 @@
 package com.example.flutterimagecompress.core
 
 import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
 import com.example.flutterimagecompress.exif.Exif
 import com.example.flutterimagecompress.exif.ExifKeeper
@@ -45,8 +46,11 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                     minWidth = minHeight
                     minHeight = tmp
                 }
-
-                val bitmap = BitmapFactory.decodeFile(file)
+                val options = BitmapFactory.Options()
+                options.inJustDecodeBounds = false
+                options.inPreferredConfig = Bitmap.Config.RGB_565
+                options.inDither = true
+                val bitmap = BitmapFactory.decodeFile(file,options)
                 val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, format)
 
                 if (keepExif) {
@@ -89,7 +93,11 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
             val keepExif = args[8] as Boolean
 
             try {
-                val bitmap = BitmapFactory.decodeFile(file)
+                val options = BitmapFactory.Options()
+                options.inJustDecodeBounds = false
+                options.inPreferredConfig = Bitmap.Config.RGB_565
+                options.inDither = true
+                val bitmap = BitmapFactory.decodeFile(file,options)
                 val outputStream = File(targetPath).outputStream()
                 outputStream.use {
                     if (exifRotate == 270 || exifRotate == 90) {
