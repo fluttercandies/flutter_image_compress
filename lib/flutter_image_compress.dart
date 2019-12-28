@@ -158,13 +158,13 @@ class FlutterImageCompress {
       return [];
     }
 
-    var img = AssetImage(assetName);
-    var config = ImageConfiguration();
+    final img = AssetImage(assetName);
+    final config = ImageConfiguration();
 
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
 
-    var uint8List = data.buffer.asUint8List();
+    final uint8List = data.buffer.asUint8List();
 
     if (uint8List == null || uint8List.isEmpty) {
       return [];
