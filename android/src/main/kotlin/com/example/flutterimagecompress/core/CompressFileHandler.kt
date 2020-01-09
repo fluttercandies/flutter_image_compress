@@ -1,6 +1,7 @@
 package com.example.flutterimagecompress.core
 
 import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
 import com.example.flutterimagecompress.exif.Exif
 import com.example.flutterimagecompress.exif.ExifKeeper
@@ -30,6 +31,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
             val autoCorrectionAngle = args[5] as Boolean
             val format = args[6] as Int
             val keepExif = args[7] as Boolean
+            val inSampleSize = args[8] as Int
 
             val exifRotate =
                     if (autoCorrectionAngle) {
@@ -45,8 +47,12 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                     minWidth = minHeight
                     minHeight = tmp
                 }
-
-                val bitmap = BitmapFactory.decodeFile(file)
+                val options = BitmapFactory.Options()
+                options.inJustDecodeBounds = false
+                options.inPreferredConfig = Bitmap.Config.RGB_565
+                options.inSampleSize = inSampleSize
+                options.inDither = true
+                val bitmap = BitmapFactory.decodeFile(file, options)
                 val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, format)
 
                 if (keepExif) {
@@ -87,9 +93,15 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                     }
             val format = args[7] as Int
             val keepExif = args[8] as Boolean
+            val inSampleSize = args[9] as Int
 
             try {
-                val bitmap = BitmapFactory.decodeFile(file)
+                val options = BitmapFactory.Options()
+                options.inJustDecodeBounds = false
+                options.inPreferredConfig = Bitmap.Config.RGB_565
+                options.inSampleSize = inSampleSize
+                options.inDither = true
+                val bitmap = BitmapFactory.decodeFile(file, options)
                 val outputStream = File(targetPath).outputStream()
                 outputStream.use {
                     if (exifRotate == 270 || exifRotate == 90) {

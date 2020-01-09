@@ -73,6 +73,7 @@ class FlutterImageCompress {
     String path, {
     int minWidth = 1920,
     int minHeight = 1080,
+    int inSampleSize = 1,
     int quality = 95,
     int rotate = 0,
     bool autoCorrectionAngle = true,
@@ -95,6 +96,7 @@ class FlutterImageCompress {
       autoCorrectionAngle,
       _convertTypeToInt(format),
       keepExif,
+      inSampleSize,
     ]);
     return convertDynamic(result);
   }
@@ -105,6 +107,7 @@ class FlutterImageCompress {
     String targetPath, {
     int minWidth = 1920,
     int minHeight = 1080,
+    int inSampleSize = 1,
     int quality = 95,
     int rotate = 0,
     bool autoCorrectionAngle = true,
@@ -130,6 +133,7 @@ class FlutterImageCompress {
       autoCorrectionAngle,
       _convertTypeToInt(format),
       keepExif,
+      inSampleSize,
     ]);
 
     if (result == null) {
