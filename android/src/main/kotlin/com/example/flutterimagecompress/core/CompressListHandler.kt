@@ -23,7 +23,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
 
     fun handle(registrar: PluginRegistry.Registrar) {
         executor.execute {
-            val args: List<Any> = call.arguments as List<Any>
+            @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
             val arr = args[0] as ByteArray
             var minWidth = args[1] as Int
             var minHeight = args[2] as Int
@@ -32,6 +32,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
             val autoCorrectionAngle = args[5] as Boolean
             val format = args[6] as Int
             val keepExif = args[7] as Boolean
+            val inSampleSize = args[8] as Int
 
             val exifRotate = if (autoCorrectionAngle) Exif.getRotationDegrees(arr) else 0
 
@@ -42,7 +43,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
             }
 
             try {
-                val bytes = compress(arr, minWidth, minHeight, quality, rotate + exifRotate, format)
+                val bytes = compress(arr, minWidth, minHeight, quality, rotate + exifRotate, format, inSampleSize)
 
                 if (keepExif) {
                     val keeper = ExifKeeper(arr)
@@ -63,8 +64,17 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
         }
     }
 
-    private fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, format: Int): ByteArray {
-        val bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.count())
+    private fun compress(arr: ByteArray, minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, format: Int, inSampleSize: Int): ByteArray {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = false
+        options.inPreferredConfig = Bitmap.Config.RGB_565
+        options.inSampleSize = inSampleSize
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+            @Suppress("DEPRECATION")
+            options.inDither = true
+        }
+
+        val bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.count(), options)
         val outputStream = ByteArrayOutputStream()
 
         val w = bitmap.width.toFloat()
