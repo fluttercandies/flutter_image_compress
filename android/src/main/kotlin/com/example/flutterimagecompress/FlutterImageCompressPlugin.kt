@@ -1,5 +1,6 @@
 package com.example.flutterimagecompress
 
+import android.os.Build
 import com.example.flutterimagecompress.core.CompressFileHandler
 import com.example.flutterimagecompress.core.CompressListHandler
 import io.flutter.plugin.common.MethodCall
@@ -25,6 +26,7 @@ class FlutterImageCompressPlugin(private val registrar: Registrar) : MethodCallH
       "compressWithList" -> CompressListHandler(call, result).handle(registrar)
       "compressWithFile" -> CompressFileHandler(call, result).handle(registrar)
       "compressWithFileAndGetFile" -> CompressFileHandler(call, result).handleGetFile()
+      "getSystemVersion" -> result.success(Build.VERSION.SDK_INT)
       else -> result.notImplemented()
     }
   }

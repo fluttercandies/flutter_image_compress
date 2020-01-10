@@ -164,7 +164,7 @@ class _MyAppState extends State<MyApp> {
     File file = File("${dir.absolute.path}/test.png");
     file.writeAsBytesSync(data.buffer.asUint8List());
 
-    final targetPath = dir.absolute.path + "/temp.png";
+    final targetPath = dir.absolute.path + "/temp.jpg";
     final imgFile = await testCompressAndGetFile(file, targetPath);
 
     provider = FileImage(imgFile);
@@ -271,8 +271,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _compressTransPNG() async {
-    final result = await FlutterImageCompress.compressAssetImage(
-      R.IMG_TRANSPARENT_BACKGROUND_PNG,
+    final bytes =
+        await getAssetImageUint8List(R.IMG_TRANSPARENT_BACKGROUND_PNG);
+    final result = await FlutterImageCompress.compressWithList(
+      bytes,
       minHeight: 100,
       minWidth: 100,
       format: CompressFormat.png,
@@ -321,6 +323,11 @@ class _MyAppState extends State<MyApp> {
     print(
         "Compress heic result path: ${result.absolute.path}, size: ${result.lengthSync()}");
   }
+}
+
+Future<Uint8List> getAssetImageUint8List(String key) async {
+  final byteData = await rootBundle.load(key);
+  return byteData.buffer.asUint8List();
 }
 
 double calcScale({

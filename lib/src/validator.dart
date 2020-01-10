@@ -29,8 +29,7 @@ class Validator {
         assert(int.parse(firstVersion) >= 11,
             "The heic format only support iOS 11.0+");
       } else if (Platform.isAndroid) {
-        final String version = await channel.invokeMethod("getSystemVersion");
-        final firstVersion = version.split(".")[0];
+        final int version = await channel.invokeMethod("getSystemVersion");
       } else {
         assert(Platform.isIOS, "The heic only support iOS and android.");
       }

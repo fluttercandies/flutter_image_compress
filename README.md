@@ -28,8 +28,10 @@ This library can works on Android and iOS.
   - [Troubleshooting or common error](#troubleshooting-or-common-error)
     - [Compressing returns null](#compressing-returns-null)
     - [Android build error](#android-build-error)
+  - [LICENSE](#license)
     - [About EXIF information](#about-exif-information)
       - [About Exif handle code](#about-exif-handle-code)
+    - [HEIF support for android](#heif-support-for-android)
 
 ## Why don't you use dart to do it
 
@@ -268,6 +270,8 @@ You need to upgrade your Kotlin version to `1.2.71+`(recommended 1.3.31).
 
 If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and you use this library, propose an issue or PR!
 
+## LICENSE
+
 ### About EXIF information
 
 Using this library, EXIF information will be removed by default.
@@ -279,3 +283,7 @@ EXIF information can be retained by setting keepExif to true, but not `direction
 The iOS code was copied from [dvkch/SYPictureMetadata](https://github.com/dvkch/SYPictureMetadata), [LICENSE](https://github.com/dvkch/SYPictureMetadata/blob/master/LICENSE.md)
 
 The android code was copied from flutter/plugin/image_picker and edit some. (BSD 3 style)
+
+### HEIF support for android
+
+Use heif library of nokia: The url: https://github.com/nokiatech/heif, [LICENSE](https://github.com/nokiatech/heif/blob/master/LICENSE.TXT)

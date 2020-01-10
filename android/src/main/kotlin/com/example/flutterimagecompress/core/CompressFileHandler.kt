@@ -3,6 +3,7 @@ package com.example.flutterimagecompress.core
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
+import com.example.flutterimagecompress.core.heif.HeicHandler
 import com.example.flutterimagecompress.exif.Exif
 import com.example.flutterimagecompress.exif.ExifKeeper
 import com.example.flutterimagecompress.ext.compress
@@ -13,7 +14,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executors
 
-class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
+class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Result) : ResultHandler(result), HeicHandler {
   
   companion object {
     @JvmStatic
@@ -47,6 +48,8 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
           minWidth = minHeight
           minHeight = tmp
         }
+        val targetRotate = rotate + exifRotate
+        
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = false
         options.inPreferredConfig = Bitmap.Config.RGB_565
@@ -56,7 +59,8 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
           options.inDither = true
         }
         val bitmap = BitmapFactory.decodeFile(file, options)
-        val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, format)
+        
+        val array = bitmap.compress(minWidth, minHeight, quality, targetRotate, format)
         
         if (keepExif) {
           val byteArrayOutputStream = ByteArrayOutputStream()

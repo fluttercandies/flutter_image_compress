@@ -14,7 +14,6 @@ fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0
   return outputStream.toByteArray()
 }
 
-
 fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, outputStream: OutputStream, format: Int = 0) {
   val w = this.width.toFloat()
   val h = this.height.toFloat()
@@ -31,8 +30,6 @@ fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0
   
   log("dst width = $destW")
   log("dst height = $destH")
-  
-  
   
   Bitmap.createScaledBitmap(this, destW.toInt(), destH.toInt(), true)
     .rotate(rotate)

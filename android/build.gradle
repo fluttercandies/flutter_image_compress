@@ -40,7 +40,15 @@ android {
 }
 
 dependencies {
-    implementation "androidx.exifinterface:exifinterface:1.1.0"
+    implementation 'androidx.exifinterface:exifinterface:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'commons-io:commons-io:2.6'
+    implementation files('libs/heif-java.jar')
+//    api(name: "api-java", ext: 'aar')
 }
+
+//repositories {
+//    flatDir {
+//        dirs "libs"
+//    }
+//}

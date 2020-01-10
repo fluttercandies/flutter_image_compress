@@ -3,6 +3,8 @@ package com.example.flutterimagecompress.core
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
+import com.example.flutterimagecompress.core.heif.NByteArrayInputStream
+import com.example.flutterimagecompress.core.heif.NByteArrayOutputStream
 import com.example.flutterimagecompress.exif.Exif
 import com.example.flutterimagecompress.exif.ExifKeeper
 import com.example.flutterimagecompress.ext.calcScale
@@ -42,8 +44,15 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
         minHeight = tmp
       }
       
+      val targetRotate = rotate + exifRotate
+      if (isHeic(format)) {
+        val outputStream = NByteArrayOutputStream()
+        handleImage(NByteArrayInputStream(arr), outputStream, minWidth, minHeight, quality, rotate)
+        return@execute
+      }
+      
       try {
-        val bytes = compress(arr, minWidth, minHeight, quality, rotate + exifRotate, format, inSampleSize)
+        val bytes = compress(arr, minWidth, minHeight, quality, targetRotate, format, inSampleSize)
         
         if (keepExif) {
           val keeper = ExifKeeper(arr)
