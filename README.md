@@ -11,24 +11,24 @@ Compresses image as native plugin (Obj-C/Kotlin)
 This library can works on Android and iOS.
 
 - [flutter_image_compress](#flutterimagecompress)
-  - [Why don't you use dart to do it](#Why-dont-you-use-dart-to-do-it)
-  - [Usage](#Usage)
-  - [About common params](#About-common-params)
-    - [minWidth and minHeight](#minWidth-and-minHeight)
+  - [Why don't you use dart to do it](#why-dont-you-use-dart-to-do-it)
+  - [Usage](#usage)
+  - [About common params](#about-common-params)
+    - [minWidth and minHeight](#minwidth-and-minheight)
     - [rotate](#rotate)
-    - [autoCorrectionAngle](#autoCorrectionAngle)
+    - [autoCorrectionAngle](#autocorrectionangle)
     - [quality](#quality)
     - [format](#format)
-    - [keepExif](#keepExif)
-  - [Result](#Result)
-    - [About `List<int>` and `Uint8List`](#About-Listint-and-Uint8List)
-  - [Android](#Android)
-  - [iOS](#iOS)
-  - [Troubleshooting or common error](#Troubleshooting-or-common-error)
-    - [Compressing returns `null`](#Compressing-returns-null)
-    - [Android build error](#Android-build-error)
-    - [About EXIF information](#About-EXIF-information)
-      - [About Exif handle code](#About-Exif-handle-code)
+    - [keepExif](#keepexif)
+  - [Result](#result)
+    - [About List&lt;int&gt; and Uint8List](#about-listltintgt-and-uint8list)
+  - [Android](#android)
+  - [iOS](#ios)
+  - [Troubleshooting or common error](#troubleshooting-or-common-error)
+    - [Compressing returns null](#compressing-returns-null)
+    - [Android build error](#android-build-error)
+    - [About EXIF information](#about-exif-information)
+      - [About Exif handle code](#about-exif-handle-code)
 
 ## Why don't you use dart to do it
 
@@ -40,7 +40,7 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.6.3
+  flutter_image_compress: ^0.6.4
 ```
 
 ```dart

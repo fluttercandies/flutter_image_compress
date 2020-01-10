@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.6.4
+
+New feature:
+
+- Add Params inSampleSize for methods.
+
 ## 0.6.3
 
 Fix:
