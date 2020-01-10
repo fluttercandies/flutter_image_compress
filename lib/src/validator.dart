@@ -23,12 +23,16 @@ class Validator {
 
   Future<void> checkSupportPlatform(CompressFormat format) async {
     if (format == CompressFormat.heic) {
-      assert(Platform.isIOS, "The heic only support iOS.");
       if (Platform.isIOS) {
         final String version = await channel.invokeMethod("getSystemVersion");
         final firstVersion = version.split(".")[0];
         assert(int.parse(firstVersion) >= 11,
-            "The heic format only support ios 11.0+");
+            "The heic format only support iOS 11.0+");
+      } else if (Platform.isAndroid) {
+        final String version = await channel.invokeMethod("getSystemVersion");
+        final firstVersion = version.split(".")[0];
+      } else {
+        assert(Platform.isIOS, "The heic only support iOS and android.");
       }
     }
   }
