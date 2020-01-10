@@ -19,6 +19,7 @@ This library can works on Android and iOS.
     - [autoCorrectionAngle](#autocorrectionangle)
     - [quality](#quality)
     - [format](#format)
+    - [inSampleSize](#insamplesize)
     - [keepExif](#keepexif)
   - [Result](#result)
     - [About List&lt;int&gt; and Uint8List](#about-listltintgt-and-uint8list)
@@ -175,6 +176,14 @@ If `format` is png, the param will be ignored in iOS.
 
 Supports jpeg or png, default is jpeg.
 
+The format class sign `enum CompressFormat`.
+
+### inSampleSize
+
+The param is only support android.
+
+For a description of this parameter, see the [Android official website](https://developer.android.com/reference/android/graphics/BitmapFactory.Options.html#inSampleSize).
+
 ### keepExif
 
 If this parameter is true, EXIF information is saved in the compressed result.
@@ -223,6 +232,8 @@ void writeToFile(List<int> image, String filePath) {
   file.writeAsBytes(image, flush: true, mode: FileMode.write);
 }
 ```
+
+###
 
 ## Android
 
