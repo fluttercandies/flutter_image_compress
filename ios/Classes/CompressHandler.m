@@ -47,10 +47,29 @@
 
 + (NSData *)compressDataWithImage:(UIImage *)image quality:(float)quality format:(int)format  {
     NSData *data;
-    if (format != 1) {
-        data = UIImageJPEGRepresentation(image, (CGFloat) quality / 100);
-    } else {
+    if (format == 2) { // heic
+        CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
+        CIContext *ciContext = [[CIContext alloc]initWithOptions:nil];
+        NSString *tmpDir = NSTemporaryDirectory();
+        double time = [[NSDate alloc]init].timeIntervalSince1970;
+        NSString *target = [NSString stringWithFormat:@"%@%.0f.heic",tmpDir, time * 1000];
+        NSURL *url = [NSURL fileURLWithPath:target];
+        
+        NSMutableDictionary *options = [NSMutableDictionary new];
+        NSString *qualityKey = (__bridge NSString *)kCGImageDestinationLossyCompressionQuality;
+        [options setObject:@(quality) forKey: qualityKey];
+        
+        if (@available(iOS 11.0, *)) {
+            [ciContext writeHEIFRepresentationOfImage:ciImage toURL:url format: kCIFormatARGB8 colorSpace: ciImage.colorSpace options:options error:nil];
+            data = [NSData dataWithContentsOfURL:url];
+        } else {
+            // Fallback on earlier versions
+            data = nil;
+        }
+    } else if(format == 1){ // png
         data = UIImagePNGRepresentation(image);
+    }else { // 0 or other is jpeg
+        data = UIImageJPEGRepresentation(image, (CGFloat) quality / 100);
     }
 
     return data;

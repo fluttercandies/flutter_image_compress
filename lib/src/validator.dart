@@ -1,8 +1,14 @@
 import 'dart:io';
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 
 import 'compress_format.dart';
 
 class Validator {
+  final MethodChannel channel;
+  Validator(this.channel);
+
   void checkFileNameAndFormat(String name, CompressFormat format) {
     if (format == CompressFormat.jpeg) {
       assert((name.endsWith(".jpg") || name.endsWith(".jpeg")),
@@ -15,9 +21,15 @@ class Validator {
     }
   }
 
-  void checkSupportPlatform(CompressFormat format) {
+  Future<void> checkSupportPlatform(CompressFormat format) async {
     if (format == CompressFormat.heic) {
       assert(Platform.isIOS, "The heic only support iOS.");
+      if (Platform.isIOS) {
+        final String version = await channel.invokeMethod("getSystemVersion");
+        final firstVersion = version.split(".")[0];
+        assert(int.parse(firstVersion) >= 11,
+            "The heic format only support ios 11.0+");
+      }
     }
   }
 }
