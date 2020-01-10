@@ -29,17 +29,17 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> compress() async {
-    var img = AssetImage("img/img.jpg");
+    final img = AssetImage("img/img.jpg");
     print("pre compress");
-    var config = new ImageConfiguration();
+    final config = new ImageConfiguration();
 
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
 
-    var beforeCompress = data.lengthInBytes;
+    final beforeCompress = data.lengthInBytes;
     print("beforeCompress = $beforeCompress");
 
-    var result =
+    final result =
         await FlutterImageCompress.compressWithList(data.buffer.asUint8List());
 
     print("after = ${result?.length ?? 0}");
@@ -116,13 +116,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _testCompressFile() async {
-    var img = AssetImage("img/img.jpg");
+    final img = AssetImage("img/img.jpg");
     print("pre compress");
-    var config = new ImageConfiguration();
+    final config = new ImageConfiguration();
 
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
-    var dir = await path_provider.getTemporaryDirectory();
+    final dir = await path_provider.getTemporaryDirectory();
     print('dir = $dir');
 
     File file = File("${dir.absolute.path}/test.png");
@@ -135,19 +135,19 @@ class _MyAppState extends State<MyApp> {
   }
 
   void getFileImage() async {
-    var img = AssetImage("img/img.jpg");
+    final img = AssetImage("img/img.jpg");
     print("pre compress");
-    var config = new ImageConfiguration();
+    final config = new ImageConfiguration();
 
     AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
-    var dir = await path_provider.getTemporaryDirectory();
+    final dir = await path_provider.getTemporaryDirectory();
 
     File file = File("${dir.absolute.path}/test.png");
     file.writeAsBytesSync(data.buffer.asUint8List());
 
-    var targetPath = dir.absolute.path + "/temp.png";
-    var imgFile = await testCompressAndGetFile(file, targetPath);
+    final targetPath = dir.absolute.path + "/temp.png";
+    final imgFile = await testCompressAndGetFile(file, targetPath);
 
     provider = FileImage(imgFile);
     setState(() {});
@@ -155,7 +155,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<List<int>> testCompressFile(File file) async {
     print("testCompressFile");
-    var result = await FlutterImageCompress.compressWithFile(
+    final result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       minWidth: 2300,
       minHeight: 1500,
@@ -169,7 +169,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<File> testCompressAndGetFile(File file, String targetPath) async {
     print("testCompressAndGetFile");
-    var result = await FlutterImageCompress.compressAndGetFile(
+    final result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       targetPath,
       quality: 90,
@@ -186,7 +186,7 @@ class _MyAppState extends State<MyApp> {
 
   Future testCompressAsset(String assetName) async {
     print("testCompressAsset");
-    var list = await FlutterImageCompress.compressAssetImage(
+    final list = await FlutterImageCompress.compressAssetImage(
       assetName,
       minHeight: 1920,
       minWidth: 1080,
@@ -204,14 +204,14 @@ class _MyAppState extends State<MyApp> {
 
     list = await testComporessList(list);
 
-    var memory = Uint8List.fromList(list);
+    final memory = Uint8List.fromList(list);
     setState(() {
       this.provider = MemoryImage(memory);
     });
   }
 
   Future<List<int>> testComporessList(List<int> list) async {
-    var result = await FlutterImageCompress.compressWithList(
+    final result = await FlutterImageCompress.compressWithList(
       list,
       minHeight: 1080,
       minWidth: 1080,
@@ -224,43 +224,43 @@ class _MyAppState extends State<MyApp> {
   }
 
   void writeToFile(List<int> list, String filePath) {
-    var file = File(filePath);
+    final file = File(filePath);
     file.writeAsBytes(list, flush: true, mode: FileMode.write);
   }
 
   void _compressAssetAndAutoRotate() async {
-    var result = await FlutterImageCompress.compressAssetImage(
+    final result = await FlutterImageCompress.compressAssetImage(
       R.IMG_AUTO_ANGLE_JPG,
       minWidth: 1000,
       quality: 95,
       // autoCorrectionAngle: false,
     );
-    var u8list = Uint8List.fromList(result);
+    final u8list = Uint8List.fromList(result);
     this.provider = MemoryImage(u8list);
     setState(() {});
   }
 
   void _compressPngImage() async {
-    var result = await FlutterImageCompress.compressAssetImage(
+    final result = await FlutterImageCompress.compressAssetImage(
       R.IMG_HEADER_PNG,
       minWidth: 300,
       minHeight: 500,
     );
 
-    var u8list = Uint8List.fromList(result);
+    final u8list = Uint8List.fromList(result);
     this.provider = MemoryImage(u8list);
     setState(() {});
   }
 
   void _compressTransPNG() async {
-    var result = await FlutterImageCompress.compressAssetImage(
+    final result = await FlutterImageCompress.compressAssetImage(
       R.IMG_TRANSPARENT_BACKGROUND_PNG,
       minHeight: 100,
       minWidth: 100,
       format: CompressFormat.png,
     );
 
-    var u8list = Uint8List.fromList(result);
+    final u8list = Uint8List.fromList(result);
     this.provider = MemoryImage(u8list);
     setState(() {});
   }
@@ -271,7 +271,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _compressImageAndKeepExif() async {
-    var result = await FlutterImageCompress.compressAssetImage(
+    final result = await FlutterImageCompress.compressAssetImage(
       R.IMG_AUTO_ANGLE_JPG,
       minWidth: 500,
       minHeight: 600,
@@ -282,8 +282,8 @@ class _MyAppState extends State<MyApp> {
     this.provider = MemoryImage(Uint8List.fromList(result));
     setState(() {});
 
-    // var dir = (await path_provider.getTemporaryDirectory()).path;
-    // var f = File("$dir/tmp.jpg");
+    // final dir = (await path_provider.getTemporaryDirectory()).path;
+    // final f = File("$dir/tmp.jpg");
     // f.writeAsBytesSync(result);
     // print("f.path = ${f.path}");
   }
@@ -295,10 +295,10 @@ double calcScale({
   double minWidth,
   double minHeight,
 }) {
-  var scaleW = srcWidth / minWidth;
-  var scaleH = srcHeight / minHeight;
+  final scaleW = srcWidth / minWidth;
+  final scaleH = srcHeight / minHeight;
 
-  var scale = math.max(1.0, math.min(scaleW, scaleH));
+  final scale = math.max(1.0, math.min(scaleW, scaleH));
 
   return scale;
 }
