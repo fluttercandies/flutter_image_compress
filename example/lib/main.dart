@@ -199,15 +199,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future compressListExample() async {
-    final img = AssetImage("img/img.jpg");
-    print("pre compress");
-    final config = new ImageConfiguration();
-
-    AssetBundleImageKey key = await img.obtainKey(config);
-    final ByteData data = await key.bundle.load(key.name);
-    List<int> list = List<int>.from(data.buffer.asUint8List());
-
-    // print(list);
+    final data = await rootBundle.load("img/img.jpg");
+    var list = List<int>.from(data.buffer.asUint8List());
 
     list = await testComporessList(list);
 
@@ -220,7 +213,7 @@ class _MyAppState extends State<MyApp> {
   Future<List<int>> testComporessList(List<int> list) async {
     final result = await FlutterImageCompress.compressWithList(
       list,
-      minHeight: 1920,
+      minHeight: 1080,
       minWidth: 1080,
       quality: 96,
       rotate: 270,

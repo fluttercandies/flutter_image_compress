@@ -40,6 +40,7 @@ class FlutterImageCompress {
     int minHeight = 1080,
     int quality = 95,
     int rotate = 0,
+    int inSampleSize = 1,
     bool autoCorrectionAngle = true,
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
@@ -63,6 +64,7 @@ class FlutterImageCompress {
       autoCorrectionAngle,
       _convertTypeToInt(format),
       keepExif,
+      inSampleSize,
     ]);
 
     return convertDynamic(result);

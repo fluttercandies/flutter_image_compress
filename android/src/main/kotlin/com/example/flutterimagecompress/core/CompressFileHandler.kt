@@ -22,7 +22,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
 
     fun handle(registrar: PluginRegistry.Registrar) {
         executor.execute {
-            val args: List<Any> = call.arguments as List<Any>
+            @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
             val file = args[0] as String
             var minWidth = args[1] as Int
             var minHeight = args[2] as Int
@@ -51,7 +51,10 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                 options.inJustDecodeBounds = false
                 options.inPreferredConfig = Bitmap.Config.RGB_565
                 options.inSampleSize = inSampleSize
-                options.inDither = true
+                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+                    @Suppress("DEPRECATION")
+                    options.inDither = true
+                }
                 val bitmap = BitmapFactory.decodeFile(file, options)
                 val array = bitmap.compress(minWidth, minHeight, quality, rotate + exifRotate, format)
 
@@ -76,7 +79,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
 
     fun handleGetFile() {
         executor.execute {
-            val args: List<Any> = call.arguments as List<Any>
+            @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
             val file = args[0] as String
             var minWidth = args[1] as Int
             var minHeight = args[2] as Int
@@ -100,7 +103,10 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                 options.inJustDecodeBounds = false
                 options.inPreferredConfig = Bitmap.Config.RGB_565
                 options.inSampleSize = inSampleSize
-                options.inDither = true
+                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+                    @Suppress("DEPRECATION")
+                    options.inDither = true
+                }
                 val bitmap = BitmapFactory.decodeFile(file, options)
                 val outputStream = File(targetPath).outputStream()
                 outputStream.use {
