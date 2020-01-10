@@ -5,6 +5,11 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'src/compress_format.dart';
+import 'src/validator.dart';
+
+export 'src/compress_format.dart';
+
 /// Image Compress
 ///
 /// static method will help you compress image
@@ -28,6 +33,8 @@ import 'package:flutter/services.dart';
 class FlutterImageCompress {
   static const MethodChannel _channel =
       const MethodChannel('flutter_image_compress');
+
+  static Validator _validator = Validator();
 
   static set showNativeLog(bool value) {
     _channel.invokeMethod("showLog", value);
@@ -55,6 +62,9 @@ class FlutterImageCompress {
     if (image.isEmpty) {
       return [];
     }
+
+    _validator.checkSupportPlatform(format);
+
     final result = await _channel.invokeMethod("compressWithList", [
       Uint8List.fromList(image),
       minWidth,
@@ -89,6 +99,7 @@ class FlutterImageCompress {
     if (path == null || !File(path).existsSync()) {
       return [];
     }
+    _validator.checkSupportPlatform(format);
     final result = await _channel.invokeMethod("compressWithFile", [
       path,
       minWidth,
@@ -123,6 +134,12 @@ class FlutterImageCompress {
     if (path == null || !File(path).existsSync()) {
       return null;
     }
+    assert(targetPath != null, "The target path must be null.");
+    assert(
+        targetPath != path, "Target path and source path cannot be the same.");
+
+    _validator.checkFileNameAndFormat(targetPath, format);
+    _validator.checkSupportPlatform(format);
 
     final String result =
         await _channel.invokeMethod("compressWithFileAndGetFile", [
@@ -164,6 +181,8 @@ class FlutterImageCompress {
       return [];
     }
 
+    _validator.checkSupportPlatform(format);
+
     final img = AssetImage(assetName);
     final config = ImageConfiguration();
 
@@ -197,8 +216,6 @@ class FlutterImageCompress {
     return list.whereType<int>().toList();
   }
 }
-
-enum CompressFormat { jpeg, png }
 
 int _convertTypeToInt(CompressFormat format) => format.index;
 
