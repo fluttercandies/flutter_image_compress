@@ -57,7 +57,8 @@
         
         NSMutableDictionary *options = [NSMutableDictionary new];
         NSString *qualityKey = (__bridge NSString *)kCGImageDestinationLossyCompressionQuality;
-        [options setObject:@(quality) forKey: qualityKey];
+//        CIImageRepresentationOption
+        [options setObject:@(quality / 100) forKey: qualityKey];
         
         if (@available(iOS 11.0, *)) {
             [ciContext writeHEIFRepresentationOfImage:ciImage toURL:url format: kCIFormatARGB8 colorSpace: ciImage.colorSpace options:options error:nil];

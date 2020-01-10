@@ -100,6 +100,10 @@ class _MyAppState extends State<MyApp> {
               child: Text('Keep exif image'),
               onPressed: _compressImageAndKeepExif,
             ),
+            FlatButton(
+              child: Text('Convert to heic format and print the file url'),
+              onPressed: _compressHeicExample,
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -132,6 +136,20 @@ class _MyAppState extends State<MyApp> {
     ImageProvider provider = MemoryImage(Uint8List.fromList(list));
     this.provider = provider;
     setState(() {});
+  }
+
+  Future<String> getExampleFilePath() async {
+    final img = AssetImage("img/img.jpg");
+    print("pre compress");
+    final config = new ImageConfiguration();
+
+    AssetBundleImageKey key = await img.obtainKey(config);
+    final ByteData data = await key.bundle.load(key.name);
+    final dir = await path_provider.getTemporaryDirectory();
+
+    File file = File("${dir.absolute.path}/test.png");
+    file.writeAsBytesSync(data.buffer.asUint8List());
+    return file.absolute.path;
   }
 
   void getFileImage() async {
@@ -286,6 +304,22 @@ class _MyAppState extends State<MyApp> {
     // final f = File("$dir/tmp.jpg");
     // f.writeAsBytesSync(result);
     // print("f.path = ${f.path}");
+  }
+
+  void _compressHeicExample() async {
+    final tmpDir = (await getTemporaryDirectory()).path;
+    final target = "$tmpDir/${DateTime.now().millisecondsSinceEpoch}.heic";
+    final srcPath = await getExampleFilePath();
+    final result = await FlutterImageCompress.compressAndGetFile(
+      srcPath,
+      target,
+      format: CompressFormat.heic,
+      quality: 90,
+    );
+    print("Compress heic success.");
+    print("src, path = $srcPath length = ${File(srcPath).lengthSync()}");
+    print(
+        "Compress heic result path: ${result.absolute.path}, size: ${result.lengthSync()}");
   }
 }
 
