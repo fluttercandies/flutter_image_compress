@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.6.5
+
+New feature:
+
+- Heif and webp Partially supported.
+
 ## 0.6.4
 
 New feature:
