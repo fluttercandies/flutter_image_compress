@@ -44,4 +44,5 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'commons-io:commons-io:2.6'
+    implementation group: 'androidx.heifwriter', name: 'heifwriter', version: '1.0.0'
 }

@@ -5,6 +5,7 @@ import com.example.flutterimagecompress.core.CompressFileHandler
 import com.example.flutterimagecompress.core.CompressListHandler
 import com.example.flutterimagecompress.format.FormatRegister
 import com.example.flutterimagecompress.handle.common.CommonHandler
+import com.example.flutterimagecompress.handle.heif.HeifHandler
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -26,6 +27,7 @@ class FlutterImageCompressPlugin(private val registrar: Registrar) : MethodCallH
   init {
     FormatRegister.registerFormat(CommonHandler(0)) // jpeg
     FormatRegister.registerFormat(CommonHandler(1)) // png
+    FormatRegister.registerFormat(HeifHandler()) // heic / heif
     FormatRegister.registerFormat(CommonHandler(3)) // webp
   }
 

@@ -2,6 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.flutterimagecompress">
 
-  <uses-sdk tools:overrideLibrary="com.nokia.heif" />
+  <uses-sdk tools:overrideLibrary="androidx.heifwriter"/>
 
 </manifest>
