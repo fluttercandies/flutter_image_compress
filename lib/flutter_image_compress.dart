@@ -63,7 +63,10 @@ class FlutterImageCompress {
       return [];
     }
 
-    await _validator.checkSupportPlatform(format);
+    final support = await _validator.checkSupportPlatform(format);
+    if (!support) {
+      return null;
+    }
 
     final result = await _channel.invokeMethod("compressWithList", [
       Uint8List.fromList(image),
@@ -99,7 +102,12 @@ class FlutterImageCompress {
     if (path == null || !File(path).existsSync()) {
       return [];
     }
-    await _validator.checkSupportPlatform(format);
+
+    final support = await _validator.checkSupportPlatform(format);
+    if (!support) {
+      return null;
+    }
+
     final result = await _channel.invokeMethod("compressWithFile", [
       path,
       minWidth,
@@ -139,7 +147,11 @@ class FlutterImageCompress {
         targetPath != path, "Target path and source path cannot be the same.");
 
     _validator.checkFileNameAndFormat(targetPath, format);
-    await _validator.checkSupportPlatform(format);
+
+    final support = await _validator.checkSupportPlatform(format);
+    if (!support) {
+      return null;
+    }
 
     final String result =
         await _channel.invokeMethod("compressWithFileAndGetFile", [
@@ -181,7 +193,10 @@ class FlutterImageCompress {
       return [];
     }
 
-    await _validator.checkSupportPlatform(format);
+    final support = await _validator.checkSupportPlatform(format);
+    if (!support) {
+      return null;
+    }
 
     final img = AssetImage(assetName);
     final config = ImageConfiguration();

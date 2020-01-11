@@ -104,6 +104,10 @@ class _MyAppState extends State<MyApp> {
               child: Text('Convert to heic format and print the file url'),
               onPressed: _compressHeicExample,
             ),
+            FlatButton(
+              child: Text('Convert to webp format, Just support android'),
+              onPressed: _compressAndroidWebpExample,
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -323,6 +327,26 @@ class _MyAppState extends State<MyApp> {
     print("src, path = $srcPath length = ${File(srcPath).lengthSync()}");
     print(
         "Compress heic result path: ${result.absolute.path}, size: ${result.lengthSync()}");
+  }
+
+  void _compressAndroidWebpExample() async {
+    print("start compress webp");
+    final tmpDir = (await getTemporaryDirectory()).path;
+    final target = "$tmpDir/${DateTime.now().millisecondsSinceEpoch}.webp";
+    final srcPath = await getExampleFilePath();
+    final result = await FlutterImageCompress.compressAndGetFile(
+      srcPath,
+      target,
+      format: CompressFormat.webp,
+      quality: 90,
+    );
+    print("Compress webp success.");
+    print("src, path = $srcPath length = ${File(srcPath).lengthSync()}");
+    print(
+        "Compress webp result path: ${result.absolute.path}, size: ${result.lengthSync()}");
+
+    provider = FileImage(result);
+    setState(() {});
   }
 }
 
