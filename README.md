@@ -20,7 +20,7 @@ This library can works on Android and iOS.
     - [quality](#quality)
     - [format](#format)
       - [Webp](#webp)
-      - [HEIF](#heif)
+      - [HEIF(Heic)](#heifheic)
         - [Heif for iOS](#heif-for-ios)
         - [Heif for Android](#heif-for-android)
     - [inSampleSize](#insamplesize)
@@ -47,7 +47,7 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.6.5
+  flutter_image_compress: ^0.6.4
 ```
 
 ```dart
@@ -192,7 +192,7 @@ Only support android.
 
 **No support iOS**.
 
-#### HEIF
+#### HEIF(Heic)
 
 ##### Heif for iOS
 
@@ -277,7 +277,7 @@ Future<List<int>> compressAndTryCatch(String path) async {
       print(e);
       result = await FlutterImageCompress.compressWithFile(path,
           format: CompressFormat.jpeg);
-    } 
+    }
     return result;
   }
 ```
