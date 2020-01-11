@@ -34,7 +34,7 @@ class FlutterImageCompress {
   static const MethodChannel _channel =
       const MethodChannel('flutter_image_compress');
 
-  static Validator _validator = Validator();
+  static Validator _validator = Validator(_channel);
 
   static set showNativeLog(bool value) {
     _channel.invokeMethod("showLog", value);
@@ -63,7 +63,10 @@ class FlutterImageCompress {
       return [];
     }
 
-    _validator.checkSupportPlatform(format);
+    final support = await _validator.checkSupportPlatform(format);
+    if (!support) {
+      return null;
+    }
 
     final result = await _channel.invokeMethod("compressWithList", [
       Uint8List.fromList(image),
@@ -99,7 +102,12 @@ class FlutterImageCompress {
     if (path == null || !File(path).existsSync()) {
       return [];
     }
-    _validator.checkSupportPlatform(format);
+
+    final support = await _validator.checkSupportPlatform(format);
+    if (!support) {
+      return null;
+    }
+
     final result = await _channel.invokeMethod("compressWithFile", [
       path,
       minWidth,
@@ -139,7 +147,11 @@ class FlutterImageCompress {
         targetPath != path, "Target path and source path cannot be the same.");
 
     _validator.checkFileNameAndFormat(targetPath, format);
-    _validator.checkSupportPlatform(format);
+
+    final support = await _validator.checkSupportPlatform(format);
+    if (!support) {
+      return null;
+    }
 
     final String result =
         await _channel.invokeMethod("compressWithFileAndGetFile", [
@@ -181,7 +193,10 @@ class FlutterImageCompress {
       return [];
     }
 
-    _validator.checkSupportPlatform(format);
+    final support = await _validator.checkSupportPlatform(format);
+    if (!support) {
+      return null;
+    }
 
     final img = AssetImage(assetName);
     final config = ImageConfiguration();

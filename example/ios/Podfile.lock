@@ -11,27 +11,27 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
-  - flutter_image_compress (from `/Users/caijinglong/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec`)
-  - path_provider (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec`)
+  - flutter_image_compress (from `/Users/cai/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec`)
+  - path_provider (from `/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - Mantle
 
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
   flutter_image_compress:
-    :path: "/Users/caijinglong/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec"
+    :path: "/Users/cai/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec"
   path_provider:
-    :path: "/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec"
+    :path: "/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec"
 
 SPEC CHECKSUMS:
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_image_compress: f69d0e0e078ce52b4810695593bc861ee319ae7d
   Mantle: 2fa750afa478cd625a94230fbf1c13462f29395b
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
 
 PODFILE CHECKSUM: dd4c3bacfcfe689bbee14d5309fa1c97c22898b6
 
-COCOAPODS: 1.7.2
+COCOAPODS: 1.8.4

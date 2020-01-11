@@ -31,6 +31,9 @@ static dispatch_queue_t serial_queue;
         } else if ([@"showLog" isEqualToString:call.method]) {
             [self setShowLog:[call arguments]];
             result(@1);
+        } else if([@"getSystemVersion" isEqualToString:call.method]) {
+            NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+            result(systemVersion);
         } else {
             result(FlutterMethodNotImplemented);
         }

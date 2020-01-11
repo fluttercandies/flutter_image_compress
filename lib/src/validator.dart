@@ -1,8 +1,14 @@
 import 'dart:io';
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 
 import 'compress_format.dart';
 
 class Validator {
+  final MethodChannel channel;
+  Validator(this.channel);
+
   void checkFileNameAndFormat(String name, CompressFormat format) {
     if (format == CompressFormat.jpeg) {
       assert((name.endsWith(".jpg") || name.endsWith(".jpeg")),
@@ -12,12 +18,54 @@ class Validator {
     } else if (format == CompressFormat.heic) {
       assert(
           name.endsWith(".heic"), "The heic format name must end with heic.");
+    } else if (format == CompressFormat.webp) {
+      assert(
+          name.endsWith(".webp"), "The webp format name must end with webp.");
     }
   }
 
-  void checkSupportPlatform(CompressFormat format) {
+  Future<bool> checkSupportPlatform(CompressFormat format) async {
     if (format == CompressFormat.heic) {
-      assert(Platform.isIOS, "The heic only support iOS.");
+      if (Platform.isIOS) {
+        final String version = await channel.invokeMethod("getSystemVersion");
+        final firstVersion = version.split(".")[0];
+        final result = int.parse(firstVersion) >= 11;
+        final msg = "The heic format only support iOS 11.0+";
+        assert(result, msg);
+        _checkThrowError(result, msg);
+        return result;
+      } else if (Platform.isAndroid) {
+        final int version = await channel.invokeMethod("getSystemVersion");
+        final result = version >= 28;
+        final msg = "The heic format only support android API 28+";
+        assert(result, msg);
+        _checkThrowError(result, msg);
+        return result;
+      } else {
+        final msg = "The webp format only support android.";
+        assert(Platform.isAndroid || Platform.isIOS, msg);
+        _checkThrowError(false, msg);
+        return false;
+      }
+    } else if (format == CompressFormat.webp) {
+      if (Platform.isAndroid) {
+        return true;
+      }
+
+      var msg = "The webp format only support android.";
+      assert(Platform.isAndroid, msg);
+
+      _checkThrowError(false, msg);
+
+      return false;
+    }
+
+    return true;
+  }
+
+  void _checkThrowError(bool result, String msg) {
+    if (!result) {
+      throw UnsupportedError(msg);
     }
   }
 }

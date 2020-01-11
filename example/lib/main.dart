@@ -100,6 +100,14 @@ class _MyAppState extends State<MyApp> {
               child: Text('Keep exif image'),
               onPressed: _compressImageAndKeepExif,
             ),
+            FlatButton(
+              child: Text('Convert to heic format and print the file url'),
+              onPressed: _compressHeicExample,
+            ),
+            FlatButton(
+              child: Text('Convert to webp format, Just support android'),
+              onPressed: _compressAndroidWebpExample,
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -134,6 +142,20 @@ class _MyAppState extends State<MyApp> {
     setState(() {});
   }
 
+  Future<String> getExampleFilePath() async {
+    final img = AssetImage("img/img.jpg");
+    print("pre compress");
+    final config = new ImageConfiguration();
+
+    AssetBundleImageKey key = await img.obtainKey(config);
+    final ByteData data = await key.bundle.load(key.name);
+    final dir = await path_provider.getTemporaryDirectory();
+
+    File file = File("${dir.absolute.path}/test.png");
+    file.writeAsBytesSync(data.buffer.asUint8List());
+    return file.absolute.path;
+  }
+
   void getFileImage() async {
     final img = AssetImage("img/img.jpg");
     print("pre compress");
@@ -146,7 +168,7 @@ class _MyAppState extends State<MyApp> {
     File file = File("${dir.absolute.path}/test.png");
     file.writeAsBytesSync(data.buffer.asUint8List());
 
-    final targetPath = dir.absolute.path + "/temp.png";
+    final targetPath = dir.absolute.path + "/temp.jpg";
     final imgFile = await testCompressAndGetFile(file, targetPath);
 
     provider = FileImage(imgFile);
@@ -253,8 +275,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _compressTransPNG() async {
-    final result = await FlutterImageCompress.compressAssetImage(
-      R.IMG_TRANSPARENT_BACKGROUND_PNG,
+    final bytes =
+        await getAssetImageUint8List(R.IMG_TRANSPARENT_BACKGROUND_PNG);
+    final result = await FlutterImageCompress.compressWithList(
+      bytes,
       minHeight: 100,
       minWidth: 100,
       format: CompressFormat.png,
@@ -287,6 +311,48 @@ class _MyAppState extends State<MyApp> {
     // f.writeAsBytesSync(result);
     // print("f.path = ${f.path}");
   }
+
+  void _compressHeicExample() async {
+    print("start compress");
+    final tmpDir = (await getTemporaryDirectory()).path;
+    final target = "$tmpDir/${DateTime.now().millisecondsSinceEpoch}.heic";
+    final srcPath = await getExampleFilePath();
+    final result = await FlutterImageCompress.compressAndGetFile(
+      srcPath,
+      target,
+      format: CompressFormat.heic,
+      quality: 90,
+    );
+    print("Compress heic success.");
+    print("src, path = $srcPath length = ${File(srcPath).lengthSync()}");
+    print(
+        "Compress heic result path: ${result.absolute.path}, size: ${result.lengthSync()}");
+  }
+
+  void _compressAndroidWebpExample() async {
+    print("start compress webp");
+    final tmpDir = (await getTemporaryDirectory()).path;
+    final target = "$tmpDir/${DateTime.now().millisecondsSinceEpoch}.webp";
+    final srcPath = await getExampleFilePath();
+    final result = await FlutterImageCompress.compressAndGetFile(
+      srcPath,
+      target,
+      format: CompressFormat.webp,
+      quality: 90,
+    );
+    print("Compress webp success.");
+    print("src, path = $srcPath length = ${File(srcPath).lengthSync()}");
+    print(
+        "Compress webp result path: ${result.absolute.path}, size: ${result.lengthSync()}");
+
+    provider = FileImage(result);
+    setState(() {});
+  }
+}
+
+Future<Uint8List> getAssetImageUint8List(String key) async {
+  final byteData = await rootBundle.load(key);
+  return byteData.buffer.asUint8List();
 }
 
 double calcScale({

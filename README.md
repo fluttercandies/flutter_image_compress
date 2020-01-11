@@ -10,7 +10,7 @@ Compresses image as native plugin (Obj-C/Kotlin)
 
 This library can works on Android and iOS.
 
-- [flutter_image_compress](#flutterimagecompress)
+- [flutter_image_compress](#flutter_image_compress)
   - [Why don't you use dart to do it](#why-dont-you-use-dart-to-do-it)
   - [Usage](#usage)
   - [About common params](#about-common-params)
@@ -19,15 +19,21 @@ This library can works on Android and iOS.
     - [autoCorrectionAngle](#autocorrectionangle)
     - [quality](#quality)
     - [format](#format)
+      - [Webp](#webp)
+      - [HEIF](#heif)
+        - [Heif for iOS](#heif-for-ios)
+        - [Heif for Android](#heif-for-android)
     - [inSampleSize](#insamplesize)
     - [keepExif](#keepexif)
   - [Result](#result)
     - [About List&lt;int&gt; and Uint8List](#about-listltintgt-and-uint8list)
+  - [Runtime Error](#runtime-error)
   - [Android](#android)
   - [iOS](#ios)
   - [Troubleshooting or common error](#troubleshooting-or-common-error)
     - [Compressing returns null](#compressing-returns-null)
     - [Android build error](#android-build-error)
+  - [LICENSE](#license)
     - [About EXIF information](#about-exif-information)
       - [About Exif handle code](#about-exif-handle-code)
 
@@ -41,7 +47,7 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.6.4
+  flutter_image_compress: ^0.6.5
 ```
 
 ```dart
@@ -178,6 +184,28 @@ Supports jpeg or png, default is jpeg.
 
 The format class sign `enum CompressFormat`.
 
+Heif and webp Partially supported.
+
+#### Webp
+
+Only support android.
+
+**No support iOS**.
+
+#### HEIF
+
+##### Heif for iOS
+
+Only support iOS 11+.
+
+##### Heif for Android
+
+Use https://developer.android.com/reference/androidx/heifwriter/HeifWriter.html to implemation.
+
+Only support API 28+.
+
+And may require hardware encoder support, does not guarantee that all devices above API28 are available
+
 ### inSampleSize
 
 The param is only support android.
@@ -233,11 +261,30 @@ void writeToFile(List<int> image, String filePath) {
 }
 ```
 
-###
+## Runtime Error
+
+Because of some support issues, all APIs will be compatible with format and system compatibility, and an exception (UnsupportError) may be thrown, so if you insist on using webp and heic formats, please catch the exception yourself and use it on unsupported devices jpeg compression.
+
+Example:
+
+```dart
+Future<List<int>> compressAndTryCatch(String path) async {
+    List<int> result;
+    try {
+      result = await FlutterImageCompress.compressWithFile(path,
+          format: CompressFormat.heic);
+    } on UnsupportedError catch (e) {
+      print(e);
+      result = await FlutterImageCompress.compressWithFile(path,
+          format: CompressFormat.jpeg);
+    } 
+    return result;
+  }
+```
 
 ## Android
 
-You may need to update Kotlin to version `1.2.71`(Recommend 1.3.21) or higher.
+You may need to update Kotlin to version `1.2.71`(Recommend 1.3.50) or higher.
 
 ## iOS
 
@@ -267,6 +314,8 @@ See [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues/214
 You need to upgrade your Kotlin version to `1.2.71+`(recommended 1.3.31).
 
 If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and you use this library, propose an issue or PR!
+
+## LICENSE
 
 ### About EXIF information
 

@@ -9,7 +9,6 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -25,14 +24,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
@@ -40,8 +39,10 @@ android {
     }
 }
 
+
 dependencies {
-    implementation "androidx.exifinterface:exifinterface:1.1.0"
+    implementation 'androidx.exifinterface:exifinterface:1.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'commons-io:commons-io:2.6'
+    implementation group: 'androidx.heifwriter', name: 'heifwriter', version: '1.0.0'
 }
