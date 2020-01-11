@@ -309,6 +309,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _compressHeicExample() async {
+    print("start compress");
     final tmpDir = (await getTemporaryDirectory()).path;
     final target = "$tmpDir/${DateTime.now().millisecondsSinceEpoch}.heic";
     final srcPath = await getExampleFilePath();
