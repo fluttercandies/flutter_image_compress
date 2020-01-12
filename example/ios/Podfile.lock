@@ -3,34 +3,54 @@ PODS:
   - flutter_image_compress (0.0.1):
     - Flutter
     - Mantle
+    - SDWebImageWebPCoder
+  - libwebp (1.1.0):
+    - libwebp/demux (= 1.1.0)
+    - libwebp/mux (= 1.1.0)
+    - libwebp/webp (= 1.1.0)
+  - libwebp/demux (1.1.0):
+    - libwebp/webp
+  - libwebp/mux (1.1.0):
+    - libwebp/demux
+  - libwebp/webp (1.1.0)
   - Mantle (2.1.0):
     - Mantle/extobjc (= 2.1.0)
   - Mantle/extobjc (2.1.0)
   - path_provider (0.0.1):
     - Flutter
+  - SDWebImage/Core (5.4.2)
+  - SDWebImageWebPCoder (0.3.1):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.0)
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
-  - flutter_image_compress (from `/Users/cai/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec`)
-  - path_provider (from `/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec`)
+  - flutter_image_compress (from `/Users/caijinglong/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec`)
+  - path_provider (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec`)
 
 SPEC REPOS:
   trunk:
+    - libwebp
     - Mantle
+    - SDWebImage
+    - SDWebImageWebPCoder
 
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
   flutter_image_compress:
-    :path: "/Users/cai/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec"
+    :path: "/Users/caijinglong/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec"
   path_provider:
-    :path: "/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec"
+    :path: "/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_image_compress: f69d0e0e078ce52b4810695593bc861ee319ae7d
+  flutter_image_compress: 082f8daaf6c1b0c9fe798251c750ef0ecd98d7ae
+  libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   Mantle: 2fa750afa478cd625a94230fbf1c13462f29395b
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
+  SDWebImage: 4ca2dc4eefae4224bea8f504251cda485a363745
+  SDWebImageWebPCoder: ce58a29621c2806dd5c36695ed192cf67163ff9d
 
 PODFILE CHECKSUM: dd4c3bacfcfe689bbee14d5309fa1c97c22898b6
 
