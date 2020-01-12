@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.6.5
+
+New feature
+
+- Support webp on iOS.
+
 ## 0.6.4
 
 New feature:
