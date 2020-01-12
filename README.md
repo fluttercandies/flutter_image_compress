@@ -191,9 +191,9 @@ Heif and webp Partially supported.
 
 #### Webp
 
-Only support android.
+Support android by the system api (speed very nice).
 
-**No support iOS**.
+And support iOS, but However, no system implementation, using [third-party libraries](https://github.com/SDWebImage/SDWebImageWebPCoder) used, it is not recommended due to encoding speed. In the future, libwebp by google (c / c ++) may be used to do coding work, bypassing other three-party libraries, but there is no guarantee of implementation time.
 
 #### HEIF(Heic)
 
