@@ -12,9 +12,9 @@
 
 #if TARGET_IPHONE_SIMULATOR && __IPHONE_OS_VERSION_MIN_REQUIRED < 90000
 // keys needed for simulator < 9.0
-CFStringRef const kCGImagePropertyAPNGDelayTime                 = CFSTR("DelayTime");
-CFStringRef const kCGImagePropertyAPNGLoopCount                 = CFSTR("LoopCount");
-CFStringRef const kCGImagePropertyAPNGUnclampedDelayTime        = CFSTR("UnclampedDelayTime");
+//CFStringRef const kCGImagePropertyAPNGDelayTime                 = CFSTR("DelayTime");
+//CFStringRef const kCGImagePropertyAPNGLoopCount                 = CFSTR("LoopCount");
+//CFStringRef const kCGImagePropertyAPNGUnclampedDelayTime        = CFSTR("UnclampedDelayTime");
 CFStringRef const kCGImagePropertyMakerFujiDictionary           = CFSTR("{MakerFuji}");
 CFStringRef const kCGImagePropertyMakerMinoltaDictionary        = CFSTR("{MakerMinolta}");
 CFStringRef const kCGImagePropertyMakerOlympusDictionary        = CFSTR("{MakerOlympus}");
@@ -37,9 +37,9 @@ CFStringRef const kCGImagePropertyTIFFTileWidth                 = CFSTR("TileWid
 CFStringRef const kCGImagePropertyTIFFTileLength                = CFSTR("TileLength");
 CFStringRef const kCGImagePropertyPNGCompressionFilter          = CFSTR("kCGImagePropertyPNGCompressionFilter");
 // keys available since iOS 8+ according to header, but not actually available...
-CFStringRef const kCGImagePropertyAPNGDelayTime                 = CFSTR("DelayTime");
-CFStringRef const kCGImagePropertyAPNGLoopCount                 = CFSTR("LoopCount");
-CFStringRef const kCGImagePropertyAPNGUnclampedDelayTime        = CFSTR("UnclampedDelayTime");
+//CFStringRef const kCGImagePropertyAPNGDelayTime                 = CFSTR("DelayTime");
+//CFStringRef const kCGImagePropertyAPNGLoopCount                 = CFSTR("LoopCount");
+//CFStringRef const kCGImagePropertyAPNGUnclampedDelayTime        = CFSTR("UnclampedDelayTime");
 #endif
 
 #if !TARGET_IPHONE_SIMULATOR && __IPHONE_OS_VERSION_MIN_REQUIRED < 100000

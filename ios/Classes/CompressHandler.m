@@ -5,7 +5,7 @@
 #import "CompressHandler.h"
 #import "UIImage+scale.h"
 #import "FlutterImageCompressPlugin.h"
-
+#import <SDImageWebPCoder.h>
 @implementation CompressHandler {
 
 }
@@ -67,6 +67,9 @@
             // Fallback on earlier versions
             data = nil;
         }
+    } else if(format == 3){ // webp
+        SDImageCoderOptions *option = @{SDImageCoderEncodeCompressionQuality: @(quality / 100)};
+        data = [[SDImageWebPCoder sharedCoder]encodedDataWithImage:image format:SDImageFormatWebP options:option];
     } else if(format == 1){ // png
         data = UIImagePNGRepresentation(image);
     }else { // 0 or other is jpeg

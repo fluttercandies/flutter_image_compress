@@ -9,6 +9,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 import 'const/resource.dart';
+import 'time_logger.dart';
 // import 'package:image_picker/image_picker.dart';
 
 void main() {
@@ -314,6 +315,8 @@ class _MyAppState extends State<MyApp> {
 
   void _compressHeicExample() async {
     print("start compress");
+    final logger = TimeLogger();
+    logger.startRecoder();
     final tmpDir = (await getTemporaryDirectory()).path;
     final target = "$tmpDir/${DateTime.now().millisecondsSinceEpoch}.heic";
     final srcPath = await getExampleFilePath();
@@ -324,23 +327,32 @@ class _MyAppState extends State<MyApp> {
       quality: 90,
     );
     print("Compress heic success.");
+    logger.logTime();
     print("src, path = $srcPath length = ${File(srcPath).lengthSync()}");
     print(
         "Compress heic result path: ${result.absolute.path}, size: ${result.lengthSync()}");
   }
 
   void _compressAndroidWebpExample() async {
+    // Android compress very nice, but the iOS encode UIImage to webp is slow.
+    final logger = TimeLogger();
+    logger.startRecoder();
     print("start compress webp");
+    final quality = 90;
     final tmpDir = (await getTemporaryDirectory()).path;
-    final target = "$tmpDir/${DateTime.now().millisecondsSinceEpoch}.webp";
+    final target =
+        "$tmpDir/${DateTime.now().millisecondsSinceEpoch}-$quality.webp";
     final srcPath = await getExampleFilePath();
     final result = await FlutterImageCompress.compressAndGetFile(
       srcPath,
       target,
       format: CompressFormat.webp,
-      quality: 90,
+      minHeight: 800,
+      minWidth: 800,
+      quality: quality,
     );
     print("Compress webp success.");
+    logger.logTime();
     print("src, path = $srcPath length = ${File(srcPath).lengthSync()}");
     print(
         "Compress webp result path: ${result.absolute.path}, size: ${result.lengthSync()}");

@@ -48,11 +48,11 @@ class Validator {
         return false;
       }
     } else if (format == CompressFormat.webp) {
-      if (Platform.isAndroid) {
+      if (Platform.isAndroid || Platform.isIOS) {
         return true;
       }
 
-      var msg = "The webp format only support android.";
+      var msg = "The webp format only support android and iOS.";
       assert(Platform.isAndroid, msg);
 
       _checkThrowError(false, msg);
