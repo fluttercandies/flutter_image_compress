@@ -33,9 +33,12 @@ This library can works on Android and iOS.
   - [Troubleshooting or common error](#troubleshooting-or-common-error)
     - [Compressing returns null](#compressing-returns-null)
     - [Android build error](#android-build-error)
+  - [About EXIF information](#about-exif-information)
   - [LICENSE](#license)
-    - [About EXIF information](#about-exif-information)
-      - [About Exif handle code](#about-exif-handle-code)
+    - [PNG/JPEG encoder](#pngjpeg-encoder)
+    - [Webp encoder](#webp-encoder)
+    - [HEIF encoder](#heif-encoder)
+    - [About Exif handle code](#about-exif-handle-code)
 
 ## Why don't you use dart to do it
 
@@ -315,15 +318,33 @@ You need to upgrade your Kotlin version to `1.2.71+`(recommended 1.3.31).
 
 If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and you use this library, propose an issue or PR!
 
-## LICENSE
-
-### About EXIF information
+## About EXIF information
 
 Using this library, EXIF information will be removed by default.
 
 EXIF information can be retained by setting keepExif to true, but not `direction` information.
 
-#### About Exif handle code
+## LICENSE
+
+The code under MIT style.
+
+### PNG/JPEG encoder
+
+Each using system API.
+
+### Webp encoder
+
+Use [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder) to encode the UIImage in iOS. (Under MIT)
+
+Android code use the Android system api.
+
+### HEIF encoder
+
+Use iOS system api in iOS.
+
+Use [HeifWriter(androidx component by Google)](https://developer.android.google.cn/jetpack/androidx/releases/heifwriter) to encode in androidP or higher.
+
+### About Exif handle code
 
 The iOS code was copied from [dvkch/SYPictureMetadata](https://github.com/dvkch/SYPictureMetadata), [LICENSE](https://github.com/dvkch/SYPictureMetadata/blob/master/LICENSE.md)
 
