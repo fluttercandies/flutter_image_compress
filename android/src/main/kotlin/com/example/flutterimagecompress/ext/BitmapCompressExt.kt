@@ -67,5 +67,5 @@ fun Bitmap.calcScale(minWidth: Int, minHeight: Int): Float {
 }
 
 fun convertFormatIndexToFormat(type: Int): Bitmap.CompressFormat {
-  return if (type == 1) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+  return if (type == 1) Bitmap.CompressFormat.PNG else if (type == 3) Bitmap.CompressFormat.WEBP else Bitmap.CompressFormat.JPEG 
 }
