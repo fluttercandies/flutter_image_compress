@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.6.5+1
+
+Fix:
+
+- Web format error
+- Import header error for iOS.
+
 ## 0.6.5
 
 New feature

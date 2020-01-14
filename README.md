@@ -26,12 +26,12 @@ This library can works on Android and iOS.
     - [inSampleSize](#insamplesize)
     - [keepExif](#keepexif)
   - [Result](#result)
-    - [About List&lt;int&gt; and Uint8List](#about-listltintgt-and-uint8list)
+    - [About `List<int>` and `Uint8List`](#about-listint-and-uint8list)
   - [Runtime Error](#runtime-error)
   - [Android](#android)
   - [iOS](#ios)
   - [Troubleshooting or common error](#troubleshooting-or-common-error)
-    - [Compressing returns null](#compressing-returns-null)
+    - [Compressing returns `null`](#compressing-returns-null)
     - [Android build error](#android-build-error)
   - [About EXIF information](#about-exif-information)
   - [LICENSE](#license)
@@ -50,7 +50,7 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.6.5
+  flutter_image_compress: ^0.6.5+1
 ```
 
 ```dart
