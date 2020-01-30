@@ -10,6 +10,7 @@ class Validator {
   Validator(this.channel);
 
   void checkFileNameAndFormat(String name, CompressFormat format) {
+    name = name.toLowerCase();
     if (format == CompressFormat.jpeg) {
       assert((name.endsWith(".jpg") || name.endsWith(".jpeg")),
           "The jpeg format name must end with jpg or jpeg.");
