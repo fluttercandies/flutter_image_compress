@@ -18,6 +18,7 @@
     } else {
         scaleRatio = minHeight / actualHeight;
     }
+    scaleRatio = fminf(1, scaleRatio);
 
     actualWidth = floor(scaleRatio * actualWidth);
     actualHeight = floor(scaleRatio * actualHeight);
