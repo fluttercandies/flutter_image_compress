@@ -12,12 +12,10 @@
     float imgRatio = actualWidth/actualHeight;
     float maxRatio = minWidth/minHeight;
     
-    if(imgRatio != maxRatio) {
-        if(imgRatio < maxRatio) {
-            imgRatio = minWidth / actualWidth;
-        } else {
-            imgRatio = minHeight / actualHeight;
-        }
+    if(imgRatio < maxRatio) {
+        imgRatio = minWidth / actualWidth;
+    } else {
+        imgRatio = minHeight / actualHeight;
     }
 
     actualWidth = floor(imgRatio * actualWidth);
