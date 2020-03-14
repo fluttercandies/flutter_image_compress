@@ -14,16 +14,16 @@
     
     if(imgRatio != maxRatio) {
         if(imgRatio < maxRatio) {
-            imgRatio = minWidth / actualHeight;
-            actualWidth = round(imgRatio * actualWidth);
-            actualHeight = minWidth;
+            imgRatio = minWidth / actualWidth;
         } else {
-            imgRatio = minHeight / actualWidth;
-            actualHeight = round(imgRatio * actualHeight);
-            actualWidth = minHeight;
+            imgRatio = minHeight / actualHeight;
         }
     }
-    CGRect rect = CGRectMake(0.0, 0.0, floor(actualWidth), floor(actualHeight));
+
+    actualWidth = floor(imgRatio * actualWidth);
+    actualHeight = floor(imgRatio * actualHeight);
+    
+    CGRect rect = CGRectMake(0.0, 0.0, actualWidth, actualHeight);
     UIGraphicsBeginImageContext(rect.size);
     [self drawInRect:rect];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
