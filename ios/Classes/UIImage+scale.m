@@ -11,26 +11,26 @@
     float actualWidth = self.size.width;
     float imgRatio = actualWidth/actualHeight;
     float maxRatio = minWidth/minHeight;
+    float scaleRatio = 1;
     
-    if(imgRatio != maxRatio) {
-        if(imgRatio < maxRatio) {
-            imgRatio = minWidth / actualHeight;
-            actualWidth = round(imgRatio * actualWidth);
-            actualHeight = minWidth;
-        } else {
-            imgRatio = minHeight / actualWidth;
-            actualHeight = round(imgRatio * actualHeight);
-            actualWidth = minHeight;
-        }
+    if(imgRatio < maxRatio) {
+        scaleRatio = minWidth / actualWidth;
+    } else {
+        scaleRatio = minHeight / actualHeight;
     }
-    CGRect rect = CGRectMake(0.0, 0.0, floor(actualWidth), floor(actualHeight));
+    scaleRatio = fminf(1, scaleRatio);
+
+    actualWidth = floor(scaleRatio * actualWidth);
+    actualHeight = floor(scaleRatio * actualHeight);
+    
+    CGRect rect = CGRectMake(0.0, 0.0, actualWidth, actualHeight);
     UIGraphicsBeginImageContext(rect.size);
     [self drawInRect:rect];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
     if([FlutterImageCompressPlugin showLog]){
-        NSLog(@"scale = %.2f", imgRatio);
+        NSLog(@"scale = %.2f", scaleRatio);
         NSLog(@"dst width = %.2f", rect.size.width);
         NSLog(@"dst height = %.2f", rect.size.height);
     }
