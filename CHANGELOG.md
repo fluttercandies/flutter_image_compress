@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.6.7
+
+Use the async GCD in iOS.
+
 ## 0.6.6
 
 [#116](https://github.com/OpenFlutter/flutter_image_compress/pull/116), [#124](https://github.com/OpenFlutter/flutter_image_compress/pull/124)
