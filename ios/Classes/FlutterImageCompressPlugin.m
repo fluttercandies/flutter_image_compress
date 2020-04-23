@@ -8,7 +8,7 @@ BOOL showLog = false;
 static dispatch_queue_t serial_queue;
 
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
-    serial_queue = dispatch_queue_create("com.github.flutter_compress.SerialQueue", NULL);
+    serial_queue = dispatch_get_global_queue(0, 0);
 
     FlutterMethodChannel *channel = [FlutterMethodChannel
             methodChannelWithName:@"flutter_image_compress"
@@ -18,7 +18,7 @@ static dispatch_queue_t serial_queue;
 }
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
-    dispatch_sync(serial_queue, ^{
+    dispatch_async(serial_queue, ^{
         if ([call.method isEqualToString:@"compressWithList"]) {
             CompressListHandler *handler = [[CompressListHandler alloc] init];
             [handler handleMethodCall:call result:result];

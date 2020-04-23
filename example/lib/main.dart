@@ -137,6 +137,9 @@ class _MyAppState extends State<MyApp> {
     File file = File("${dir.absolute.path}/test.png");
     file.writeAsBytesSync(data.buffer.asUint8List());
 
+    for (var i = 0; i < 20; i++) {
+      await testCompressFile(file);
+    }
     List<int> list = await testCompressFile(file);
     ImageProvider provider = MemoryImage(Uint8List.fromList(list));
     this.provider = provider;
