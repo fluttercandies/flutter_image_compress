@@ -13,20 +13,20 @@ PODS:
   - libwebp/mux (1.1.0):
     - libwebp/demux
   - libwebp/webp (1.1.0)
-  - Mantle (2.1.0):
-    - Mantle/extobjc (= 2.1.0)
-  - Mantle/extobjc (2.1.0)
+  - Mantle (2.1.1):
+    - Mantle/extobjc (= 2.1.1)
+  - Mantle/extobjc (2.1.1)
   - path_provider (0.0.1):
     - Flutter
-  - SDWebImage/Core (5.4.2)
-  - SDWebImageWebPCoder (0.3.1):
+  - SDWebImage/Core (5.6.1)
+  - SDWebImageWebPCoder (0.5.0):
     - libwebp (~> 1.0)
-    - SDWebImage/Core (~> 5.0)
+    - SDWebImage/Core (~> 5.5)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - flutter_image_compress (from `/Users/caijinglong/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec`)
+  - path_provider (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec`)
 
 SPEC REPOS:
   trunk:
@@ -39,19 +39,19 @@ EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_image_compress:
-    :path: ".symlinks/plugins/flutter_image_compress/ios"
+    :path: "/Users/caijinglong/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec"
   path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+    :path: "/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_image_compress: 082f8daaf6c1b0c9fe798251c750ef0ecd98d7ae
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
-  Mantle: 2fa750afa478cd625a94230fbf1c13462f29395b
+  Mantle: 35238ae6f2e2b2d474fa7b67fee82a59fea71915
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
-  SDWebImage: 4ca2dc4eefae4224bea8f504251cda485a363745
-  SDWebImageWebPCoder: ce58a29621c2806dd5c36695ed192cf67163ff9d
+  SDWebImage: 7edb9c3ea661e77a66661f7f044de8c1b55d1120
+  SDWebImageWebPCoder: e7ae855f058e3dcae99696920b6a5d134e9dcddf
 
-PODFILE CHECKSUM: 3dbe063e9c90a5d7c9e4e76e70a821b9e2c1d271
+PODFILE CHECKSUM: 4d8d59437a9bee20e84f185bba22b518812142d3
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1
