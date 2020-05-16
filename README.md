@@ -50,7 +50,7 @@ A：For unknown reasons, image compression in Dart language is not efficient, ev
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.6.7
+  flutter_image_compress: ^0.6.8
 ```
 
 ```dart

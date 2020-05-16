@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.6.8
+
+Update `Validate` code.
+
 ## 0.6.7
 
 Use the async GCD in iOS.
