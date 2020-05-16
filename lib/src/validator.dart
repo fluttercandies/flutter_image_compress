@@ -9,7 +9,13 @@ class Validator {
   final MethodChannel channel;
   Validator(this.channel);
 
+  bool ignoreCheckExtName = false;
+  bool ignoreCheckSupportPlatform = false;
+
   void checkFileNameAndFormat(String name, CompressFormat format) {
+    if (ignoreCheckExtName) {
+      return;
+    }
     name = name.toLowerCase();
     if (format == CompressFormat.jpeg) {
       assert((name.endsWith(".jpg") || name.endsWith(".jpeg")),
@@ -26,6 +32,9 @@ class Validator {
   }
 
   Future<bool> checkSupportPlatform(CompressFormat format) async {
+    if (ignoreCheckSupportPlatform) {
+      return true;
+    }
     if (format == CompressFormat.heic) {
       if (Platform.isIOS) {
         final String version = await channel.invokeMethod("getSystemVersion");
@@ -43,7 +52,7 @@ class Validator {
         _checkThrowError(result, msg);
         return result;
       } else {
-        final msg = "The webp format only support android.";
+        final msg = "The heic format only support android and iOS.";
         assert(Platform.isAndroid || Platform.isIOS, msg);
         _checkThrowError(false, msg);
         return false;
@@ -54,7 +63,6 @@ class Validator {
       }
 
       var msg = "The webp format only support android and iOS.";
-      assert(Platform.isAndroid, msg);
 
       _checkThrowError(false, msg);
 

@@ -36,6 +36,8 @@ class FlutterImageCompress {
 
   static Validator _validator = Validator(_channel);
 
+  static Validator get validator => _validator;
+
   static set showNativeLog(bool value) {
     _channel.invokeMethod("showLog", value);
   }
