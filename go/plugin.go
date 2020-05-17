@@ -66,7 +66,6 @@ func encode(targetType int32, img image.Image, quality int, writer io.Writer) er
 
 func listToList(arguments interface{}) (reply interface{}, err error) {
 	args := arguments.([]interface{})
-	showAllArgsType(args)
 	img := args[0].([]uint8)
 	minWidth := args[1].(int32)
 	minHeight := args[2].(int32)
