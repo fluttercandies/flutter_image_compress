@@ -134,13 +134,22 @@ class _MyAppState extends State<MyApp> {
     final dir = await path_provider.getTemporaryDirectory();
     print('dir = $dir');
 
-    File file = File("${dir.absolute.path}/test.png");
+    File file = createFile("${dir.absolute.path}/test.png");
     file.writeAsBytesSync(data.buffer.asUint8List());
 
     List<int> list = await testCompressFile(file);
     ImageProvider provider = MemoryImage(Uint8List.fromList(list));
     this.provider = provider;
     setState(() {});
+  }
+
+  File createFile(String path) {
+    final file = File(path);
+    if (!file.existsSync()) {
+      file.createSync(recursive: true);
+    }
+
+    return file;
   }
 
   Future<String> getExampleFilePath() async {
@@ -152,7 +161,8 @@ class _MyAppState extends State<MyApp> {
     final ByteData data = await key.bundle.load(key.name);
     final dir = await path_provider.getTemporaryDirectory();
 
-    File file = File("${dir.absolute.path}/test.png");
+    File file = createFile("${dir.absolute.path}/test.png");
+    file.createSync(recursive: true);
     file.writeAsBytesSync(data.buffer.asUint8List());
     return file.absolute.path;
   }
@@ -166,7 +176,7 @@ class _MyAppState extends State<MyApp> {
     final ByteData data = await key.bundle.load(key.name);
     final dir = await path_provider.getTemporaryDirectory();
 
-    File file = File("${dir.absolute.path}/test.png");
+    File file = createFile("${dir.absolute.path}/test.png");
     file.writeAsBytesSync(data.buffer.asUint8List());
 
     final targetPath = dir.absolute.path + "/temp.jpg";
@@ -240,6 +250,7 @@ class _MyAppState extends State<MyApp> {
       minWidth: 1080,
       quality: 96,
       rotate: 270,
+      format: CompressFormat.webp,
     );
     print(list.length);
     print(result.length);
