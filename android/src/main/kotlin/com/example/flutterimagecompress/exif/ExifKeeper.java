@@ -72,10 +72,12 @@ public class ExifKeeper {
   }
 
   public ByteArrayOutputStream writeToOutputStream(Context context, ByteArrayOutputStream outputStream) {
+    FileOutputStream fileOutputStream = null;
+    FileInputStream fileInputStream = null;
     try {
       String uuid = UUID.randomUUID().toString();
       File file = new File(context.getCacheDir(), uuid + ".jpg");
-      FileOutputStream fileOutputStream = new FileOutputStream(file);
+      fileOutputStream = new FileOutputStream(file);
       IOUtils.write(outputStream.toByteArray(), fileOutputStream);
       fileOutputStream.close();
 
@@ -87,7 +89,7 @@ public class ExifKeeper {
       fileOutputStream.close();
 
       ByteArrayOutputStream newStream = new ByteArrayOutputStream();
-      FileInputStream fileInputStream = new FileInputStream(file);
+      fileInputStream = new FileInputStream(file);
 
       IOUtils.copy(fileInputStream, newStream);
       fileInputStream.close();
@@ -95,9 +97,26 @@ public class ExifKeeper {
 
     } catch (Exception ex) {
       Log.e("ExifDataCopier", "Error preserving Exif data on selected image: " + ex);
-      return outputStream;
     }
-  }
+
+    if (fileInputStream != null) {
+      try {
+        fileInputStream.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if (fileOutputStream != null) {
+      try {
+         fileOutputStream.close();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+    }
+
+    return outputStream;
+ }
 
   public void copyExifToFile(File file) {
     try {
