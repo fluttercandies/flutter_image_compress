@@ -3,7 +3,10 @@
 ## 0.7.0
 
 - Fix
+
   - Fix momory leaked for android.
+
+- Support android v2 plugin.
 
 **Breaking Change**:
 
