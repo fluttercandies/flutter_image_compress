@@ -65,8 +65,8 @@ There are several ways to use the library api.
 
 ```dart
 
-  // 1. compress file and get a List<int>
-  Future<List<int>> testCompressFile(File file) async {
+  // 1. compress file and get Uint8List
+  Future<Uint8List> testCompressFile(File file) async {
     var result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       minWidth: 2300,
@@ -93,8 +93,8 @@ There are several ways to use the library api.
     return result;
   }
 
-  // 3. compress asset and get List<int>.
-  Future<List<int>> testCompressAsset(String assetName) async {
+  // 3. compress asset and get Uint8List.
+  Future<Uint8List> testCompressAsset(String assetName) async {
     var list = await FlutterImageCompress.compressAssetImage(
       assetName,
       minHeight: 1920,
@@ -106,8 +106,8 @@ There are several ways to use the library api.
     return list;
   }
 
-  // 4. compress List<int> and get another List<int>.
-  Future<List<int>> testComporessList(List<int> list) async {
+  // 4. compress Uint8List and get another Uint8List.
+  Future<Uint8List> testComporessList(Uint8List list) async {
     var result = await FlutterImageCompress.compressWithList(
       list,
       minHeight: 1920,
@@ -271,8 +271,8 @@ Because of some support issues, all APIs will be compatible with format and syst
 Example:
 
 ```dart
-Future<List<int>> compressAndTryCatch(String path) async {
-    List<int> result;
+Future<Uint8List> compressAndTryCatch(String path) async {
+    Uint8List result;
     try {
       result = await FlutterImageCompress.compressWithFile(path,
           format: CompressFormat.heic);
@@ -287,7 +287,7 @@ Future<List<int>> compressAndTryCatch(String path) async {
 
 ## Android
 
-You may need to update Kotlin to version `1.2.71`(Recommend 1.3.50) or higher.
+You may need to update Kotlin to version `1.3.72` or higher.
 
 ## iOS
 
@@ -314,7 +314,7 @@ Caused by: java.lang.AbstractMethodError
 
 See [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues/21473#issuecomment-420434339)
 
-You need to upgrade your Kotlin version to `1.2.71+`(recommended 1.3.31).
+You need to upgrade your Kotlin version to `1.2.71+`(recommended 1.3.72).
 
 If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and you use this library, propose an issue or PR!
 
