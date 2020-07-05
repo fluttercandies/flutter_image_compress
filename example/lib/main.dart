@@ -137,8 +137,8 @@ class _MyAppState extends State<MyApp> {
     File file = createFile("${dir.absolute.path}/test.png");
     file.writeAsBytesSync(data.buffer.asUint8List());
 
-    List<int> list = await testCompressFile(file);
-    ImageProvider provider = MemoryImage(Uint8List.fromList(list));
+    final result = await testCompressFile(file);
+    ImageProvider provider = MemoryImage(result);
     this.provider = provider;
     setState(() {});
   }
@@ -186,7 +186,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {});
   }
 
-  Future<List<int>> testCompressFile(File file) async {
+  Future<Uint8List> testCompressFile(File file) async {
     print("testCompressFile");
     final result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
@@ -233,17 +233,15 @@ class _MyAppState extends State<MyApp> {
 
   Future compressListExample() async {
     final data = await rootBundle.load("img/img.jpg");
-    var list = List<int>.from(data.buffer.asUint8List());
 
-    list = await testComporessList(list);
+    final memory = await testComporessList(data.buffer.asUint8List());
 
-    final memory = Uint8List.fromList(list);
     setState(() {
       this.provider = MemoryImage(memory);
     });
   }
 
-  Future<List<int>> testComporessList(List<int> list) async {
+  Future<Uint8List> testComporessList(Uint8List list) async {
     final result = await FlutterImageCompress.compressWithList(
       list,
       minHeight: 1080,

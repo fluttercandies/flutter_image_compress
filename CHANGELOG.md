@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 0.7.0
+
+- Fix
+  - Fix momory leaked for android.
+
+**Breaking Change**:
+
+- Replace `List<int>` to `Uint8List`.
+
 ## 0.6.8
 
 Update `Validate` code.

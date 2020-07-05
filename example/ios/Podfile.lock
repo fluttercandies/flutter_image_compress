@@ -25,7 +25,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_image_compress (from `/Users/caijinglong/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec`)
+  - flutter_image_compress (from `/Volumes/Samsung-T5/code/flutter/plugins/flutter_image_compress/ios/flutter_image_compress.podspec`)
   - path_provider (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec`)
 
 SPEC REPOS:
@@ -39,7 +39,7 @@ EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_image_compress:
-    :path: "/Users/caijinglong/Documents/GitHub/flutter_image_compress/ios/flutter_image_compress.podspec"
+    :path: "/Volumes/Samsung-T5/code/flutter/plugins/flutter_image_compress/ios/flutter_image_compress.podspec"
   path_provider:
     :path: "/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec"
 
