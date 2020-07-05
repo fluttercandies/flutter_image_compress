@@ -9,17 +9,11 @@ import com.example.flutterimagecompress.logger.log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
-import java.util.concurrent.Executors
 
 class CompressListHandler(private val call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
 
-  companion object {
-    @JvmStatic
-    private val executor = Executors.newFixedThreadPool(5)
-  }
-
   fun handle(context: Context) {
-    executor.execute {
+    threadPool.execute {
       @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
       val arr = args[0] as ByteArray
       var minWidth = args[1] as Int

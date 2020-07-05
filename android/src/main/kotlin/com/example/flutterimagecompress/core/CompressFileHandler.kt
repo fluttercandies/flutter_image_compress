@@ -10,17 +10,11 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
-import java.util.concurrent.Executors
 
 class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
 
-  companion object {
-    @JvmStatic
-    private val executor = Executors.newFixedThreadPool(5)
-  }
-
   fun handle(context: Context) {
-    executor.execute {
+    threadPool.execute {
       @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
       val filePath = args[0] as String
       var minWidth = args[1] as Int
@@ -68,7 +62,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
   }
 
   fun handleGetFile(context: Context) {
-    executor.execute {
+    threadPool.execute {
       @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
       val file = args[0] as String
       var minWidth = args[1] as Int
