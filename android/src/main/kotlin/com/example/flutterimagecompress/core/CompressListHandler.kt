@@ -49,8 +49,8 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
 
       val targetRotate = rotate + exifRotate
 
+      val outputStream = ByteArrayOutputStream()
       try {
-        val outputStream = ByteArrayOutputStream()
         formatHandler.handleByteArray(registrar.context(), arr, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
         reply(outputStream.toByteArray())
       } catch (e: CompressError) {
@@ -60,7 +60,10 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
       } catch (e: Exception) {
         if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
         reply(null)
+      } finally {
+        outputStream.close()
       }
+
     }
   }
 

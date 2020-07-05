@@ -1,11 +1,7 @@
 package com.example.flutterimagecompress.core
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
 import com.example.flutterimagecompress.exif.Exif
-import com.example.flutterimagecompress.exif.ExifKeeper
-import com.example.flutterimagecompress.ext.compress
 import com.example.flutterimagecompress.format.FormatRegister
 import com.example.flutterimagecompress.logger.log
 import io.flutter.plugin.common.MethodCall
@@ -13,6 +9,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.OutputStream
 import java.util.concurrent.Executors
 
 class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Result) : ResultHandler(result) {
@@ -57,14 +54,15 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
         minHeight = tmp
       }
       val targetRotate = rotate + exifRotate
-
+      val outputStream = ByteArrayOutputStream()
       try {
-        val outputStream = ByteArrayOutputStream()
         formatHandler.handleFile(registrar.context(), filePath, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
         reply(outputStream.toByteArray())
       } catch (e: Exception) {
         if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
         reply(null)
+      } finally {
+        outputStream.close()
       }
     }
   }
@@ -108,14 +106,16 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
       }
 
       val targetRotate = rotate + exifRotate
-
+      var outputStream: OutputStream? = null
       try {
-        val outputStream = File(targetPath).outputStream()
+        outputStream = File(targetPath).outputStream()
         formatHandler.handleFile(registrar.context(), file, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
         reply(targetPath)
       } catch (e: Exception) {
         if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
         reply(null)
+      } finally {
+        outputStream?.close()
       }
     }
   }
