@@ -1,12 +1,12 @@
 package com.example.flutterimagecompress.core
 
+import android.content.Context
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
 import com.example.flutterimagecompress.exif.Exif
 import com.example.flutterimagecompress.format.FormatRegister
 import com.example.flutterimagecompress.logger.log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.PluginRegistry
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
@@ -19,7 +19,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
     private val executor = Executors.newFixedThreadPool(5)
   }
 
-  fun handle(registrar: PluginRegistry.Registrar) {
+  fun handle(context: Context) {
     executor.execute {
       @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
       val filePath = args[0] as String
@@ -56,7 +56,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
       val targetRotate = rotate + exifRotate
       val outputStream = ByteArrayOutputStream()
       try {
-        formatHandler.handleFile(registrar.context(), filePath, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
+        formatHandler.handleFile(context, filePath, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
         reply(outputStream.toByteArray())
       } catch (e: Exception) {
         if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
@@ -67,7 +67,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
     }
   }
 
-  fun handleGetFile(registrar: PluginRegistry.Registrar) {
+  fun handleGetFile(context: Context) {
     executor.execute {
       @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
       val file = args[0] as String
@@ -109,7 +109,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
       var outputStream: OutputStream? = null
       try {
         outputStream = File(targetPath).outputStream()
-        formatHandler.handleFile(registrar.context(), file, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
+        formatHandler.handleFile(context, file, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
         reply(targetPath)
       } catch (e: Exception) {
         if (FlutterImageCompressPlugin.showLog) e.printStackTrace()

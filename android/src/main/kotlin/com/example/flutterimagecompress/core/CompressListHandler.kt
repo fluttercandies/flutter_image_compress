@@ -1,5 +1,6 @@
 package com.example.flutterimagecompress.core
 
+import android.content.Context
 import com.example.flutterimagecompress.FlutterImageCompressPlugin
 import com.example.flutterimagecompress.exception.CompressError
 import com.example.flutterimagecompress.exif.Exif
@@ -7,7 +8,6 @@ import com.example.flutterimagecompress.format.FormatRegister
 import com.example.flutterimagecompress.logger.log
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.PluginRegistry
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 
@@ -18,7 +18,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
     private val executor = Executors.newFixedThreadPool(5)
   }
 
-  fun handle(registrar: PluginRegistry.Registrar) {
+  fun handle(context: Context) {
     executor.execute {
       @Suppress("UNCHECKED_CAST") val args: List<Any> = call.arguments as List<Any>
       val arr = args[0] as ByteArray
@@ -51,7 +51,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
 
       val outputStream = ByteArrayOutputStream()
       try {
-        formatHandler.handleByteArray(registrar.context(), arr, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
+        formatHandler.handleByteArray(context, arr, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
         reply(outputStream.toByteArray())
       } catch (e: CompressError) {
         log(e.message)
