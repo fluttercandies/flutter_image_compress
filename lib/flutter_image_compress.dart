@@ -14,14 +14,20 @@ export 'src/compress_format.dart';
 ///
 /// static method will help you compress image
 ///
-/// most method will return [List<int>]
+/// most method will return [Uint8List]
 ///
-/// convert List<int> to [Uint8List] and use [Image.memory(uint8List)] to display image
+/// You can use `Image.memory` to display image
 /// ```dart
-/// var u8 = Uint8List.fromList(list)
-/// ImageProvider provider = MemoryImage(Uint8List.fromList(list));
+/// Uint8List uint8List;
+/// ImageProvider provider = MemoryImage(uint8List);
 /// ```
 ///
+/// or
+///
+/// ```dart
+/// Uint8List uint8List;
+/// Image.momory(uint8List)
+/// ```
 /// The returned image will retain the proportion of the original image.
 ///
 /// Compress image will remove EXIF.
@@ -42,9 +48,9 @@ class FlutterImageCompress {
     _channel.invokeMethod("showLog", value);
   }
 
-  /// Compress image from [List<int>] to [List<int>]
-  static Future<List<int>> compressWithList(
-    List<int> image, {
+  /// Compress image from [Uint8List] to [Uint8List].
+  static Future<Uint8List> compressWithList(
+    Uint8List image, {
     int minWidth = 1920,
     int minHeight = 1080,
     int quality = 95,
@@ -56,22 +62,22 @@ class FlutterImageCompress {
   }) async {
     assert(
       image != null,
-      "A non-null List<int> must be provided to FlutterImageCompress.",
+      "A non-null Uint8List must be provided to FlutterImageCompress.",
     );
     if (image == null) {
-      return [];
+      throw "The image is null.";
     }
     if (image.isEmpty) {
-      return [];
+      throw "The image is empty.";
     }
 
     final support = await _validator.checkSupportPlatform(format);
     if (!support) {
-      return null;
+      throw "The image is not support.";
     }
 
     final result = await _channel.invokeMethod("compressWithList", [
-      Uint8List.fromList(image),
+      image,
       minWidth,
       minHeight,
       quality,
@@ -82,11 +88,11 @@ class FlutterImageCompress {
       inSampleSize,
     ]);
 
-    return convertDynamic(result);
+    return result;
   }
 
-  /// Compress file of [path] to [List<int>].
-  static Future<List<int>> compressWithFile(
+  /// Compress file of [path] to [Uint8List].
+  static Future<Uint8List> compressWithFile(
     String path, {
     int minWidth = 1920,
     int minHeight = 1080,
@@ -102,7 +108,7 @@ class FlutterImageCompress {
       "A non-null String must be provided to FlutterImageCompress.",
     );
     if (path == null || !File(path).existsSync()) {
-      return [];
+      throw "Image file ($path) does not exist.";
     }
 
     final support = await _validator.checkSupportPlatform(format);
@@ -121,7 +127,7 @@ class FlutterImageCompress {
       keepExif,
       inSampleSize,
     ]);
-    return convertDynamic(result);
+    return result;
   }
 
   /// From [path] to [targetPath]
@@ -142,7 +148,7 @@ class FlutterImageCompress {
       "A non-null String must be provided to FlutterImageCompress.",
     );
     if (path == null || !File(path).existsSync()) {
-      return null;
+      throw "Image file does not exist";
     }
     assert(targetPath != null, "The target path must be null.");
     assert(
@@ -176,8 +182,8 @@ class FlutterImageCompress {
     return File(result);
   }
 
-  /// From [asset] to [List<int>]
-  static Future<List<int>> compressAssetImage(
+  /// From [asset] to [Uint8List]
+  static Future<Uint8List> compressAssetImage(
     String assetName, {
     int minWidth = 1920,
     int minHeight = 1080,
@@ -192,7 +198,7 @@ class FlutterImageCompress {
       "A non-null String must be provided to FlutterImageCompress.",
     );
     if (assetName == null) {
-      return [];
+      return null;
     }
 
     final support = await _validator.checkSupportPlatform(format);
@@ -209,7 +215,7 @@ class FlutterImageCompress {
     final uint8List = data.buffer.asUint8List();
 
     if (uint8List == null || uint8List.isEmpty) {
-      return [];
+      return null;
     }
 
     return compressWithList(
@@ -223,18 +229,6 @@ class FlutterImageCompress {
       keepExif: keepExif,
     );
   }
-
-  /// convert [List<dynamic>] to [List<int>]
-  static List<int> convertDynamic(List<dynamic> list) {
-    if (list == null || list.isEmpty) {
-      return [];
-    }
-
-    return list.whereType<int>().toList();
-  }
 }
 
 int _convertTypeToInt(CompressFormat format) => format.index;
-
-// CompressFormat _convertIntToFormatType(int typeIndex) =>
-//     CompressFormat.values[typeIndex];

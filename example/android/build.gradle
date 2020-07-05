@@ -1,27 +1,55 @@
+import groovy.json.JsonSlurper
+
 buildscript {
-    ext.kotlin_version = '1.3.50'
+    ext.kotlin_version = '1.3.72'
+    def isChina = false
+    try {
+        def connection = new URL('https://api.ip.sb/geoip').openConnection()
+        connection.setRequestMethod('GET')
+        def reader = new BufferedReader(new InputStreamReader(connection.inputStream))
+        def text = reader.readLine()
+
+        def slurper = new JsonSlurper()
+        def states = slurper.parseText(text)
+        def country = states['country']
+        isChina = country == 'China'
+    } catch (e) {
+        println(e)
+    }
+
+    ext.isChina = isChina
+
     repositories {
-        maven {
-            url 'https://maven.aliyun.com/repository/google'
-        }
-        maven {
-            url 'https://maven.aliyun.com/repository/jcenter'
+        if (isChina) {
+            maven { url 'https://maven.aliyun.com/repository/google' }
+            maven { url 'https://maven.aliyun.com/repository/jcenter' }
+            maven {
+                url 'https://storage.flutter-io.cn/download.flutter.io'
+            }
+        } else {
+            google()
+            jcenter()
         }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.6.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
+
 allprojects {
     repositories {
-        maven {
-            url 'https://maven.aliyun.com/repository/google'
-        }
-        maven {
-            url 'https://maven.aliyun.com/repository/jcenter'
+        if (isChina) {
+            maven { url 'https://maven.aliyun.com/repository/google' }
+            maven { url 'https://maven.aliyun.com/repository/jcenter' }
+            maven {
+                url 'https://storage.flutter-io.cn/download.flutter.io'
+            }
+        } else {
+            google()
+            jcenter()
         }
     }
 }
