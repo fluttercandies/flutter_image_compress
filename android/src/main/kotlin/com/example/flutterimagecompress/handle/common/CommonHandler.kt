@@ -111,7 +111,7 @@ class CommonHandler(override val type: Int) : FormatHandler {
       } else {
         outputStream.write(array)
       }
-    }catch (e:OutOfMemoryError){
+    }catch (e:OutOfMemoryError){//handling out of memory error and increase samples size
       System.gc();
       handleFile(context, path, outputStream, minWidth, minHeight, quality, rotate, keepExif, inSampleSize *2);
     }
