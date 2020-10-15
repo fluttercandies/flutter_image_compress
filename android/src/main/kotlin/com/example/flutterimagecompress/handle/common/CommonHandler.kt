@@ -36,11 +36,11 @@ class CommonHandler(override val type: Int) : FormatHandler {
     val result = compress(byteArray, minWidth, minHeight, quality, rotate, inSampleSize)
 
     if (keepExif && bitmapFormat == Bitmap.CompressFormat.JPEG) {
-      val keeper = ExifKeeper(result)
-      val tmpStream = ByteArrayOutputStream().apply { write(result) }
-      val resultStream = keeper.writeToOutputStream(
+      val byteArrayOutputStream = ByteArrayOutputStream()
+      byteArrayOutputStream.write(result)
+      val resultStream = ExifKeeper(byteArray).writeToOutputStream(
               context,
-              tmpStream
+              byteArrayOutputStream
       )
       outputStream.write(resultStream.toByteArray())
     } else {
