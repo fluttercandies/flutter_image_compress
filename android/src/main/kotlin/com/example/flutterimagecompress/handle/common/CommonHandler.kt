@@ -86,8 +86,9 @@ class CommonHandler(override val type: Int) : FormatHandler {
   }
 
 
-  override fun handleFile(context: Context, path: String, outputStream: OutputStream, minWidth: Int, minHeight: Int, quality: Int, rotate: Int, keepExif: Boolean, inSampleSize: Int) {
+  override fun handleFile(context: Context, path: String, outputStream: OutputStream, minWidth: Int, minHeight: Int, quality: Int, rotate: Int, keepExif: Boolean, inSampleSize: Int,numberOfRetries:Int) {
     try{
+      if(numberOfRetries <= 0)return;
       val options = BitmapFactory.Options()
       options.inJustDecodeBounds = false
       options.inPreferredConfig = Bitmap.Config.RGB_565
@@ -113,7 +114,7 @@ class CommonHandler(override val type: Int) : FormatHandler {
       }
     }catch (e:OutOfMemoryError){//handling out of memory error and increase samples size
       System.gc();
-      handleFile(context, path, outputStream, minWidth, minHeight, quality, rotate, keepExif, inSampleSize *2);
+      handleFile(context, path, outputStream, minWidth, minHeight, quality, rotate, keepExif, inSampleSize *2,numberOfRetries-1);
     }
   }
 }
