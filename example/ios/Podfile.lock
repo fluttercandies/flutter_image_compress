@@ -4,29 +4,29 @@ PODS:
     - Flutter
     - Mantle
     - SDWebImageWebPCoder
-  - libwebp (1.1.0):
-    - libwebp/demux (= 1.1.0)
-    - libwebp/mux (= 1.1.0)
-    - libwebp/webp (= 1.1.0)
-  - libwebp/demux (1.1.0):
+  - libwebp (1.2.0):
+    - libwebp/demux (= 1.2.0)
+    - libwebp/mux (= 1.2.0)
+    - libwebp/webp (= 1.2.0)
+  - libwebp/demux (1.2.0):
     - libwebp/webp
-  - libwebp/mux (1.1.0):
+  - libwebp/mux (1.2.0):
     - libwebp/demux
-  - libwebp/webp (1.1.0)
-  - Mantle (2.1.1):
-    - Mantle/extobjc (= 2.1.1)
-  - Mantle/extobjc (2.1.1)
+  - libwebp/webp (1.2.0)
+  - Mantle (2.1.6):
+    - Mantle/extobjc (= 2.1.6)
+  - Mantle/extobjc (2.1.6)
   - path_provider (0.0.1):
     - Flutter
-  - SDWebImage/Core (5.6.1)
-  - SDWebImageWebPCoder (0.5.0):
+  - SDWebImage/Core (5.9.5)
+  - SDWebImageWebPCoder (0.6.1):
     - libwebp (~> 1.0)
-    - SDWebImage/Core (~> 5.5)
+    - SDWebImage/Core (~> 5.7)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_image_compress (from `/Volumes/Samsung-T5/code/flutter/plugins/flutter_image_compress/ios/flutter_image_compress.podspec`)
-  - path_provider (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec`)
+  - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
 
 SPEC REPOS:
   trunk:
@@ -39,19 +39,19 @@ EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_image_compress:
-    :path: "/Volumes/Samsung-T5/code/flutter/plugins/flutter_image_compress/ios/flutter_image_compress.podspec"
+    :path: ".symlinks/plugins/flutter_image_compress/ios"
   path_provider:
-    :path: "/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.4.1/ios/path_provider.podspec"
+    :path: ".symlinks/plugins/path_provider/ios"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_image_compress: 082f8daaf6c1b0c9fe798251c750ef0ecd98d7ae
-  libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
-  Mantle: 35238ae6f2e2b2d474fa7b67fee82a59fea71915
-  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
-  SDWebImage: 7edb9c3ea661e77a66661f7f044de8c1b55d1120
-  SDWebImageWebPCoder: e7ae855f058e3dcae99696920b6a5d134e9dcddf
+  libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
+  Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  SDWebImage: 0b2ba0d56479bf6a45ecddbfd5558bea93150d25
+  SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
 
-PODFILE CHECKSUM: 4d8d59437a9bee20e84f185bba22b518812142d3
+PODFILE CHECKSUM: 8e679eca47255a8ca8067c4c67aab20e64cb974d
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.10.1
