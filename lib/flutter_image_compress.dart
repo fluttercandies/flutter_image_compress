@@ -102,11 +102,15 @@ class FlutterImageCompress {
     bool autoCorrectionAngle = true,
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
+    int numberOfRetries = 5
   }) async {
     assert(
       path != null,
       "A non-null String must be provided to FlutterImageCompress.",
     );
+    if(numberOfRetries == null || numberOfRetries <= 0){
+      throw "numberOfRetries can't be null or less than 0";
+    }
     if (path == null || !File(path).existsSync()) {
       throw "Image file ($path) does not exist.";
     }
@@ -126,6 +130,7 @@ class FlutterImageCompress {
       _convertTypeToInt(format),
       keepExif,
       inSampleSize,
+      numberOfRetries
     ]);
     return result;
   }
@@ -142,11 +147,15 @@ class FlutterImageCompress {
     bool autoCorrectionAngle = true,
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
+    int numberOfRetries = 5
   }) async {
     assert(
       path != null,
       "A non-null String must be provided to FlutterImageCompress.",
     );
+    if(numberOfRetries == null || numberOfRetries <= 0){
+      throw "numberOfRetries can't be null or less than 0";
+    }
     if (path == null || !File(path).existsSync()) {
       throw "Image file does not exist";
     }
@@ -173,6 +182,7 @@ class FlutterImageCompress {
       _convertTypeToInt(format),
       keepExif,
       inSampleSize,
+      numberOfRetries
     ]);
 
     if (result == null) {

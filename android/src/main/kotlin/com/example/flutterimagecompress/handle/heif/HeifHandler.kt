@@ -82,7 +82,7 @@ class HeifHandler : FormatHandler {
     heifWriter.close()
   }
 
-  override fun handleFile(context: Context, path: String, outputStream: OutputStream, minWidth: Int, minHeight: Int, quality: Int, rotate: Int, keepExif: Boolean, inSampleSize: Int) {
+  override fun handleFile(context: Context, path: String, outputStream: OutputStream, minWidth: Int, minHeight: Int, quality: Int, rotate: Int, keepExif: Boolean, inSampleSize: Int,numberOfRetries:Int) {
     val tmpFile = TmpFileUtil.createTmpFile(context)
     compress(path, minWidth, minHeight, quality, rotate, inSampleSize, tmpFile.absolutePath)
     outputStream.write(tmpFile.readBytes())
