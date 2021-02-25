@@ -3,14 +3,18 @@ class TimeLogger {
 
   TimeLogger([this.tag = ""]);
 
-  int start;
+  int? start;
 
   void startRecoder() {
     start = DateTime.now().millisecondsSinceEpoch;
   }
 
   void logTime() {
-    final diff = DateTime.now().millisecondsSinceEpoch - start;
+    if (start == null) {
+      print('The start is null, you must start recoder first.');
+      return;
+    }
+    final diff = DateTime.now().millisecondsSinceEpoch - start!;
     if (tag != "") {
       print("$tag : $diff ms");
     } else {

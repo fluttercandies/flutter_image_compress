@@ -60,13 +60,6 @@ class FlutterImageCompress {
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
   }) async {
-    assert(
-      image != null,
-      "A non-null Uint8List must be provided to FlutterImageCompress.",
-    );
-    if (image == null) {
-      throw "The image is null.";
-    }
     if (image.isEmpty) {
       throw "The image is empty.";
     }
@@ -92,7 +85,7 @@ class FlutterImageCompress {
   }
 
   /// Compress file of [path] to [Uint8List].
-  static Future<Uint8List> compressWithFile(
+  static Future<Uint8List?> compressWithFile(
     String path, {
     int minWidth = 1920,
     int minHeight = 1080,
@@ -102,16 +95,12 @@ class FlutterImageCompress {
     bool autoCorrectionAngle = true,
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
-    int numberOfRetries = 5
+    int numberOfRetries = 5,
   }) async {
-    assert(
-      path != null,
-      "A non-null String must be provided to FlutterImageCompress.",
-    );
-    if(numberOfRetries == null || numberOfRetries <= 0){
+    if (numberOfRetries <= 0) {
       throw "numberOfRetries can't be null or less than 0";
     }
-    if (path == null || !File(path).existsSync()) {
+    if (!File(path).existsSync()) {
       throw "Image file ($path) does not exist.";
     }
 
@@ -136,7 +125,7 @@ class FlutterImageCompress {
   }
 
   /// From [path] to [targetPath]
-  static Future<File> compressAndGetFile(
+  static Future<File?> compressAndGetFile(
     String path,
     String targetPath, {
     int minWidth = 1920,
@@ -147,19 +136,14 @@ class FlutterImageCompress {
     bool autoCorrectionAngle = true,
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
-    int numberOfRetries = 5
+    int numberOfRetries = 5,
   }) async {
-    assert(
-      path != null,
-      "A non-null String must be provided to FlutterImageCompress.",
-    );
-    if(numberOfRetries == null || numberOfRetries <= 0){
+    if (numberOfRetries <= 0) {
       throw "numberOfRetries can't be null or less than 0";
     }
-    if (path == null || !File(path).existsSync()) {
+    if (!File(path).existsSync()) {
       throw "Image file does not exist";
     }
-    assert(targetPath != null, "The target path must be null.");
     assert(
         targetPath != path, "Target path and source path cannot be the same.");
 
@@ -170,7 +154,7 @@ class FlutterImageCompress {
       return null;
     }
 
-    final String result =
+    final String? result =
         await _channel.invokeMethod("compressWithFileAndGetFile", [
       path,
       minWidth,
@@ -193,7 +177,7 @@ class FlutterImageCompress {
   }
 
   /// From [asset] to [Uint8List]
-  static Future<Uint8List> compressAssetImage(
+  static Future<Uint8List?> compressAssetImage(
     String assetName, {
     int minWidth = 1920,
     int minHeight = 1080,
@@ -203,14 +187,6 @@ class FlutterImageCompress {
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
   }) async {
-    assert(
-      assetName != null,
-      "A non-null String must be provided to FlutterImageCompress.",
-    );
-    if (assetName == null) {
-      return null;
-    }
-
     final support = await _validator.checkSupportPlatform(format);
     if (!support) {
       return null;
@@ -224,7 +200,7 @@ class FlutterImageCompress {
 
     final uint8List = data.buffer.asUint8List();
 
-    if (uint8List == null || uint8List.isEmpty) {
+    if (uint8List.isEmpty) {
       return null;
     }
 
