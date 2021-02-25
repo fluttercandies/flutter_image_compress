@@ -25,6 +25,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
       val format = args[6] as Int
       val keepExif = args[7] as Boolean
       val inSampleSize = args[8] as Int
+      val numberOfRetries = args[9] as Int
 
       val formatHandler = FormatRegister.findFormat(format)
 
@@ -50,7 +51,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
       val targetRotate = rotate + exifRotate
       val outputStream = ByteArrayOutputStream()
       try {
-        formatHandler.handleFile(context, filePath, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
+        formatHandler.handleFile(context, filePath, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize,numberOfRetries)
         reply(outputStream.toByteArray())
       } catch (e: Exception) {
         if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
@@ -71,7 +72,6 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
       val targetPath = args[4] as String
       val rotate = args[5] as Int
       val autoCorrectionAngle = args[6] as Boolean
-
       val exifRotate =
               if (autoCorrectionAngle) {
                 val bytes = File(file).readBytes()
@@ -83,7 +83,8 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
 
       val format = args[7] as Int
       val keepExif = args[8] as Boolean
-      val inSampleSize = args[9] as Int
+      val inSampleSize = args[9] as Int      
+      val numberOfRetries = args[10] as Int
 
       val formatHandler = FormatRegister.findFormat(format)
 
@@ -103,7 +104,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
       var outputStream: OutputStream? = null
       try {
         outputStream = File(targetPath).outputStream()
-        formatHandler.handleFile(context, file, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize)
+        formatHandler.handleFile(context, file, outputStream, minWidth, minHeight, quality, targetRotate, keepExif, inSampleSize,numberOfRetries)
         reply(targetPath)
       } catch (e: Exception) {
         if (FlutterImageCompressPlugin.showLog) e.printStackTrace()
