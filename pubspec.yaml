@@ -1,11 +1,11 @@
 name: flutter_image_compress
 description: compress image with native code(objc kotlin), it's faster. This library can work on android/ios.
 version: 1.0.0-nullsafety
-author: caijinglong<cjl_spy@163.com>
 homepage: https://github.com/OpenFlutter/flutter_image_compress
 
 environment:
   sdk: ">=2.12.0-0 <3.0.0"
+  flutter: ">=1.22.6"
 
 dependencies:
   flutter:
@@ -13,5 +13,9 @@ dependencies:
 
 flutter:
   plugin:
-    androidPackage: com.example.flutterimagecompress
-    pluginClass: FlutterImageCompressPlugin
+    platforms:
+      android:
+        package: com.example.flutterimagecompress
+        pluginClass: FlutterImageCompressPlugin
+      ios:
+        pluginClass: FlutterImageCompressPlugin
