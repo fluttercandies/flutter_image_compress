@@ -12,6 +12,7 @@ This library can works on Android and iOS.
 
 - [flutter_image_compress](#flutter_image_compress)
   - [Why don't you use dart to do it](#why-dont-you-use-dart-to-do-it)
+  - [1.0.0](#100)
   - [Usage](#usage)
   - [About common params](#about-common-params)
     - [minWidth and minHeight](#minwidth-and-minheight)
@@ -46,11 +47,20 @@ Q：Dart already has image compression libraries. Why use native?
 
 A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
 
+## 1.0.0
+
+The 1.0.0 is null-safety version.
+
+Please read document for null-safety information in [dart][dart-safe] or [flutter][flutter-safe].
+
+[flutter-safe]: https://flutter.dev/docs/null-safety
+[dart-safe]: https://dart.dev/null-safety
+
 ## Usage
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^0.7.0
+  flutter_image_compress: ^1.0.0-nullsafety
 ```
 
 ```dart
@@ -203,11 +213,13 @@ Only support iOS 11+.
 
 ##### Heif for Android
 
-Use https://developer.android.com/reference/androidx/heifwriter/HeifWriter.html to implemation.
+Use [HeifWriter][] to implemation.
 
 Only support API 28+.
 
 And may require hardware encoder support, does not guarantee that all devices above API28 are available
+
+[heifwriter]: https://developer.android.com/reference/androidx/heifwriter/HeifWriter.html
 
 ### inSampleSize
 
