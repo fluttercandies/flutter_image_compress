@@ -17,6 +17,7 @@ A new flutter plugin project.
   s.dependency 'Flutter'
   s.dependency 'Mantle'
   s.ios.deployment_target = '8.0'
+  s.dependency 'SDWebImage'
   s.dependency 'SDWebImageWebPCoder'
 end
 
