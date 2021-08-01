@@ -2,7 +2,7 @@
 
 ## 1.1.0
 
-- Add SDWebImage dependencey for iOS. (#182)
+- Add SDWebImage dependency for iOS. (#182)
 - Repo cleanup.
 
 ## 1.0.0
