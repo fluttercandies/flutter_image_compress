@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.1.0
+
+- Add SDWebImage dependencey for iOS. (#182)
+- Repo cleanup.
+
 ## 1.0.0
 
 Modify the constraint version of flutter to 2.0.0
