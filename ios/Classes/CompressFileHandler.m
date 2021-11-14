@@ -36,7 +36,7 @@
     SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
     [[SDImageCodersManager sharedManager] addCoder:webPCoder];
     
-    if(imageType == @"image/webp") {
+    if([imageType  isEqual: @"image/webp"]) {
     img = [[SDImageWebPCoder sharedCoder] decodedImageWithData:nsdata options:nil];
     } else {
         img = [UIImage imageWithData:nsdata];
@@ -79,7 +79,7 @@
     SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
     [[SDImageCodersManager sharedManager] addCoder:webPCoder];
     
-    if(imageType == @"image/webp") {
+    if([imageType  isEqual: @"image/webp"]) {
     img = [[SDImageWebPCoder sharedCoder] decodedImageWithData:nsdata options:nil];
     } else {
         img = [UIImage imageWithData:nsdata];
