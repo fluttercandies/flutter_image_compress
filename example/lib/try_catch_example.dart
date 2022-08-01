@@ -6,12 +6,16 @@ class TryCatchExample {
   Future<List<int>?> compressAndTryCatch(String path) async {
     List<int>? result;
     try {
-      result = await FlutterImageCompress.compressWithFile(path,
-          format: CompressFormat.heic);
+      result = await FlutterImageCompress.compressWithFile(
+        path,
+        format: CompressFormat.heic,
+      );
     } on UnsupportedError catch (e) {
       print(e.message);
-      result = await FlutterImageCompress.compressWithFile(path,
-          format: CompressFormat.jpeg);
+      result = await FlutterImageCompress.compressWithFile(
+        path,
+        format: CompressFormat.jpeg,
+      );
     } on Error catch (e) {
       print(e.toString());
       print(e.stackTrace);

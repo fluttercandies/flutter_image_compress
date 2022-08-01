@@ -30,20 +30,20 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> compress() async {
-    final img = AssetImage("img/img.jpg");
-    print("pre compress");
+    final img = AssetImage('img/img.jpg');
+    print('pre compress');
     final config = new ImageConfiguration();
 
-    AssetBundleImageKey key = await img.obtainKey(config);
+    final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
 
     final beforeCompress = data.lengthInBytes;
-    print("beforeCompress = $beforeCompress");
+    print('beforeCompress = $beforeCompress');
 
     final result =
         await FlutterImageCompress.compressWithList(data.buffer.asUint8List());
 
-    print("after = ${result.length}");
+    print('after = ${result.length}');
   }
 
   ImageProvider? provider;
@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
           children: <Widget>[
             AspectRatio(
               child: Image(
-                image: provider ?? AssetImage("img/img.jpg"),
+                image: provider ?? AssetImage('img/img.jpg'),
                 width: double.infinity,
                 fit: BoxFit.contain,
               ),
@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
             ),
             TextButton(
               child: Text('CompressAsset and rotate 135'),
-              onPressed: () => testCompressAsset("img/img.jpg"),
+              onPressed: () => testCompressAsset('img/img.jpg'),
             ),
             TextButton(
               child: Text('CompressList and rotate 270'),
@@ -114,7 +114,7 @@ class _MyAppState extends State<MyApp> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.computer),
           onPressed: () => setState(() => this.provider = null),
-          tooltip: "show origin asset",
+          tooltip: 'show origin asset',
         ),
       ),
     );
@@ -125,23 +125,23 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _testCompressFile() async {
-    final img = AssetImage("img/img.jpg");
-    print("pre compress");
+    final img = AssetImage('img/img.jpg');
+    print('pre compress');
     final config = new ImageConfiguration();
 
-    AssetBundleImageKey key = await img.obtainKey(config);
+    final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
     final dir = await path_provider.getTemporaryDirectory();
     print('dir = $dir');
 
-    File file = createFile("${dir.absolute.path}/test.png");
+    final File file = createFile('${dir.absolute.path}/test.png');
     file.writeAsBytesSync(data.buffer.asUint8List());
 
     final result = await testCompressFile(file);
 
     if (result == null) return;
 
-    ImageProvider provider = MemoryImage(result);
+    final ImageProvider provider = MemoryImage(result);
     this.provider = provider;
     setState(() {});
   }
@@ -156,33 +156,33 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<String> getExampleFilePath() async {
-    final img = AssetImage("img/img.jpg");
-    print("pre compress");
+    final img = AssetImage('img/img.jpg');
+    print('pre compress');
     final config = new ImageConfiguration();
 
-    AssetBundleImageKey key = await img.obtainKey(config);
+    final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
     final dir = await path_provider.getTemporaryDirectory();
 
-    File file = createFile("${dir.absolute.path}/test.png");
+    final File file = createFile('${dir.absolute.path}/test.png');
     file.createSync(recursive: true);
     file.writeAsBytesSync(data.buffer.asUint8List());
     return file.absolute.path;
   }
 
   void getFileImage() async {
-    final img = AssetImage("img/img.jpg");
-    print("pre compress");
+    final img = AssetImage('img/img.jpg');
+    print('pre compress');
     final config = new ImageConfiguration();
 
-    AssetBundleImageKey key = await img.obtainKey(config);
+    final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
     final dir = await path_provider.getTemporaryDirectory();
 
-    File file = createFile("${dir.absolute.path}/test.png");
+    final File file = createFile('${dir.absolute.path}/test.png');
     file.writeAsBytesSync(data.buffer.asUint8List());
 
-    final targetPath = dir.absolute.path + "/temp.jpg";
+    final targetPath = dir.absolute.path + '/temp.jpg';
     final imgFile = await testCompressAndGetFile(file, targetPath);
 
     if (imgFile == null) {
@@ -194,7 +194,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<Uint8List?> testCompressFile(File file) async {
-    print("testCompressFile");
+    print('testCompressFile');
     final result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       minWidth: 2300,
@@ -208,7 +208,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<File?> testCompressAndGetFile(File file, String targetPath) async {
-    print("testCompressAndGetFile");
+    print('testCompressAndGetFile');
     final result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       targetPath,
@@ -225,7 +225,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future testCompressAsset(String assetName) async {
-    print("testCompressAsset");
+    print('testCompressAsset');
     final list = await FlutterImageCompress.compressAssetImage(
       assetName,
       minHeight: 1920,
@@ -241,7 +241,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future compressListExample() async {
-    final data = await rootBundle.load("img/img.jpg");
+    final data = await rootBundle.load('img/img.jpg');
 
     final memory = await testComporessList(data.buffer.asUint8List());
 
@@ -339,11 +339,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _compressHeicExample() async {
-    print("start compress");
+    print('start compress');
     final logger = TimeLogger();
-    logger.startRecoder();
+    logger.startRecorder();
     final tmpDir = (await getTemporaryDirectory()).path;
-    final target = "$tmpDir/${DateTime.now().millisecondsSinceEpoch}.heic";
+    final target = '$tmpDir/${DateTime.now().millisecondsSinceEpoch}.heic';
     final srcPath = await getExampleFilePath();
     final result = await FlutterImageCompress.compressAndGetFile(
       srcPath,
@@ -354,22 +354,23 @@ class _MyAppState extends State<MyApp> {
 
     if (result == null) return;
 
-    print("Compress heic success.");
+    print('Compress heic success.');
     logger.logTime();
-    print("src, path = $srcPath length = ${File(srcPath).lengthSync()}");
+    print('src, path = $srcPath length = ${File(srcPath).lengthSync()}');
     print(
-        "Compress heic result path: ${result.absolute.path}, size: ${result.lengthSync()}");
+      'Compress heic result path: ${result.absolute.path}, size: ${result.lengthSync()}',
+    );
   }
 
   void _compressAndroidWebpExample() async {
     // Android compress very nice, but the iOS encode UIImage to webp is slow.
     final logger = TimeLogger();
-    logger.startRecoder();
-    print("start compress webp");
+    logger.startRecorder();
+    print('start compress webp');
     final quality = 90;
     final tmpDir = (await getTemporaryDirectory()).path;
     final target =
-        "$tmpDir/${DateTime.now().millisecondsSinceEpoch}-$quality.webp";
+        '$tmpDir/${DateTime.now().millisecondsSinceEpoch}-$quality.webp';
     final srcPath = await getExampleFilePath();
     final result = await FlutterImageCompress.compressAndGetFile(
       srcPath,
@@ -382,11 +383,12 @@ class _MyAppState extends State<MyApp> {
 
     if (result == null) return;
 
-    print("Compress webp success.");
+    print('Compress webp success.');
     logger.logTime();
-    print("src, path = $srcPath length = ${File(srcPath).lengthSync()}");
+    print('src, path = $srcPath length = ${File(srcPath).lengthSync()}');
     print(
-        "Compress webp result path: ${result.absolute.path}, size: ${result.lengthSync()}");
+      'Compress webp result path: ${result.absolute.path}, size: ${result.lengthSync()}',
+    );
 
     provider = FileImage(result);
     setState(() {});
