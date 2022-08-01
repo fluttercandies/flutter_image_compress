@@ -13,7 +13,7 @@ Compress image with native Objective-C with faster speed.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
   s.dependency 'Mantle'
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
   s.dependency 'SDWebImage'
   s.dependency 'SDWebImageWebPCoder'
 end
