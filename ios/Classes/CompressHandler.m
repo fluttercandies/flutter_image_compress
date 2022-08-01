@@ -5,7 +5,7 @@
 #import "CompressHandler.h"
 #import "UIImage+scale.h"
 #import "FlutterImageCompressPlugin.h"
-#import "SDImageWebPCoder.h"
+#import <SDWebImageWebPCoder/SDImageWebPCoder.h>
 
 @implementation CompressHandler {
 

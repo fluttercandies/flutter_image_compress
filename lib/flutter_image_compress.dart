@@ -26,7 +26,7 @@ export 'src/compress_format.dart';
 ///
 /// ```dart
 /// Uint8List uint8List;
-/// Image.momory(uint8List)
+/// Image.memory(uint8List)
 /// ```
 ///
 /// The returned image will retain the proportion of the original image.
