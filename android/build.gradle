@@ -1,4 +1,4 @@
-group 'com.example.flutterimagecompress'
+group 'com.flutter.image_compress'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -24,24 +24,20 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-    lintOptions {
-        disable 'InvalidPackage'
     }
 }
 
 dependencies {
-    implementation 'androidx.exifinterface:exifinterface:1.3.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'androidx.exifinterface:exifinterface:1.3.3'
+    implementation 'androidx.heifwriter:heifwriter:1.0.0'
     implementation 'commons-io:commons-io:2.6'
-    implementation group: 'androidx.heifwriter', name: 'heifwriter', version: '1.0.0'
 }
