@@ -10,114 +10,34 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 
 import 'const/resource.dart';
 import 'time_logger.dart';
-// import 'package:image_picker/image_picker.dart';
 
 void main() {
-  runApp(new MyApp());
+  runApp(const MyApp());
   FlutterImageCompress.showNativeLog = true;
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => new _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  ImageProvider? provider;
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> compress() async {
     final img = AssetImage('img/img.jpg');
     print('pre compress');
-    final config = new ImageConfiguration();
-
+    final config = ImageConfiguration();
     final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
-
     final beforeCompress = data.lengthInBytes;
     print('beforeCompress = $beforeCompress');
-
-    final result =
-        await FlutterImageCompress.compressWithList(data.buffer.asUint8List());
-
-    print('after = ${result.length}');
-  }
-
-  ImageProvider? provider;
-
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: ListView(
-          children: <Widget>[
-            AspectRatio(
-              child: Image(
-                image: provider ?? AssetImage('img/img.jpg'),
-                width: double.infinity,
-                fit: BoxFit.contain,
-              ),
-              aspectRatio: 1 / 1,
-            ),
-            TextButton(
-              child: Text('CompressFile and rotate 180'),
-              onPressed: _testCompressFile,
-            ),
-            TextButton(
-              child: Text('CompressAndGetFile and rotate 90'),
-              onPressed: getFileImage,
-            ),
-            TextButton(
-              child: Text('CompressAsset and rotate 135'),
-              onPressed: () => testCompressAsset('img/img.jpg'),
-            ),
-            TextButton(
-              child: Text('CompressList and rotate 270'),
-              onPressed: compressListExample,
-            ),
-            TextButton(
-              child: Text('test compress auto angle'),
-              onPressed: _compressAssetAndAutoRotate,
-            ),
-            TextButton(
-              child: Text('Test png '),
-              onPressed: _compressPngImage,
-            ),
-            TextButton(
-              child: Text('Format transparent PNG'),
-              onPressed: _compressTransPNG,
-            ),
-            TextButton(
-              child: Text('Restore transparent PNG'),
-              onPressed: _restoreTransPNG,
-            ),
-            TextButton(
-              child: Text('Keep exif image'),
-              onPressed: _compressImageAndKeepExif,
-            ),
-            TextButton(
-              child: Text('Convert to heic format and print the file url'),
-              onPressed: _compressHeicExample,
-            ),
-            TextButton(
-              child: Text('Convert to webp format, Just support android'),
-              onPressed: _compressAndroidWebpExample,
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.computer),
-          onPressed: () => setState(() => this.provider = null),
-          tooltip: 'show origin asset',
-        ),
-      ),
+    final result = await FlutterImageCompress.compressWithList(
+      data.buffer.asUint8List(),
     );
+    print('after = ${result.length}');
   }
 
   Future<Directory> getTemporaryDirectory() async {
@@ -127,23 +47,19 @@ class _MyAppState extends State<MyApp> {
   void _testCompressFile() async {
     final img = AssetImage('img/img.jpg');
     print('pre compress');
-    final config = new ImageConfiguration();
-
+    final config = ImageConfiguration();
     final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
     final dir = await path_provider.getTemporaryDirectory();
-    print('dir = $dir');
-
     final File file = createFile('${dir.absolute.path}/test.png');
     file.writeAsBytesSync(data.buffer.asUint8List());
 
     final result = await testCompressFile(file);
-
     if (result == null) return;
 
-    final ImageProvider provider = MemoryImage(result);
-    this.provider = provider;
-    setState(() {});
+    safeSetState(() {
+      provider = MemoryImage(result);
+    });
   }
 
   File createFile(String path) {
@@ -151,19 +67,16 @@ class _MyAppState extends State<MyApp> {
     if (!file.existsSync()) {
       file.createSync(recursive: true);
     }
-
     return file;
   }
 
   Future<String> getExampleFilePath() async {
     final img = AssetImage('img/img.jpg');
     print('pre compress');
-    final config = new ImageConfiguration();
-
+    final config = ImageConfiguration();
     final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
     final dir = await path_provider.getTemporaryDirectory();
-
     final File file = createFile('${dir.absolute.path}/test.png');
     file.createSync(recursive: true);
     file.writeAsBytesSync(data.buffer.asUint8List());
@@ -173,24 +86,20 @@ class _MyAppState extends State<MyApp> {
   void getFileImage() async {
     final img = AssetImage('img/img.jpg');
     print('pre compress');
-    final config = new ImageConfiguration();
-
+    final config = ImageConfiguration();
     final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
     final dir = await path_provider.getTemporaryDirectory();
-
     final File file = createFile('${dir.absolute.path}/test.png');
     file.writeAsBytesSync(data.buffer.asUint8List());
-
     final targetPath = dir.absolute.path + '/temp.jpg';
     final imgFile = await testCompressAndGetFile(file, targetPath);
-
     if (imgFile == null) {
       return;
     }
-
-    provider = FileImage(imgFile);
-    setState(() {});
+    safeSetState(() {
+      provider = FileImage(imgFile);
+    });
   }
 
   Future<Uint8List?> testCompressFile(File file) async {
@@ -217,10 +126,8 @@ class _MyAppState extends State<MyApp> {
       minHeight: 1024,
       rotate: 90,
     );
-
     print(file.lengthSync());
     print(result?.lengthSync());
-
     return result;
   }
 
@@ -233,20 +140,17 @@ class _MyAppState extends State<MyApp> {
       quality: 96,
       rotate: 135,
     );
-
     if (list == null) return;
-
-    this.provider = MemoryImage(Uint8List.fromList(list));
-    setState(() {});
+    safeSetState(() {
+      provider = MemoryImage(Uint8List.fromList(list));
+    });
   }
 
   Future compressListExample() async {
     final data = await rootBundle.load('img/img.jpg');
-
     final memory = await testComporessList(data.buffer.asUint8List());
-
-    setState(() {
-      this.provider = MemoryImage(memory);
+    safeSetState(() {
+      provider = MemoryImage(memory);
     });
   }
 
@@ -264,9 +168,8 @@ class _MyAppState extends State<MyApp> {
     return result;
   }
 
-  void writeToFile(List<int> list, String filePath) {
-    final file = File(filePath);
-    file.writeAsBytes(list, flush: true, mode: FileMode.write);
+  Future<void> writeToFile(List<int> list, String filePath) {
+    return File(filePath).writeAsBytes(list, flush: true);
   }
 
   void _compressAssetAndAutoRotate() async {
@@ -276,12 +179,10 @@ class _MyAppState extends State<MyApp> {
       quality: 95,
       // autoCorrectionAngle: false,
     );
-
     if (result == null) return;
-
-    final u8list = Uint8List.fromList(result);
-    this.provider = MemoryImage(u8list);
-    setState(() {});
+    safeSetState(() {
+      provider = MemoryImage(Uint8List.fromList(result));
+    });
   }
 
   void _compressPngImage() async {
@@ -290,32 +191,32 @@ class _MyAppState extends State<MyApp> {
       minWidth: 300,
       minHeight: 500,
     );
-
     if (result == null) return;
-
-    final u8list = Uint8List.fromList(result);
-    this.provider = MemoryImage(u8list);
-    setState(() {});
+    safeSetState(() {
+      provider = MemoryImage(Uint8List.fromList(result));
+    });
   }
 
   void _compressTransPNG() async {
-    final bytes =
-        await getAssetImageUint8List(R.IMG_TRANSPARENT_BACKGROUND_PNG);
+    final bytes = await getAssetImageUint8List(
+      R.IMG_TRANSPARENT_BACKGROUND_PNG,
+    );
     final result = await FlutterImageCompress.compressWithList(
       bytes,
       minHeight: 100,
       minWidth: 100,
       format: CompressFormat.png,
     );
-
     final u8list = Uint8List.fromList(result);
-    this.provider = MemoryImage(u8list);
-    setState(() {});
+    safeSetState(() {
+      provider = MemoryImage(u8list);
+    });
   }
 
   void _restoreTransPNG() async {
-    this.provider = AssetImage(R.IMG_TRANSPARENT_BACKGROUND_PNG);
-    setState(() {});
+    setState(() {
+      provider = AssetImage(R.IMG_TRANSPARENT_BACKGROUND_PNG);
+    });
   }
 
   void _compressImageAndKeepExif() async {
@@ -326,16 +227,10 @@ class _MyAppState extends State<MyApp> {
       // autoCorrectionAngle: false,
       keepExif: true,
     );
-
     if (result == null) return;
-
-    this.provider = MemoryImage(Uint8List.fromList(result));
-    setState(() {});
-
-    // final dir = (await path_provider.getTemporaryDirectory()).path;
-    // final f = File("$dir/tmp.jpg");
-    // f.writeAsBytesSync(result);
-    // print("f.path = ${f.path}");
+    safeSetState(() {
+      provider = MemoryImage(Uint8List.fromList(result));
+    });
   }
 
   void _compressHeicExample() async {
@@ -351,14 +246,13 @@ class _MyAppState extends State<MyApp> {
       format: CompressFormat.heic,
       quality: 90,
     );
-
     if (result == null) return;
-
     print('Compress heic success.');
     logger.logTime();
     print('src, path = $srcPath length = ${File(srcPath).lengthSync()}');
     print(
-      'Compress heic result path: ${result.absolute.path}, size: ${result.lengthSync()}',
+      'Compress heic result path: ${result.absolute.path}, '
+      'size: ${result.lengthSync()}',
     );
   }
 
@@ -380,18 +274,113 @@ class _MyAppState extends State<MyApp> {
       minWidth: 800,
       quality: quality,
     );
-
     if (result == null) return;
-
     print('Compress webp success.');
     logger.logTime();
     print('src, path = $srcPath length = ${File(srcPath).lengthSync()}');
     print(
-      'Compress webp result path: ${result.absolute.path}, size: ${result.lengthSync()}',
+      'Compress webp result path: ${result.absolute.path}, '
+      'size: ${result.lengthSync()}',
     );
+    safeSetState(() {
+      provider = FileImage(result);
+    });
+  }
 
-    provider = FileImage(result);
-    setState(() {});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Plugin example app')),
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverToBoxAdapter(
+              child: AspectRatio(
+                aspectRatio: 1 / 1,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(border: Border.all(width: 2)),
+                  child: Image(
+                    image: provider ?? AssetImage('img/img.jpg'),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('CompressFile and rotate 180'),
+                onPressed: _testCompressFile,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('CompressAndGetFile and rotate 90'),
+                onPressed: getFileImage,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('CompressAsset and rotate 135'),
+                onPressed: () => testCompressAsset('img/img.jpg'),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('CompressList and rotate 270'),
+                onPressed: compressListExample,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('test compress auto angle'),
+                onPressed: _compressAssetAndAutoRotate,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('Test png '),
+                onPressed: _compressPngImage,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('Format transparent PNG'),
+                onPressed: _compressTransPNG,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('Restore transparent PNG'),
+                onPressed: _restoreTransPNG,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('Keep exif image'),
+                onPressed: _compressImageAndKeepExif,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('Convert to heic format and print the file url'),
+                onPressed: _compressHeicExample,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('Convert to webp format, Just support android'),
+                onPressed: _compressAndroidWebpExample,
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.settings_backup_restore),
+          onPressed: () => setState(() => provider = null),
+          tooltip: 'Show default asset',
+        ),
+      ),
+    );
   }
 }
 
@@ -412,4 +401,22 @@ double calcScale({
   final scale = math.max(1.0, math.min(scaleW, scaleH));
 
   return scale;
+}
+
+extension _StateExtension on State {
+  /// [setState] when it's not building, then wait until next frame built.
+  FutureOr<void> safeSetState(FutureOr<dynamic> Function() fn) async {
+    await fn();
+    if (mounted &&
+        !context.debugDoingBuild &&
+        context.owner?.debugBuilding == false) {
+      // ignore: invalid_use_of_protected_member
+      setState(() {});
+    }
+    final Completer<void> completer = Completer<void>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      completer.complete();
+    });
+    return completer.future;
+  }
 }
