@@ -4,7 +4,7 @@
 
 #import "CompressHandler.h"
 #import "UIImage+scale.h"
-#import "FlutterImageCompressPlugin.h"
+#import "ImageCompressPlugin.h"
 #import <SDWebImageWebPCoder/SDImageWebPCoder.h>
 
 @implementation CompressHandler {
@@ -19,7 +19,7 @@
 
 + (NSData *)compressWithUIImage:(UIImage *)image minWidth:(int)minWidth minHeight:(int)minHeight quality:(int)quality
                          rotate:(int)rotate format:(int)format {
-    if([FlutterImageCompressPlugin showLog]){
+    if([ImageCompressPlugin showLog]){
         NSLog(@"width = %.0f",[image size].width);
         NSLog(@"height = %.0f",[image size].height);
         NSLog(@"minWidth = %d",minWidth);

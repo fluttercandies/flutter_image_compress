@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.1.1
+
+- Merge effective PRs that improve the plugin from various aspects, including:
+  #192, #207, #208, #210, #214. Thanks to these contributors.
+- Repo cleanup.
+
 ## 1.1.0
 
 - Add SDWebImage dependency for iOS. (#182)
@@ -15,10 +21,7 @@ Migrate null-safety version.
 
 ## 0.7.0
 
-- Fix
-
-  - Fix momory leaked for android.
-
+- Fix memory leaked for android.
 - Support android v2 plugin.
 
 **Breaking Change**:
@@ -27,7 +30,7 @@ Migrate null-safety version.
 
 ## 0.6.8
 
-Update `Validate` code.
+- Update `Validate` code.
 
 ## 0.6.7
 
@@ -35,7 +38,8 @@ Use the async GCD in iOS.
 
 ## 0.6.6
 
-[#116](https://github.com/OpenFlutter/flutter_image_compress/pull/116), [#124](https://github.com/OpenFlutter/flutter_image_compress/pull/124)
+- [#116](https://github.com/fluttercandies/flutter_image_compress/pull/116)
+- [#124](https://github.com/fluttercandies/flutter_image_compress/pull/124)
 
 ## 0.6.5+1
 
@@ -95,7 +99,7 @@ New Feature:
 
 Fix:
 
-- [#49](https://github.com/OpenFlutter/flutter_image_compress/issues/49): A problem of reading Exif information.
+- [#49](https://github.com/fluttercandies/flutter_image_compress/issues/49): A problem of reading Exif information.
 
 ## 0.5.1
 
@@ -154,7 +158,7 @@ update readme
 
 The version number is updated so that people who can use the higher version of gradle can use it. see pr #8
 
-if android run error, you must update your kotlin'version to 1.2.71+
+if android run error, you must update your kotlin's version to 1.2.71+
 
 ## 0.1.4
 

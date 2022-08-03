@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'src/compress_format.dart';
+import 'src/errors.dart';
 import 'src/validator.dart';
 
 export 'src/compress_format.dart';
 
-/// Image Compress
+/// Image Compress plugin.
 ///
-/// static method will help you compress image
+/// Method in the static class will help you to compress images,
+/// most methods will return [Uint8List].
 ///
-/// most method will return [Uint8List]
-///
-/// You can use `Image.memory` to display image
+/// You can use `Image.memory` to display image:
 /// ```dart
 /// Uint8List uint8List;
 /// ImageProvider provider = MemoryImage(uint8List);
@@ -28,24 +28,18 @@ export 'src/compress_format.dart';
 /// Uint8List uint8List;
 /// Image.memory(uint8List)
 /// ```
+///
 /// The returned image will retain the proportion of the original image.
-///
-/// Compress image will remove EXIF.
-///
-/// image result is jpeg format.
-///
-/// support rotate
-///
+/// Compress image will remove its EXIF info. and the result is in jpeg format.
+/// Rotation is also supported.
 class FlutterImageCompress {
-  static const MethodChannel _channel =
-      const MethodChannel('flutter_image_compress');
-
-  static Validator _validator = Validator(_channel);
+  static const _channel = MethodChannel('flutter_image_compress');
 
   static Validator get validator => _validator;
+  static final Validator _validator = Validator(_channel);
 
   static set showNativeLog(bool value) {
-    _channel.invokeMethod("showLog", value);
+    _channel.invokeMethod('showLog', value);
   }
 
   /// Compress image from [Uint8List] to [Uint8List].
@@ -61,15 +55,13 @@ class FlutterImageCompress {
     bool keepExif = false,
   }) async {
     if (image.isEmpty) {
-      throw "The image is empty.";
+      throw CompressError('The image is empty.');
     }
-
     final support = await _validator.checkSupportPlatform(format);
     if (!support) {
-      throw "The image is not support.";
+      throw UnsupportedError('The image type $format is not supported.');
     }
-
-    final result = await _channel.invokeMethod("compressWithList", [
+    final result = await _channel.invokeMethod('compressWithList', [
       image,
       minWidth,
       minHeight,
@@ -80,7 +72,6 @@ class FlutterImageCompress {
       keepExif,
       inSampleSize,
     ]);
-
     return result;
   }
 
@@ -98,18 +89,16 @@ class FlutterImageCompress {
     int numberOfRetries = 5,
   }) async {
     if (numberOfRetries <= 0) {
-      throw "numberOfRetries can't be null or less than 0";
+      throw CompressError("numberOfRetries can't be null or less than 0");
     }
     if (!File(path).existsSync()) {
-      throw "Image file ($path) does not exist.";
+      throw CompressError('Image file does not exist in $path.');
     }
-
     final support = await _validator.checkSupportPlatform(format);
     if (!support) {
       return null;
     }
-
-    final result = await _channel.invokeMethod("compressWithFile", [
+    final result = await _channel.invokeMethod('compressWithFile', [
       path,
       minWidth,
       minHeight,
@@ -139,40 +128,38 @@ class FlutterImageCompress {
     int numberOfRetries = 5,
   }) async {
     if (numberOfRetries <= 0) {
-      throw "numberOfRetries can't be null or less than 0";
+      throw CompressError("numberOfRetries can't be null or less than 0");
     }
     if (!File(path).existsSync()) {
-      throw "Image file does not exist";
+      throw CompressError('Image file does not exist in $path.');
     }
-    assert(
-        targetPath != path, "Target path and source path cannot be the same.");
-
+    if (path == targetPath) {
+      throw CompressError('Target path and source path cannot be the same.');
+    }
     _validator.checkFileNameAndFormat(targetPath, format);
-
     final support = await _validator.checkSupportPlatform(format);
     if (!support) {
       return null;
     }
-
-    final String? result =
-        await _channel.invokeMethod("compressWithFileAndGetFile", [
-      path,
-      minWidth,
-      minHeight,
-      quality,
-      targetPath,
-      rotate,
-      autoCorrectionAngle,
-      _convertTypeToInt(format),
-      keepExif,
-      inSampleSize,
-      numberOfRetries
-    ]);
-
+    final String? result = await _channel.invokeMethod(
+      'compressWithFileAndGetFile',
+      [
+        path,
+        minWidth,
+        minHeight,
+        quality,
+        targetPath,
+        rotate,
+        autoCorrectionAngle,
+        _convertTypeToInt(format),
+        keepExif,
+        inSampleSize,
+        numberOfRetries,
+      ],
+    );
     if (result == null) {
       return null;
     }
-
     return File(result);
   }
 
@@ -191,19 +178,14 @@ class FlutterImageCompress {
     if (!support) {
       return null;
     }
-
     final img = AssetImage(assetName);
-    final config = ImageConfiguration();
-
-    AssetBundleImageKey key = await img.obtainKey(config);
+    const config = ImageConfiguration();
+    final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
-
     final uint8List = data.buffer.asUint8List();
-
     if (uint8List.isEmpty) {
       return null;
     }
-
     return compressWithList(
       uint8List,
       minHeight: minHeight,

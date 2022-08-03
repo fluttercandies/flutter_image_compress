@@ -4,10 +4,10 @@ package main
 
 import (
 	flutter "github.com/go-flutter-desktop/go-flutter"
-	flutter_image_compress "github.com/openflutter/flutter_image_compress/go"
+	flutter_image_compress "github.com/fluttercandies/flutter_image_compress/go"
 )
 
 func init() {
 	// Only the init function can be tweaked by plugin maker.
-	options = append(options, flutter.AddPlugin(&flutter_image_compress.FlutterImageCompressPlugin{}))
+	options = append(options, flutter.AddPlugin(&flutter_image_compress.ImageCompressPlugin{}))
 }
