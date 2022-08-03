@@ -3,7 +3,7 @@
 //
 
 #import "UIImage+scale.h"
-#import "FlutterImageCompressPlugin.h"
+#import "ImageCompressPlugin.h"
 
 @implementation UIImage (scale)
 -(UIImage *)scaleWithMinWidth: (CGFloat)minWidth minHeight:(CGFloat)minHeight {
@@ -29,7 +29,7 @@
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    if([FlutterImageCompressPlugin showLog]){
+    if([ImageCompressPlugin showLog]){
         NSLog(@"scale = %.2f", scaleRatio);
         NSLog(@"dst width = %.2f", rect.size.width);
         NSLog(@"dst height = %.2f", rect.size.height);
@@ -43,7 +43,7 @@
 }
 
 - (UIImage *)imageRotatedByDegrees:(UIImage*)oldImage deg:(CGFloat)degrees{
-    if([FlutterImageCompressPlugin showLog]) {
+    if([ImageCompressPlugin showLog]) {
         NSLog(@"will rotate %f",degrees);
     }
     

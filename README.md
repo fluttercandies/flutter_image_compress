@@ -1,9 +1,9 @@
 # flutter_image_compress
 
-[![ImageCompress](https://img.shields.io/badge/OpenFlutter-ImageCompress-blue.svg)](https://github.com/OpenFlutter/flutter_image_compress)
+[![ImageCompress](https://img.shields.io/badge/fluttercandies-ImageCompress-blue.svg)](https://github.com/fluttercandies/flutter_image_compress)
 [![pub package](https://img.shields.io/pub/v/flutter_image_compress.svg)](https://pub.dartlang.org/packages/flutter_image_compress)
-![GitHub](https://img.shields.io/github/license/OpenFlutter/flutter_image_compress.svg)
-[![GitHub stars](https://img.shields.io/github/stars/OpenFlutter/flutter_image_compress.svg?style=social&label=Stars)](https://github.com/OpenFlutter/flutter_image_compress)
+![GitHub](https://img.shields.io/github/license/fluttercandies/flutter_image_compress.svg)
+[![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_image_compress.svg?style=social&label=Stars)](https://github.com/fluttercandies/flutter_image_compress)
 [![Awesome](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://stackoverflow.com/questions/tagged/flutter?sort=votes)
 
 Compresses image as native plugin (Obj-C/Kotlin)
@@ -69,7 +69,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 Use as:
 
-[See full example](https://github.com/OpenFlutter/flutter_image_compress/blob/master/example/lib/main.dart)
+[See full example](https://github.com/fluttercandies/flutter_image_compress/blob/master/example/lib/main.dart)
 
 There are several ways to use the library api.
 

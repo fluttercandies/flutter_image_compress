@@ -409,7 +409,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "top.kikt.flutter-image-compress-example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fluttercandies.imageCompressExample";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -433,7 +433,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "top.kikt.flutter-image-compress-example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fluttercandies.imageCompressExample";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

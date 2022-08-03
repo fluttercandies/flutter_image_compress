@@ -1,4 +1,4 @@
-group 'com.flutter.image_compress'
+group 'com.fluttercandies.flutter_image_compress'
 version '1.0-SNAPSHOT'
 
 buildscript {

@@ -38,8 +38,8 @@ Use the async GCD in iOS.
 
 ## 0.6.6
 
-- [#116](https://github.com/OpenFlutter/flutter_image_compress/pull/116)
-- [#124](https://github.com/OpenFlutter/flutter_image_compress/pull/124)
+- [#116](https://github.com/fluttercandies/flutter_image_compress/pull/116)
+- [#124](https://github.com/fluttercandies/flutter_image_compress/pull/124)
 
 ## 0.6.5+1
 
@@ -99,7 +99,7 @@ New Feature:
 
 Fix:
 
-- [#49](https://github.com/OpenFlutter/flutter_image_compress/issues/49): A problem of reading Exif information.
+- [#49](https://github.com/fluttercandies/flutter_image_compress/issues/49): A problem of reading Exif information.
 
 ## 0.5.1
 

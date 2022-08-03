@@ -23,13 +23,13 @@ const (
 	methodSystemVersion = `getSystemVersion`
 )
 
-// FlutterImageCompressPlugin implements flutter.Plugin and handles method.
-type FlutterImageCompressPlugin struct{}
+// ImageCompressPlugin implements flutter.Plugin and handles method.
+type ImageCompressPlugin struct{}
 
-var _ flutter.Plugin = &FlutterImageCompressPlugin{} // compile-time type check
+var _ flutter.Plugin = &ImageCompressPlugin{} // compile-time type check
 
 // InitPlugin initializes the plugin.
-func (p *FlutterImageCompressPlugin) InitPlugin(messenger plugin.BinaryMessenger) error {
+func (p *ImageCompressPlugin) InitPlugin(messenger plugin.BinaryMessenger) error {
 	channel := plugin.NewMethodChannel(messenger, channelName, plugin.StandardMethodCodec{})
 
 	channel.HandleFunc(methodListToList, listToList)

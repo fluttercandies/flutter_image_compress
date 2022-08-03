@@ -5,15 +5,17 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 Compress image with native Objective-C with faster speed.
                        DESC
-  s.homepage         = 'http://github.com/OpenFlutter/flutter_image_compress'
+  s.homepage         = 'http://github.com/fluttercandies/flutter_image_compress'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'OpenFlutter' => 'email@example.com' }
+  s.author           = { 'fluttercandies' => 'email@example.com' }
   s.source           = { :path => '.' }
+  s.ios.deployment_target = '9.0'
+
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
+
   s.dependency 'Flutter'
   s.dependency 'Mantle'
-  s.ios.deployment_target = '9.0'
   s.dependency 'SDWebImage'
   s.dependency 'SDWebImageWebPCoder'
 end
