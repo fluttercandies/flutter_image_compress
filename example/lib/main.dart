@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data';
+import 'dart:typed_data' as typed_data;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -102,7 +102,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<Uint8List?> testCompressFile(File file) async {
+  Future<typed_data.Uint8List?> testCompressFile(File file) async {
     print('testCompressFile');
     final result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
@@ -142,7 +142,7 @@ class _MyAppState extends State<MyApp> {
     );
     if (list == null) return;
     safeSetState(() {
-      provider = MemoryImage(Uint8List.fromList(list));
+      provider = MemoryImage(typed_data.Uint8List.fromList(list));
     });
   }
 
@@ -154,7 +154,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<Uint8List> testComporessList(Uint8List list) async {
+  Future<typed_data.Uint8List> testComporessList(typed_data.Uint8List list) async {
     final result = await FlutterImageCompress.compressWithList(
       list,
       minHeight: 1080,
@@ -181,7 +181,7 @@ class _MyAppState extends State<MyApp> {
     );
     if (result == null) return;
     safeSetState(() {
-      provider = MemoryImage(Uint8List.fromList(result));
+      provider = MemoryImage(typed_data.Uint8List.fromList(result));
     });
   }
 
@@ -193,7 +193,7 @@ class _MyAppState extends State<MyApp> {
     );
     if (result == null) return;
     safeSetState(() {
-      provider = MemoryImage(Uint8List.fromList(result));
+      provider = MemoryImage(typed_data.Uint8List.fromList(result));
     });
   }
 
@@ -207,7 +207,7 @@ class _MyAppState extends State<MyApp> {
       minWidth: 100,
       format: CompressFormat.png,
     );
-    final u8list = Uint8List.fromList(result);
+    final u8list = typed_data.Uint8List.fromList(result);
     safeSetState(() {
       provider = MemoryImage(u8list);
     });
@@ -229,7 +229,7 @@ class _MyAppState extends State<MyApp> {
     );
     if (result == null) return;
     safeSetState(() {
-      provider = MemoryImage(Uint8List.fromList(result));
+      provider = MemoryImage(typed_data.Uint8List.fromList(result));
     });
   }
 
@@ -384,7 +384,7 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-Future<Uint8List> getAssetImageUint8List(String key) async {
+Future<typed_data.Uint8List> getAssetImageUint8List(String key) async {
   final byteData = await rootBundle.load(key);
   return byteData.buffer.asUint8List();
 }
