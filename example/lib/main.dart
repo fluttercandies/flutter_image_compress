@@ -287,6 +287,18 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _compressFromWebPImage() async {
+    // Converting webp to jpeg
+    final result = await FlutterImageCompress.compressAssetImage(
+      R.IMG_ICON_WEBP,
+    );
+    if (result == null) return;
+    // Show result image
+    safeSetState(() {
+      provider = MemoryImage(typed_data.Uint8List.fromList(result));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -370,6 +382,12 @@ class _MyAppState extends State<MyApp> {
               child: TextButton(
                 child: Text('Convert to webp format, Just support android'),
                 onPressed: _compressAndroidWebpExample,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                child: Text('Convert from webp format'),
+                onPressed: _compressFromWebPImage,
               ),
             ),
           ],
