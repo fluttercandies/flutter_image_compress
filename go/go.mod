@@ -1,4 +1,4 @@
-module github.com/openflutter/flutter_image_compress/go
+module github.com/fluttercandies/flutter_image_compress/go
 
 go 1.13
 

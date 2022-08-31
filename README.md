@@ -1,18 +1,16 @@
 # flutter_image_compress
 
-[![ImageCompress](https://img.shields.io/badge/OpenFlutter-ImageCompress-blue.svg)](https://github.com/OpenFlutter/flutter_image_compress)
+[![ImageCompress](https://img.shields.io/badge/fluttercandies-ImageCompress-blue.svg)](https://github.com/fluttercandies/flutter_image_compress)
 [![pub package](https://img.shields.io/pub/v/flutter_image_compress.svg)](https://pub.dartlang.org/packages/flutter_image_compress)
-![GitHub](https://img.shields.io/github/license/OpenFlutter/flutter_image_compress.svg)
-[![GitHub stars](https://img.shields.io/github/stars/OpenFlutter/flutter_image_compress.svg?style=social&label=Stars)](https://github.com/OpenFlutter/flutter_image_compress)
-[![Awesome](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://stackoverflow.com/questions/tagged/flutter?sort=votes)
+[![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_image_compress?style=flat-square)](https://github.com/fluttercandies/flutter_image_compress/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_image_compress.svg?style=social&label=Stars)](https://github.com/fluttercandies/flutter_image_compress)
+[![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://stackoverflow.com/questions/tagged/flutter?sort=votes)
+<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
-Compresses image as native plugin (Obj-C/Kotlin)
-
-This library can works on Android and iOS.
+Compresses image as native plugin (Obj-C/Kotlin). This library works on Android and iOS.
 
 - [flutter_image_compress](#flutter_image_compress)
   - [Why don't you use dart to do it](#why-dont-you-use-dart-to-do-it)
-  - [1.0.0](#100)
   - [Usage](#usage)
   - [About common params](#about-common-params)
     - [minWidth and minHeight](#minwidth-and-minheight)
@@ -30,31 +28,16 @@ This library can works on Android and iOS.
     - [About `List<int>` and `Uint8List`](#about-listint-and-uint8list)
   - [Runtime Error](#runtime-error)
   - [Android](#android)
-  - [iOS](#ios)
-  - [Troubleshooting or common error](#troubleshooting-or-common-error)
+  - [Troubleshooting](#troubleshooting)
     - [Compressing returns `null`](#compressing-returns-null)
-    - [Android build error](#android-build-error)
   - [About EXIF information](#about-exif-information)
-  - [LICENSE](#license)
-    - [PNG/JPEG encoder](#pngjpeg-encoder)
-    - [Webp encoder](#webp-encoder)
-    - [HEIF encoder](#heif-encoder)
-    - [About Exif handle code](#about-exif-handle-code)
 
 ## Why don't you use dart to do it
 
 Q：Dart already has image compression libraries. Why use native?
 
-A：For unknown reasons, image compression in Dart language is not efficient, even in release version. Using isolate does not solve the problem.
-
-## 1.0.0
-
-The 1.0.0 is null-safety version.
-
-Please read document for null-safety information in [dart][dart-safe] or [flutter][flutter-safe].
-
-[flutter-safe]: https://flutter.dev/docs/null-safety
-[dart-safe]: https://dart.dev/null-safety
+A：For unknown reasons, image compression in Dart language is not efficient,
+even in release version. Using isolate does not solve the problem.
 
 ## Usage
 
@@ -69,7 +52,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 Use as:
 
-[See full example](https://github.com/OpenFlutter/flutter_image_compress/blob/master/example/lib/main.dart)
+[See full example](https://github.com/fluttercandies/flutter_image_compress/blob/main/example/lib/main.dart)
 
 There are several ways to use the library api.
 
@@ -137,7 +120,8 @@ There are several ways to use the library api.
 
 `minWidth` and `minHeight` are constraints on image scaling.
 
-For example, a 4000\*2000 image, `minWidth` set to 1920, `minHeight` set to 1080, the calculation is as follows:
+For example, a 4000\*2000 image, `minWidth` set to 1920,
+`minHeight` set to 1080, the calculation is as follows:
 
 ```dart
 // Using dart as an example, the actual implementation is Kotlin or OC.
@@ -163,15 +147,13 @@ double calcScale({
 }) {
   var scaleW = srcWidth / minWidth;
   var scaleH = srcHeight / minHeight;
-
   var scale = math.max(1.0, math.min(scaleW, scaleH));
-
   return scale;
 }
-
 ```
 
-If your image width is smaller than minWidth or height samller than minHeight, scale will be 1, that is, the size will not change.
+If your image width is smaller than `minWidth` or height smaller than `minHeight`,
+scale will be 1, that is, the size will not change.
 
 ### rotate
 
@@ -181,7 +163,8 @@ If you need to rotate the picture, use this parameter.
 
 This property only exists in the version after 0.5.0.
 
-And for historical reasons, there may be conflicts with rotate attributes, which need to be self-corrected.
+And for historical reasons, there may be conflicts with rotate attributes,
+which need to be self-corrected.
 
 Modify rotate to 0 or autoCorrectionAngle to false.
 
@@ -202,8 +185,11 @@ Heif and webp Partially supported.
 #### Webp
 
 Support android by the system api (speed very nice).
-
-And support iOS, but However, no system implementation, using [third-party libraries](https://github.com/SDWebImage/SDWebImageWebPCoder) used, it is not recommended due to encoding speed. In the future, libwebp by google (c / c ++) may be used to do coding work, bypassing other three-party libraries, but there is no guarantee of implementation time.
+The library also supports iOS. However, we're using
+[third-party libraries](https://github.com/SDWebImage/SDWebImageWebPCoder),
+it is not recommended due to encoding speed.
+In the future, `libwebp` by google (C/C++) may be used to do coding work,
+bypassing other three-party libraries, but there are no plan for that currently.
 
 #### HEIF(Heic)
 
@@ -213,11 +199,12 @@ Only support iOS 11+.
 
 ##### Heif for Android
 
-Use [HeifWriter][] to implemation.
+Use [HeifWriter][] for the implementation.
 
 Only support API 28+.
 
-And may require hardware encoder support, does not guarantee that all devices above API28 are available
+And may require hardware encoder support,
+does not guarantee that all devices _above_ API 28 are available.
 
 [heifwriter]: https://developer.android.com/reference/androidx/heifwriter/HeifWriter.html
 
@@ -252,112 +239,84 @@ To use `Uint8List`, you need import package to your code like this:
 ![img](https://raw.githubusercontent.com/CaiJingLong/asset_for_picgo/master/20190519111735.png)
 
 ```dart
-final image = Uint8List.fromList(imageList)
+final image = Uint8List.fromList(imageList);
 ImageProvider provider = MemoryImage(Uint8List.fromList(imageList));
 ```
 
 Usage in `Image` Widget:
 
 ```dart
-List<int> image = await testCompressFile(file);
-ImageProvider provider = MemoryImage(Uint8List.fromList(image));
-
-Image(
-  image: provider ?? AssetImage("img/img.jpg"),
-),
+Future<Widget> _compressImage() async {
+  List<int> image = await testCompressFile(file);
+  ImageProvider provider = MemoryImage(Uint8List.fromList(image));
+  imageWidget = Image(
+    image: provider ?? AssetImage('img/img.jpg'),
+  );
+}
 ```
 
 Write to file usage:
 
 ```dart
-void writeToFile(List<int> image, String filePath) {
-  final file = File(filePath);
-  file.writeAsBytes(image, flush: true, mode: FileMode.write);
+Future<void> writeToFile(List<int> image, String filePath) {
+  return File(filePath).writeAsBytes(image, flush: true);
 }
 ```
 
 ## Runtime Error
 
-Because of some support issues, all APIs will be compatible with format and system compatibility, and an exception (UnsupportError) may be thrown, so if you insist on using webp and heic formats, please catch the exception yourself and use it on unsupported devices jpeg compression.
+Because of some support issues,
+all APIs will be compatible with format and system compatibility,
+and an exception (`UnsupportedError`) may be thrown,
+so if you insist on using webp and heic formats,
+please catch the exception yourself and use it on unsupported devices jpeg compression.
 
 Example:
 
 ```dart
 Future<Uint8List> compressAndTryCatch(String path) async {
-    Uint8List result;
-    try {
-      result = await FlutterImageCompress.compressWithFile(path,
-          format: CompressFormat.heic);
-    } on UnsupportedError catch (e) {
-      print(e);
-      result = await FlutterImageCompress.compressWithFile(path,
-          format: CompressFormat.jpeg);
-    }
-    return result;
+  Uint8List result;
+  try {
+    result = await FlutterImageCompress.compressWithFile(
+      path,
+      format: CompressFormat.heic,
+    );
+  } on UnsupportedError catch (e) {
+    print(e);
+    result = await FlutterImageCompress.compressWithFile(
+      path,
+      format: CompressFormat.jpeg,
+    );
   }
+  return result;
+}
 ```
 
 ## Android
 
-You may need to update Kotlin to version `1.3.72` or higher.
+You may need to update Kotlin to version `1.5.21` or higher.
 
-## iOS
-
-No problems currently found.
-
-## Troubleshooting or common error
+## Troubleshooting
 
 ### Compressing returns `null`
 
-Sometimes, compressing will return null. You should check if you can read/write the file, and the parent folder of the target file must exist.
+Sometimes, compressing will return null. You should check if you can read/write the file,
+and the parent folder of the target file must exist.
 
-For example, use the [path_provider](https://pub.dartlang.org/packages/path_provide) plugin to access some application folders, and use a permission plugin to request permission to access SD cards on Android/iOS.
-
-### Android build error
-
-```groovy
-Caused by: org.gradle.internal.event.ListenerNotificationException: Failed to notify project evaluation listener.
-        at org.gradle.internal.event.AbstractBroadcastDispatch.dispatch(AbstractBroadcastDispatch.java:86)
-        ...
-Caused by: java.lang.AbstractMethodError
-        at org.jetbrains.kotlin.gradle.plugin.KotlinPluginKt.resolveSubpluginArtifacts(KotlinPlugin.kt:776)
-        ...
-```
-
-See [flutter/flutter/issues#21473](https://github.com/flutter/flutter/issues/21473#issuecomment-420434339)
-
-You need to upgrade your Kotlin version to `1.2.71+`(recommended 1.3.72).
-
-If Flutter supports more platforms (Windows, Mac, Linux, etc) in the future and you use this library, propose an issue or PR!
+For example, use the [path_provider](https://pub.dartlang.org/packages/path_provide)
+plugin to access some application folders,
+and use a permission plugin to request permission to access SD cards on Android/iOS.
 
 ## About EXIF information
 
 Using this library, EXIF information will be removed by default.
 
-EXIF information can be retained by setting keepExif to true, but not `direction` information.
+EXIF information can be retained by setting keepExif to true,
+but not `direction` information.
 
-## LICENSE
-
-The code under MIT style.
-
-### PNG/JPEG encoder
-
-Each using system API.
-
-### Webp encoder
-
-Use [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder) to encode the UIImage in iOS. (Under MIT)
-
-Android code use the Android system api.
-
-### HEIF encoder
-
-Use iOS system api in iOS.
-
-Use [HeifWriter(androidx component by Google)](https://developer.android.google.cn/jetpack/androidx/releases/heifwriter) to encode in androidP or higher.
-
-### About Exif handle code
-
-The iOS code was copied from [dvkch/SYPictureMetadata](https://github.com/dvkch/SYPictureMetadata), [LICENSE](https://github.com/dvkch/SYPictureMetadata/blob/master/LICENSE.md)
-
-The android code was copied from flutter/plugin/image_picker and edit some. (BSD 3 style)
+- PNG/JPEG encoder: System API.
+- WebP encoder:
+  - [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder) on iOS.
+  - System API on Android.
+- HEIF encoder: System API.
+  - [HeifWriter](https://developer.android.com/jetpack/androidx/releases/heifwriter) on Android P+.
