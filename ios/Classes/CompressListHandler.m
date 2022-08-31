@@ -25,7 +25,12 @@
 
     NSData *data = [list data];
     NSData *compressedData = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
-
+    
+    if (compressedData == nil) {
+        result(nil);
+        return;
+    }
+    
     if (keepExif) {
         SYMetadata *metadata = [SYMetadata metadataWithImageData:data];
         metadata.orientation = @0;
