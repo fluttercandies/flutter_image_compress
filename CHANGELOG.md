@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.1.2
+
+- Fix crashes on iOS with nil data. (#220)
+- Adapt Flutter 3.3.
+
 ## 1.1.1
 
 - Merge effective PRs that improve the plugin from various aspects, including:
