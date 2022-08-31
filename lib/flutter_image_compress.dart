@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:typed_data' as typed_data;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,8 +43,8 @@ class FlutterImageCompress {
   }
 
   /// Compress image from [Uint8List] to [Uint8List].
-  static Future<Uint8List> compressWithList(
-    Uint8List image, {
+  static Future<typed_data.Uint8List> compressWithList(
+    typed_data.Uint8List image, {
     int minWidth = 1920,
     int minHeight = 1080,
     int quality = 95,
@@ -76,7 +76,7 @@ class FlutterImageCompress {
   }
 
   /// Compress file of [path] to [Uint8List].
-  static Future<Uint8List?> compressWithFile(
+  static Future<typed_data.Uint8List?> compressWithFile(
     String path, {
     int minWidth = 1920,
     int minHeight = 1080,
@@ -164,7 +164,7 @@ class FlutterImageCompress {
   }
 
   /// From [asset] to [Uint8List]
-  static Future<Uint8List?> compressAssetImage(
+  static Future<typed_data.Uint8List?> compressAssetImage(
     String assetName, {
     int minWidth = 1920,
     int minHeight = 1080,
