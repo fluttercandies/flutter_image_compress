@@ -4,6 +4,7 @@
 
 #import "CompressHandler.h"
 #import "UIImage+scale.h"
+#import "UIImage+WebP.h"
 #import "ImageCompressPlugin.h"
 #import <SDWebImageWebPCoder/SDImageWebPCoder.h>
 
@@ -13,7 +14,7 @@
 
 + (NSData *)compressWithData:(NSData *)data minWidth:(int)minWidth minHeight:(int)minHeight quality:(int)quality
                       rotate:(int)rotate format:(int)format {
-    UIImage *img = [[UIImage alloc] initWithData:data];
+    UIImage *img = [self isWebP:data] ? [UIImage sd_imageWithWebPData:data] : [[UIImage alloc] initWithData:data];
     return [CompressHandler compressWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:format];
 }
 
@@ -78,6 +79,15 @@
     }
 
     return data;
+}
+
++ (BOOL)isWebP:(NSData *)data {
+    if (data.length < 12) return false;
+
+    NSData *riff = [data subdataWithRange:NSMakeRange(8, 4)];
+    NSString* format = [[NSString alloc] initWithData:riff encoding:(NSASCIIStringEncoding)];
+
+    return [format isEqualToString:@"WEBP"];
 }
 
 @end

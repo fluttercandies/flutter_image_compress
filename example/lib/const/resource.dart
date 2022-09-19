@@ -10,4 +10,6 @@ class R {
 
   static const String IMG_TRANSPARENT_BACKGROUND_PNG =
       'img/transparent-background.png';
+
+  static const String IMG_ICON_WEBP = 'img/icon.webp';
 }
