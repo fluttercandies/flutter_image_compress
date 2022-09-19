@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.3
+
+- Fix converting from WebP causes app crash on iOS. (#222).
+
 ## 1.1.2
 
 - Fix crashes on iOS with nil data. (#220)
