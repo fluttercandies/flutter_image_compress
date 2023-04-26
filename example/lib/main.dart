@@ -154,7 +154,9 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<typed_data.Uint8List> testComporessList(typed_data.Uint8List list) async {
+  Future<typed_data.Uint8List> testComporessList(
+    typed_data.Uint8List list,
+  ) async {
     final result = await FlutterImageCompress.compressWithList(
       list,
       minHeight: 1080,
@@ -436,5 +438,20 @@ extension _StateExtension on State {
       completer.complete();
     });
     return completer.future;
+  }
+}
+
+class TextButton extends StatelessWidget {
+  const TextButton({
+    Key? key,
+    required this.onPressed,
+    required this.child,
+  }) : super(key: key);
+  final VoidCallback onPressed;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
