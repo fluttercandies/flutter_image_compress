@@ -77,6 +77,7 @@
     CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(source, 0, (__bridge CFDictionaryRef)options);
     if (properties) {
         dictionary = (__bridge NSDictionary*)properties;
+        CFRelease(properties);
     }
     
     CFRelease(source);
@@ -99,6 +100,7 @@
     CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(source, 0, (__bridge CFDictionaryRef)options);
     if (properties) {
         dictionary = (__bridge NSDictionary*)properties;
+        CFRelease(properties);
     }
     
     CFRelease(source);
