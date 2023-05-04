@@ -127,8 +127,15 @@ class _MyAppState extends State<MyApp> {
       minHeight: 1024,
       rotate: 90,
     );
-    print(file.lengthSync());
-    print(result?.length());
+
+    if (result == null) return null;
+
+    final bytes = await result.readAsBytes();
+
+    print(
+      'The src file size: ${file.lengthSync()}, '
+      'the result bytes length: ${bytes.length}',
+    );
     return result;
   }
 
@@ -257,7 +264,7 @@ class _MyAppState extends State<MyApp> {
 
     print(
       'Compress heic result path: ${result.path}, '
-      'size: ${result.length()}',
+      'size: ${await result.length()}',
     );
   }
 
@@ -285,7 +292,7 @@ class _MyAppState extends State<MyApp> {
     print('src, path = $srcPath length = ${File(srcPath).lengthSync()}');
     print(
       'Compress webp result path: ${result.path}, '
-      'size: ${result.length()}',
+      'size: ${await result.length()}',
     );
     safeSetState(() {
       provider = XFileImageProvider(result);
