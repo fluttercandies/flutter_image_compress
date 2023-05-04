@@ -3,7 +3,11 @@ import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:flutter_image_compress_web/flutter_image_compress_web.dart';
+
+import 'button.dart';
+
+import 'package:flutter/material.dart' hide TextButton;
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
@@ -11,8 +15,9 @@ import 'const/resource.dart';
 import 'time_logger.dart';
 
 Future<void> main() async {
-  print('Init main');
-  await WidgetsFlutterBinding.ensureInitialized();
+  await FlutterImageCompressWeb.changePicaUrl(
+    'https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js',
+  );
   runApp(const MyApp());
   FlutterImageCompress.showNativeLog = true;
 }
@@ -46,7 +51,12 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
             ),
-            SliverToBoxAdapter(),
+            SliverToBoxAdapter(
+              child: TextButton(
+                onPressed: _compressAsset,
+                child: Text('Compress'),
+              ),
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -56,6 +66,21 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  Future<void> _compressAsset() async {
+    final assetName = R.IMG_IMG_JPG;
+    _changeImageWithUint8List(
+      await FlutterImageCompress.compressAssetImage(assetName),
+    );
+  }
+
+  void _changeImageWithUint8List(typed_data.Uint8List? bytes) {
+    if (bytes != null) {
+      safeSetState(() {
+        provider = MemoryImage(bytes);
+      });
+    }
   }
 }
 

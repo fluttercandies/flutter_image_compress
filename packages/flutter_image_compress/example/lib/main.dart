@@ -4,7 +4,8 @@ import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'button.dart';
+import 'package:flutter/material.dart' hide TextButton;
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -449,27 +450,6 @@ extension _StateExtension on State {
       completer.complete();
     });
     return completer.future;
-  }
-}
-
-class TextButton extends StatelessWidget {
-  const TextButton({
-    Key? key,
-    required this.onPressed,
-    required this.child,
-  }) : super(key: key);
-  final VoidCallback onPressed;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        child: child,
-      ),
-    );
   }
 }
 
