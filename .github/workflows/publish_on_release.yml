@@ -1,21 +1,32 @@
-# name: Publish
+name: Publish
 
-# on:
-#   release:
-#     types: [ published ]
-#   workflow_dispatch:
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
 
-# jobs:
-#   publish:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout repo
-#         uses: actions/checkout@v3
-#       - name: Publish
-#         uses: k-paxian/dart-package-publisher@master
-#         with:
-#           credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-#           flutter: true
-#           skipTests: true
-#           accessToken: 
-#           refreshToken: 
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Install flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.7.7'
+          channel: 'stable'
+      - run: flutter --version
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Install melos
+        run: flutter pub global activate melos
+      - name: Get packages
+        run: |
+          melos bootstrap
+          melos run get
+      - name: Try to publish
+        run: melos publish
+      - name: Publish to pub.dev
+        run: melos publish -y -n
+      
