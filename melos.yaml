@@ -18,7 +18,9 @@ scripts:
     packageFilters:
       fileExists: lib/main.dart
   try_build_ios:
-    exec: flutter build ios --debug --no-codesign
+    exec: |
+      flutter pub get
+      flutter build ios --debug --no-codesign
     packageFilters:
       fileExists: lib/main.dart
 

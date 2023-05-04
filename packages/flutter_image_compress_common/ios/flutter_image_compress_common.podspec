@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name             = 'flutter_image_compress'
+  s.name             = 'flutter_image_compress_common'
   s.version          = '1.0.0'
   s.summary          = 'Compress image with native Objective-C with faster speed.'
   s.description      = <<-DESC
