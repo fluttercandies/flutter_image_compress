@@ -53,6 +53,7 @@ jobs:
           channel: 'stable'
       - run: dart --version
       - run: flutter --version
+      - run: flutter pub get
       - name: Get melos
         run: dart pub global activate melos
       - name: Build iOS debug with melos
@@ -78,4 +79,6 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;21.4.7075529"
-      - run: cd example; flutter build apk --debug
+      - name: Get melos
+        run: dart pub global activate melos
+      - run: melos run try_build_apk
