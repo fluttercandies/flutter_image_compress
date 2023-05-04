@@ -26,7 +26,11 @@ jobs:
           melos bootstrap
           melos run get
       - name: Try to publish
-        run: melos publish
+        run: melos publish --yes --dry-run
+      - name: Write token to local
+        run: |
+          mkdir -p ~/.config/dart
+          echo ${{ secrets.CREDENTIAL_JSON }} > ~/.config/dart/pub-credentials.json
       - name: Publish to pub.dev
-        run: melos publish -y -n
+        run: melos publish --yes --no-dry-run
       
