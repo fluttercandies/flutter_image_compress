@@ -23,5 +23,13 @@ scripts:
       flutter build ios --debug --no-codesign
     packageFilters:
       fileExists: lib/main.dart
+  cp_files:
+    exec: |
+      if [ -f "../../LICENSE" ]; then
+        cp ../../LICENSE LICENSE
+      fi
+      if [ -f "../../README.md" ]; then
+        cp ../../README.md README.md
+      fi
 
 sdkPath: auto
