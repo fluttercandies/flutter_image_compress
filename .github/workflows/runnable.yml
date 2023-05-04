@@ -32,6 +32,10 @@ jobs:
         run: flutter pub get
       - name: Get melos
         run: dart pub global activate melos
+      - name: Init melos
+        run: |
+          melos bootstrap
+          melos run get
       - name: Analyze
         run: melos run analyze
   test_iOS:
@@ -56,6 +60,10 @@ jobs:
       - run: flutter pub get
       - name: Get melos
         run: dart pub global activate melos
+      - name: Init melos
+        run: |
+          melos bootstrap
+          melos run get
       - name: Build iOS debug with melos
         run: melos run try_build_ios 
 
@@ -81,4 +89,8 @@ jobs:
       - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;21.4.7075529"
       - name: Get melos
         run: dart pub global activate melos
+      - name: Init melos
+        run: |
+          melos bootstrap
+          melos run get
       - run: melos run try_build_apk
