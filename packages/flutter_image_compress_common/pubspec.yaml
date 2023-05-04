@@ -14,9 +14,12 @@ dependencies:
   
 flutter:
   plugin:
+    implements: flutter_image_compress
     platforms:
       android:
         package: com.fluttercandies.flutter_image_compress
         pluginClass: ImageCompressPlugin
+        dartPluginClass: FlutterImageCompressCommon
       ios:
         pluginClass: ImageCompressPlugin
+        dartPluginClass: FlutterImageCompressCommon
