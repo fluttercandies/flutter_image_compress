@@ -33,3 +33,7 @@ scripts:
       fi
 
 sdkPath: auto
+
+command:
+  version:
+    releaseUrl: true
