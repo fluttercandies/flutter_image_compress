@@ -1,0 +1,39 @@
+name: flutter_image_compress
+repository: https://github.com/fluttercandies/flutter_image_compress
+
+packages:
+  - packages/**
+
+scripts:
+  analyze:
+    exec: dart analyze .
+  get:
+    exec: flutter pub get
+  test:
+    exec: flutter test
+  format:
+    exec: dart format --set-exit-if-changed .
+  try_build_apk:
+    exec: flutter build apk --debug
+    packageFilters:
+      fileExists: lib/main.dart
+  try_build_ios:
+    exec: |
+      flutter pub get
+      flutter build ios --debug --no-codesign
+    packageFilters:
+      fileExists: lib/main.dart
+  cp_files:
+    exec: |
+      if [ -f "../../LICENSE" ]; then
+        cp ../../LICENSE LICENSE
+      fi
+      if [ -f "../../README.md" ]; then
+        cp ../../README.md README.md
+      fi
+
+sdkPath: auto
+
+command:
+  version:
+    releaseUrl: true

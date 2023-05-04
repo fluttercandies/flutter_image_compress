@@ -30,8 +30,14 @@ jobs:
           flutter --version
       - name: Prepare dependencies
         run: flutter pub get
-      - name: Analyse the repo
-        run: flutter analyze lib example/lib
+      - name: Get melos
+        run: dart pub global activate melos
+      - name: Init melos
+        run: |
+          melos bootstrap
+          melos run get
+      - name: Analyze
+        run: melos run analyze
   test_iOS:
     needs: analyze
     name: Test iOS on ${{ matrix.os }}
@@ -52,7 +58,14 @@ jobs:
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
-      - run: cd example; flutter build ios --no-codesign
+      - name: Get melos
+        run: dart pub global activate melos
+      - name: Init melos
+        run: |
+          melos bootstrap
+          melos run get
+      - name: Build iOS debug with melos
+        run: melos run try_build_ios 
 
   test_android:
     needs: analyze
@@ -74,4 +87,10 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;21.4.7075529"
-      - run: cd example; flutter build apk --debug
+      - name: Get melos
+        run: dart pub global activate melos
+      - name: Init melos
+        run: |
+          melos bootstrap
+          melos run get
+      - run: melos run try_build_apk
