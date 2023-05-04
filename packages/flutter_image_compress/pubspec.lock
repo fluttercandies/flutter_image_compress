@@ -18,7 +18,7 @@ packages:
     source: hosted
     version: "1.17.0"
   cross_file:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cross_file
       sha256: "0b0036e8cccbfbe0555fd83c1d31a6f30b77a96b598b35a5d36dd41f718695e9"
@@ -30,6 +30,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_image_compress_common:
+    dependency: "direct main"
+    description:
+      path: "../flutter_image_compress_common"
+      relative: true
+    source: path
+    version: "1.0.0"
+  flutter_image_compress_platform_interface:
+    dependency: "direct main"
+    description:
+      path: "../flutter_image_compress_platform_interface"
+      relative: true
+    source: path
+    version: "1.0.0"
   js:
     dependency: transitive
     description:
@@ -55,7 +69,7 @@ packages:
     source: hosted
     version: "1.8.0"
   plugin_platform_interface:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: plugin_platform_interface
       sha256: "6a2128648c854906c53fa8e33986fc0247a1116122f9534dd20e3ab9e16a32bc"

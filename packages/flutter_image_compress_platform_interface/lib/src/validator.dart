@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 
 import 'compress_format.dart';
 
-class Validator {
-  Validator(this.channel);
+class FlutterImageCompressValidator {
+  FlutterImageCompressValidator(this.channel);
 
   final MethodChannel channel;
 

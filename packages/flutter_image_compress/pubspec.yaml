@@ -1,7 +1,7 @@
-name: flutter_image_compress_common
+name: flutter_image_compress
 description: Compress image with native (Objective-C/Kotlin) with faster speed. Support Android/iOS.
 repository: https://github.com/fluttercandies/flutter_image_compress
-version: 1.0.0
+version: 2.0.0
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -11,12 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_image_compress_platform_interface: ^1.0.0
-  
+  flutter_image_compress_common: ^1.0.0
+
 flutter:
   plugin:
     platforms:
       android:
-        package: com.fluttercandies.flutter_image_compress
-        pluginClass: ImageCompressPlugin
+        default_package: flutter_image_compress_common
       ios:
-        pluginClass: ImageCompressPlugin
+        default_package: flutter_image_compress_common

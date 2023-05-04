@@ -1,5 +1,5 @@
 name: flutter_image_compress_platform_interface
-description: Compress image with native (Objective-C/Kotlin) with faster speed. Support Android/iOS.
+description: The platform interface of flutter_image_compress.
 repository: https://github.com/fluttercandies/flutter_image_compress
 version: 1.0.0
 
@@ -10,12 +10,5 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-flutter:
-  plugin:
-    platforms:
-      android:
-        package: com.fluttercandies.flutter_image_compress
-        pluginClass: ImageCompressPlugin
-      ios:
-        pluginClass: ImageCompressPlugin
+  plugin_platform_interface: ^2.0.0
+  cross_file: ^0.3.3+4

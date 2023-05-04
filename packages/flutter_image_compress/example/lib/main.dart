@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -98,7 +99,7 @@ class _MyAppState extends State<MyApp> {
       return;
     }
     safeSetState(() {
-      provider = FileImage(imgFile);
+      provider = XFileImageProvider(imgFile);
     });
   }
 
@@ -116,7 +117,7 @@ class _MyAppState extends State<MyApp> {
     return result;
   }
 
-  Future<File?> testCompressAndGetFile(File file, String targetPath) async {
+  Future<XFile?> testCompressAndGetFile(File file, String targetPath) async {
     print('testCompressAndGetFile');
     final result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
@@ -127,7 +128,7 @@ class _MyAppState extends State<MyApp> {
       rotate: 90,
     );
     print(file.lengthSync());
-    print(result?.lengthSync());
+    print(result?.length());
     return result;
   }
 
@@ -249,12 +250,14 @@ class _MyAppState extends State<MyApp> {
       quality: 90,
     );
     if (result == null) return;
+
     print('Compress heic success.');
     logger.logTime();
     print('src, path = $srcPath length = ${File(srcPath).lengthSync()}');
+
     print(
-      'Compress heic result path: ${result.absolute.path}, '
-      'size: ${result.lengthSync()}',
+      'Compress heic result path: ${result.path}, '
+      'size: ${result.length()}',
     );
   }
 
@@ -281,11 +284,11 @@ class _MyAppState extends State<MyApp> {
     logger.logTime();
     print('src, path = $srcPath length = ${File(srcPath).lengthSync()}');
     print(
-      'Compress webp result path: ${result.absolute.path}, '
-      'size: ${result.lengthSync()}',
+      'Compress webp result path: ${result.path}, '
+      'size: ${result.length()}',
     );
     safeSetState(() {
-      provider = FileImage(result);
+      provider = XFileImageProvider(result);
     });
   }
 
@@ -454,4 +457,47 @@ class TextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Placeholder();
   }
+}
+
+class XFileImageProvider extends ImageProvider<XFileImageProvider> {
+  const XFileImageProvider(this.file);
+
+  final XFile file;
+
+  @override
+  Future<XFileImageProvider> obtainKey(ImageConfiguration configuration) async {
+    return this;
+  }
+
+  Future<ui.Codec> _loadAsync(
+      XFileImageProvider key, DecoderBufferCallback decode) async {
+    final bytes = await file.readAsBytes();
+    final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+    return decode(buffer);
+  }
+
+  @override
+  ImageStreamCompleter loadBuffer(
+      XFileImageProvider key, DecoderBufferCallback decode) {
+    return MultiFrameImageStreamCompleter(
+      codec: _loadAsync(key, decode),
+      scale: 1.0,
+      informationCollector: () sync* {
+        yield ErrorDescription('Path: ${file.path}');
+      },
+    );
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    if (other.runtimeType != runtimeType) return false;
+    final XFileImageProvider typedOther = other;
+    return file.path == typedOther.file.path;
+  }
+
+  @override
+  int get hashCode => file.path.hashCode;
+
+  @override
+  String toString() => '$runtimeType("${file.path}",)';
 }
