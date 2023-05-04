@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2.0.0
+
+- Migrate platform interface
+
+**Breaking** Change:
+
+- The result `File` to `XFile` of [cross_file](https://pub.dev/packages/cross_file)
+
+See the [migration guide](https://github.com/fluttercandies/flutter_image_compress/blob/main/migrate.md) for more details.
+
 ## 1.1.3
 
 - Fix converting from WebP causes app crash on iOS. (#222).
