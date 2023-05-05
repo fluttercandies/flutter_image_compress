@@ -5,11 +5,11 @@
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_image_compress?style=flat-square)](https://github.com/fluttercandies/flutter_image_compress/blob/main/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_image_compress.svg?style=social&label=Stars)](https://github.com/fluttercandies/flutter_image_compress)
 [![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://stackoverflow.com/questions/tagged/flutter?sort=votes)
-<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
+[![img](https://pub.idqqimg.com/wpa/images/group.png)](https://jq.qq.com/?_wv=1027&k=5bcc0gy)
 
 Compresses image as native plugin (Obj-C/Kotlin). This library works on Android and iOS.
 
-- [flutter_image_compress](#flutter_image_compress)
+- [flutter\_image\_compress](#flutter_image_compress)
   - [Why don't you use dart to do it](#why-dont-you-use-dart-to-do-it)
   - [Usage](#usage)
   - [About common params](#about-common-params)
@@ -31,6 +31,7 @@ Compresses image as native plugin (Obj-C/Kotlin). This library works on Android 
   - [Troubleshooting](#troubleshooting)
     - [Compressing returns `null`](#compressing-returns-null)
   - [About EXIF information](#about-exif-information)
+  - [Web](#web)
 
 ## Why don't you use dart to do it
 
@@ -320,3 +321,25 @@ but not `direction` information.
   - System API on Android.
 - HEIF encoder: System API.
   - [HeifWriter](https://developer.android.com/jetpack/androidx/releases/heifwriter) on Android P+.
+
+## Web
+
+The web implementation is not required for many people,
+so you need to manually add the web plugin to pubspec.yaml.
+
+```yaml
+dependencies:
+  flutter_image_compress_web: ^0.1.0
+```
+
+This plugin uses [pica][] to implement compression.
+However, since the global object is not available for dynamic import in flutter web with code,
+if you need to use the web part of this plugin, you need to add the following code to the head or body part of index.html under your project web.
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js" ></script>
+
+or your other cdn link
+```
+
+[pica]: https://www.npmjs.com/package/pica?activeTab=readme
