@@ -2,7 +2,6 @@
 library window;
 
 import 'dart:html';
-import 'dart:js';
 import 'dart:typed_data';
 
 import 'package:js/js.dart';
