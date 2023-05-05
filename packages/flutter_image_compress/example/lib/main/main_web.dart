@@ -7,9 +7,9 @@ import 'package:flutter/material.dart' hide TextButton;
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
-import 'const/resource.dart';
+import '../const/resource.dart';
 
-Future<void> main() async {
+Future<void> runMain() async {
   runApp(const MyApp());
   FlutterImageCompress.showNativeLog = true;
 }
