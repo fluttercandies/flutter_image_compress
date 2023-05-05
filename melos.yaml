@@ -14,13 +14,23 @@ scripts:
   format:
     exec: dart format --set-exit-if-changed .
   try_build_apk:
-    exec: flutter build apk --debug
+    exec: |
+      flutter pub get
+
+      flutter build apk --debug
     packageFilters:
       fileExists: lib/main.dart
   try_build_ios:
     exec: |
       flutter pub get
+
       flutter build ios --debug --no-codesign
+    packageFilters:
+      fileExists: lib/main.dart
+  try_build_web:
+    exec: |
+      flutter pub get
+      flutter build web
     packageFilters:
       fileExists: lib/main.dart
   cp_files:
