@@ -20,11 +20,12 @@ extension JSWindowExtension on JSWindow {
 Future<ImageBitmap> convertUint8ListToBitmap(Uint8List buffer) async {
   final blob = Blob([buffer]);
 
-  var jsWindow = window as JSWindow;
   final result = await jsWindow.createImageBitmap(blob);
   final bitmap = await promiseToFuture(result);
   return bitmap;
 }
+
+JSWindow get jsWindow => window as JSWindow;
 
 extension FutureDynamicExtension on dynamic {
   Future<T> toFuture<T>() => promiseToFuture(this);

@@ -57,15 +57,7 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
   }) async {
     final asset = await rootBundle.load(assetName);
     final buffer = asset.buffer.asUint8List();
-
-    print('prepare resize');
-
-    // final result = await _resize(buffer, minWidth, minHeight);
-    // print('result: $result');
-    final bitmap = await _resize(buffer, 320, 480);
-    logger.log('Hello', bitmap);
-
-    return null;
+    return _resize(buffer, 320, 480);
   }
 
   @override
