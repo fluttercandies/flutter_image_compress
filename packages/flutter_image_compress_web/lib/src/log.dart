@@ -5,7 +5,7 @@ import 'package:js/js.dart';
 
 external void log(dynamic tag, dynamic msg);
 
-bool showLog = true;
+bool showLog = false;
 
 void jsLog(dynamic tag, dynamic msg) {
   if (showLog) {
