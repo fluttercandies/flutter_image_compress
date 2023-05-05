@@ -15,9 +15,6 @@ import 'const/resource.dart';
 import 'time_logger.dart';
 
 Future<void> main() async {
-  await FlutterImageCompressWeb.changePicaUrl(
-    'https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js',
-  );
   runApp(const MyApp());
   FlutterImageCompress.showNativeLog = true;
 }

@@ -1,91 +1,26 @@
 import 'dart:async';
-import 'dart:js';
+import 'dart:html';
+import 'dart:js' as js;
 import 'dart:typed_data' as typed_data;
-// import 'dart:html' as html;
+import 'dart:html' as html;
+import 'dart:ui';
+import 'package:js/js.dart';
+import 'package:js/js_util.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_image_compress_platform_interface/flutter_image_compress_platform_interface.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+
+import 'pica.dart';
+import 'window.dart';
+import 'log.dart' as logger;
 // import 'package:js/js.dart';
 
 class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
-  static Future<void> changePicaUrl(String? url) async {
-    // picaUrl = url;
-    // await _loadScript();
-  }
-
-  static Future<void> _loadScript() async {
-    // var script = document.createElement('script');
-    // script.onload = function() {
-    //   // pica 库成功加载后执行此处的代码
-    //   console.log(window.pica);
-    // };
-    // script.src = 'https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js';
-    // document.head.appendChild(script);
-
-    // Use dart to add
-    // final head = html.window.document.getElementsByTagName('head').first;
-    // final scriptNode = html.ScriptElement();
-    // scriptNode.src = 'https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js';
-    // scriptNode.onLoad.listen((event) {
-    //   _log('pica loaded');
-    //   _log(js.context['pica']);
-    // });
-    // head.append(scriptNode);
-
-    final pica = context['pica'];
-    print('pica: $pica');
-
-    // final pica = JsObject(
-    //   await context.callMethod(
-    //     'import',
-    //     [
-    //       'https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js',
-    //     ],
-    //   ),
-    // );
-
-    // print('pica: $pica');
-
-    // final scriptElement = html.window.document.getElementById('pica_script');
-    // if (scriptElement != null) {
-    //   scriptElement.remove();
-    //   _log('remove old pica script');
-    // }
-
-    // final parent = html.window.document.getElementsByTagName('body').first;
-    // final script = html.ScriptElement();
-    // script.id = 'pica_script';
-    // // Try load url from assets
-    // if (picaUrl != null) {
-    //   script.src = picaUrl!;
-    //   _log('load pica url: ${script.src}');
-    // }
-
-    // script.onLoad.listen((event) {
-    //   _log(js.context['pica']);
-    // });
-
-    // parent.append(script);
-    // _log('add pica script to head');
-    // _log('The new script:');
-    // _log(script.outerHtml);
-
-    // // const scriptContent = 'console.log("Hello script")';
-    // // final script2 = html.ScriptElement();
-    // // script2.async = true;
-    // // script2.innerText = scriptContent;
-    // // parent.append(script2);
-  }
-
   static void registerWith(Registrar registrar) {
     WidgetsFlutterBinding.ensureInitialized();
-    _loadScript().then(
-      (value) {
-        FlutterImageCompressPlatform.instance = FlutterImageCompressWeb();
-      },
-    );
+    FlutterImageCompressPlatform.instance = FlutterImageCompressWeb();
   }
 
   @override
@@ -105,7 +40,9 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
     throw UnimplementedError();
   }
 
-  void run() {}
+  Future<Uint8List> _resize(Uint8List buffer, int width, int height) async {
+    return resizeWithList(buffer, width, height);
+  }
 
   @override
   Future<typed_data.Uint8List?> compressAssetImage(
@@ -118,15 +55,15 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
   }) async {
-    // final pica = require('pica')();
-    // final pica = require('pica');
-
     final asset = await rootBundle.load(assetName);
     final buffer = asset.buffer.asUint8List();
-    // use js pico to compress
-    // print('pica:');
 
-    run();
+    print('prepare resize');
+
+    // final result = await _resize(buffer, minWidth, minHeight);
+    // print('result: $result');
+    final bitmap = await _resize(buffer, 320, 480);
+    logger.log('Hello', bitmap);
 
     return null;
   }
