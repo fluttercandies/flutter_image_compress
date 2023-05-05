@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:typed_data';
 
+import 'package:flutter_image_compress_platform_interface/flutter_image_compress_platform_interface.dart';
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
 
@@ -30,24 +31,53 @@ extension PicaExt on Pica {
   external dynamic init();
 }
 
-Future<Uint8List> resizeWithList(
-  Uint8List buffer,
-  int width,
-  int height,
-) async {
+Future<Uint8List> resizeWithList({
+  required Uint8List buffer,
+  required int minWidth,
+  required int minHeight,
+  CompressFormat format = CompressFormat.jpeg,
+  int quality = 88,
+}) async {
   final bitmap = await convertUint8ListToBitmap(buffer);
+
+  final srcWidth = bitmap.width!;
+  final srcHeight = bitmap.height!;
+
+  final ratio = srcWidth / srcHeight;
+
+  final width = srcWidth > minWidth ? minWidth : srcWidth;
+  final height = width ~/ ratio;
+
+  logger.log('target size', '$width x $height');
+
   logger.log('bitmap', bitmap);
   final canvas = CanvasElement(width: width, height: height);
   logger.log('canvas', canvas);
 
   final pica = jsWindow.pica() as Pica;
   logger.log('pica', pica);
-  logger.log('pica.init', pica.init());
-  // logger.log('pica.resize', pica.resize);
 
-  final dynamic result = pica.resize(bitmap, canvas);
-  await promiseToFuture(result);
-  final blob = canvas.toDataUrl();
+  await promiseToFuture(pica.resize(bitmap, canvas));
+  final blob = canvas.toDataUrl(format.type, quality / 100);
   final str = blob.split(',')[1];
+
+  bitmap.close();
   return base64Decode(str);
+}
+
+extension CompressExt on CompressFormat {
+  String get type {
+    switch (this) {
+      case CompressFormat.jpeg:
+        return 'image/jpeg';
+      case CompressFormat.png:
+        return 'image/png';
+      case CompressFormat.webp:
+        return 'image/webp';
+      case CompressFormat.heic:
+        throw UnimplementedError('heic is not support web');
+      default:
+        return 'image/jpeg';
+    }
+  }
 }

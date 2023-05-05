@@ -32,10 +32,6 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
     throw UnimplementedError('The method not support web');
   }
 
-  Future<Uint8List> _resize(Uint8List buffer, int width, int height) async {
-    return resizeWithList(buffer, width, height);
-  }
-
   @override
   Future<typed_data.Uint8List?> compressAssetImage(
     String assetName, {
@@ -49,7 +45,13 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
   }) async {
     final asset = await rootBundle.load(assetName);
     final buffer = asset.buffer.asUint8List();
-    return _resize(buffer, 320, 480);
+    return resizeWithList(
+      buffer: buffer,
+      minWidth: minWidth,
+      minHeight: minHeight,
+      quality: quality,
+      format: format,
+    );
   }
 
   @override
@@ -80,7 +82,13 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
   }) {
-    return _resize(image, minWidth, minHeight);
+    return resizeWithList(
+      buffer: image,
+      minWidth: minWidth,
+      minHeight: minHeight,
+      quality: quality,
+      format: format,
+    );
   }
 
   @override
@@ -95,8 +103,6 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
   FlutterImageCompressValidator get validator =>
       _FlutterImageCompressValidator();
 }
-
-
 
 class _FlutterImageCompressValidator extends FlutterImageCompressValidator {
   _FlutterImageCompressValidator()
