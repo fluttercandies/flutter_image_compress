@@ -3,16 +3,11 @@ import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
 
-import 'package:flutter_image_compress_web/flutter_image_compress_web.dart';
-
-import 'button.dart';
-
 import 'package:flutter/material.dart' hide TextButton;
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'const/resource.dart';
-import 'time_logger.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -51,7 +46,13 @@ class _MyAppState extends State<MyApp> {
             SliverToBoxAdapter(
               child: TextButton(
                 onPressed: _compressAsset,
-                child: Text('Compress'),
+                child: Text('Compress asset'),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: TextButton(
+                onPressed: _compressList,
+                child: Text('Compress uint8List'),
               ),
             ),
           ],
@@ -69,6 +70,19 @@ class _MyAppState extends State<MyApp> {
     final assetName = R.IMG_IMG_JPG;
     _changeImageWithUint8List(
       await FlutterImageCompress.compressAssetImage(assetName),
+    );
+  }
+
+  Future<void> _compressList() async {
+    final bytes = await rootBundle
+        .load(R.IMG_IMG_JPG)
+        .then((value) => value.buffer.asUint8List());
+    _changeImageWithUint8List(
+      await FlutterImageCompress.compressWithList(
+        bytes,
+        minWidth: 400,
+        minHeight: 200,
+      ),
     );
   }
 

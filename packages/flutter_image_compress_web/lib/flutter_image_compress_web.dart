@@ -1,21 +1,13 @@
 import 'dart:async';
-import 'dart:html';
-import 'dart:js' as js;
 import 'dart:typed_data' as typed_data;
-import 'dart:html' as html;
-import 'dart:ui';
-import 'package:js/js.dart';
-import 'package:js/js_util.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_image_compress_platform_interface/flutter_image_compress_platform_interface.dart';
+import 'package:flutter_image_compress_web/src/log.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
-import 'pica.dart';
-import 'window.dart';
-import 'log.dart' as logger;
-// import 'package:js/js.dart';
+import 'src/pica.dart';
 
 class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
   static void registerWith(Registrar registrar) {
@@ -37,7 +29,7 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
     bool keepExif = false,
     int numberOfRetries = 5,
   }) {
-    throw UnimplementedError();
+    throw UnimplementedError('The method not support web');
   }
 
   Future<Uint8List> _resize(Uint8List buffer, int width, int height) async {
@@ -73,8 +65,7 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
     bool keepExif = false,
     int numberOfRetries = 5,
   }) {
-    // TODO: implement compressWithFile
-    throw UnimplementedError();
+    throw UnimplementedError('The method not support web');
   }
 
   @override
@@ -89,36 +80,29 @@ class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
   }) {
-    // TODO: implement compressWithList
-    throw UnimplementedError();
+    return _resize(image, minWidth, minHeight);
   }
 
   @override
-  void ignoreCheckSupportPlatform(bool bool) {
-    // TODO: implement ignoreCheckSupportPlatform
-  }
+  void ignoreCheckSupportPlatform(bool bool) {}
 
   @override
   Future<void> showNativeLog(bool value) async {
-    _showLog = true;
+    showLog = value;
   }
 
   @override
-  FlutterImageCompressValidator get validator => FlutterImageCompressValidator(
-      const MethodChannel('flutter_image_compress'));
+  FlutterImageCompressValidator get validator =>
+      _FlutterImageCompressValidator();
 }
 
-bool _showLog = true;
 
-void _log(Object? message) {
-  if (_showLog) {
-    // ignore: avoid_print
-    print(message?.toString());
-  }
-}
 
 class _FlutterImageCompressValidator extends FlutterImageCompressValidator {
-  _FlutterImageCompressValidator(super.channel);
+  _FlutterImageCompressValidator()
+      : super(
+          const MethodChannel('flutter_image_compress'),
+        );
 
   @override
   void checkFileNameAndFormat(String name, CompressFormat format) {}
