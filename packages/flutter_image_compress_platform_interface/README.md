@@ -5,7 +5,7 @@
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_image_compress?style=flat-square)](https://github.com/fluttercandies/flutter_image_compress/blob/main/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_image_compress.svg?style=social&label=Stars)](https://github.com/fluttercandies/flutter_image_compress)
 [![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://stackoverflow.com/questions/tagged/flutter?sort=votes)
-<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
+[![FlutterCandies](https://pub.idqqimg.com/wpa/images/group.png)](https://jq.qq.com/?_wv=1027&k=5bcc0gy)
 
 Compresses image as native plugin (Obj-C/Kotlin). This library works on Android and iOS.
 
@@ -341,5 +341,7 @@ if you need to use the web part of this plugin, you need to add the following co
 
 or your other cdn link
 ```
+
+About web compatibility: two methods with file will throw an exception when used on the web.
 
 [pica]: https://www.npmjs.com/package/pica?activeTab=readme
