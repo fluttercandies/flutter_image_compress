@@ -333,6 +333,8 @@ dependencies:
   flutter_image_compress_web: ^0.1.0
 ```
 
+[![pub package](https://img.shields.io/pub/v/flutter_image_compress_web.svg)](https://pub.dartlang.org/packages/flutter_image_compress_web)
+
 This plugin uses [pica][] to implement compression.
 
 Currently, [debug mode does not allow you to use the dynamic script loading scheme][flutter-126131].
