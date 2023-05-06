@@ -5,11 +5,11 @@
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_image_compress?style=flat-square)](https://github.com/fluttercandies/flutter_image_compress/blob/main/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_image_compress.svg?style=social&label=Stars)](https://github.com/fluttercandies/flutter_image_compress)
 [![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://stackoverflow.com/questions/tagged/flutter?sort=votes)
-<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
+[![FlutterCandies](https://pub.idqqimg.com/wpa/images/group.png)](https://jq.qq.com/?_wv=1027&k=5bcc0gy)
 
 Compresses image as native plugin (Obj-C/Kotlin). This library works on Android and iOS.
 
-- [flutter_image_compress](#flutter_image_compress)
+- [flutter\_image\_compress](#flutter_image_compress)
   - [Why don't you use dart to do it](#why-dont-you-use-dart-to-do-it)
   - [Usage](#usage)
   - [About common params](#about-common-params)
@@ -31,6 +31,8 @@ Compresses image as native plugin (Obj-C/Kotlin). This library works on Android 
   - [Troubleshooting](#troubleshooting)
     - [Compressing returns `null`](#compressing-returns-null)
   - [About EXIF information](#about-exif-information)
+  - [Web](#web)
+  - [Platform Features](#platform-features)
 
 ## Why don't you use dart to do it
 
@@ -320,3 +322,50 @@ but not `direction` information.
   - System API on Android.
 - HEIF encoder: System API.
   - [HeifWriter](https://developer.android.com/jetpack/androidx/releases/heifwriter) on Android P+.
+
+## Web
+
+The web implementation is not required for many people,
+so you need to manually add the web plugin to pubspec.yaml.
+
+```yaml
+dependencies:
+  flutter_image_compress_web: ^0.1.0
+```
+
+[![pub package](https://img.shields.io/pub/v/flutter_image_compress_web.svg)](https://pub.dartlang.org/packages/flutter_image_compress_web)
+
+This plugin uses [pica][] to implement compression.
+
+Currently, [debug mode does not allow you to use the dynamic script loading scheme][flutter-126131].
+And when you actually deploy, you may choose server deployment or cdn deployment, so here we suggest you add script node to head or body by yourself.
+
+[flutter-126131]: https://github.com/flutter/flutter/issues/126131
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js" ></script>
+
+or your other cdn link
+```
+
+About web compatibility: two methods with file will throw an exception when used on the web.
+
+[pica]: https://www.npmjs.com/package/pica?activeTab=readme
+
+## Platform Features
+
+| Feature                    | Android |  iOS  |           Web           |
+| :------------------------- | :-----: | :---: | :---------------------: |
+| method: compressWithList   |    ✅    |   ✅   |            ✅            |
+| method: compressAssetImage |    ✅    |   ✅   |            ✅            |
+| method: compressWithFile   |    ✅    |   ✅   |            ❌            |
+| method: compressAndGetFile |    ✅    |   ✅   |            ❌            |
+| format: jpeg               |    ✅    |   ✅   |            ✅            |
+| format: png                |    ✅    |   ✅   |            ✅            |
+| format: webp               |    ✅    |   ✅   | [🌐][webp-compatibility] |
+| format: heic               |    ✅    |   ✅   |            ❌            |
+| param: quality             |    ✅    |   ✅   | [🌐][webp-compatibility] |
+| param: rotate              |    ✅    |   ✅   |            ❌            |
+| param: keepExif            |    ✅    |   ✅   |            ❌            |
+
+[webp-compatibility]: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob#browser_compatibility "Browser support"
