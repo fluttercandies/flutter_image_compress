@@ -334,8 +334,11 @@ dependencies:
 ```
 
 This plugin uses [pica][] to implement compression.
-However, since the global object is not available for dynamic import in flutter web with code,
-if you need to use the web part of this plugin, you need to add the following code to the head or body part of index.html under your project web.
+
+Currently, [debug mode does not allow you to use the dynamic script loading scheme][flutter-126131].
+And when you actually deploy, you may choose server deployment or cdn deployment, so here we suggest you add script node to head or body by yourself.
+
+[flutter-126131]: https://github.com/flutter/flutter/issues/126131
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js" ></script>
