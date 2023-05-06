@@ -352,18 +352,18 @@ About web compatibility: two methods with file will throw an exception when used
 
 ## Platform Features
 
-| Feature                    | Android |  iOS  |                  Web                  |
-| :------------------------- | :-----: | :---: | :-----------------------------------: |
-| method: compressWithList   |    √    |   √   |                   √                   |
-| method: compressAssetImage |    √    |   √   |                   √                   |
-| method: compressWithFile   |    √    |   √   |                   x                   |
-| method: compressAndGetFile |    √    |   √   |                   x                   |
-| format: jpeg               |    √    |   √   |                   √                   |
-| format: png                |    √    |   √   |                   √                   |
-| format: webp               |    √    |   √   | [browser support][webp-compatibility] |
-| format: heic               |    √    |   √   |                   x                   |
-| param: quality             |    √    |   √   | [browser support][webp-compatibility] |
-| param: rotate              |    √    |   √   |                   x                   |
-| param: keepExif            |    √    |   √   |                   x                   |
+| Feature                    | Android |  iOS  |           Web           |
+| :------------------------- | :-----: | :---: | :---------------------: |
+| method: compressWithList   |    ✅    |   ✅   |            ✅            |
+| method: compressAssetImage |    ✅    |   ✅   |            ✅            |
+| method: compressWithFile   |    ✅    |   ✅   |            ❌            |
+| method: compressAndGetFile |    ✅    |   ✅   |            ❌            |
+| format: jpeg               |    ✅    |   ✅   |            ✅            |
+| format: png                |    ✅    |   ✅   |            ✅            |
+| format: webp               |    ✅    |   ✅   | [🌐][webp-compatibility] |
+| format: heic               |    ✅    |   ✅   |            ❌            |
+| param: quality             |    ✅    |   ✅   | [🌐][webp-compatibility] |
+| param: rotate              |    ✅    |   ✅   |            ❌            |
+| param: keepExif            |    ✅    |   ✅   |            ❌            |
 
-[webp-compatibility]: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob#browser_compatibility
+[webp-compatibility]: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob#browser_compatibility "Browser support"
