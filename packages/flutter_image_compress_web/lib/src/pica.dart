@@ -38,6 +38,11 @@ Future<Uint8List> resizeWithList({
   CompressFormat format = CompressFormat.jpeg,
   int quality = 88,
 }) async {
+  final Stopwatch stopwatch = Stopwatch()..start();
+  final pica = jsWindow.pica() as Pica;
+  logger.jsLog('The pica instance', pica);
+  logger.jsLog('src image buffer', buffer);
+  logger.dartLog('src image buffer length: ${buffer.length}');
   final bitmap = await convertUint8ListToBitmap(buffer);
 
   final srcWidth = bitmap.width!;
@@ -48,21 +53,20 @@ Future<Uint8List> resizeWithList({
   final width = srcWidth > minWidth ? minWidth : srcWidth;
   final height = width ~/ ratio;
 
-  logger.log('target size', '$width x $height');
+  logger.jsLog('target size', '$width x $height');
 
-  logger.log('bitmap', bitmap);
   final canvas = CanvasElement(width: width, height: height);
-  logger.log('canvas', canvas);
-
-  final pica = jsWindow.pica() as Pica;
-  logger.log('pica', pica);
-
   await promiseToFuture(pica.resize(bitmap, canvas));
   final blob = canvas.toDataUrl(format.type, quality / 100);
   final str = blob.split(',')[1];
 
   bitmap.close();
-  return base64Decode(str);
+  final result = base64Decode(str);
+  logger.jsLog('compressed image buffer', result);
+  logger.dartLog('compressed image buffer length: ${result.length}');
+  logger.dartLog('compressed took ${stopwatch.elapsedMilliseconds}ms');
+
+  return result;
 }
 
 extension CompressExt on CompressFormat {

@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart' hide TextButton;
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
+import '../button.dart';
 import '../const/resource.dart';
+import '../time_logger.dart';
 
 Future<void> runMain() async {
   runApp(const MyApp());
@@ -21,8 +22,25 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+typedef _FutureVoidCallback = FutureOr<Uint8List?> Function();
+
 class _MyAppState extends State<MyApp> {
+  final TimeLogger timeLogger = TimeLogger('Compress method time');
   ImageProvider? provider;
+
+  Widget button(_FutureVoidCallback onPressed, String text) {
+    return SliverToBoxAdapter(
+      child: TextButton(
+        onPressed: () async {
+          timeLogger.startRecorder();
+          final bytes = await onPressed();
+          timeLogger.logTime();
+          _changeImageWithUint8List(bytes);
+        },
+        child: Text(text),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +61,10 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: TextButton(
-                onPressed: _compressAsset,
-                child: Text('Compress asset'),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: TextButton(
-                onPressed: _compressList,
-                child: Text('Compress uint8List'),
-              ),
-            ),
+            button(_compressAsset, 'Compress asset'),
+            button(_compressList, 'Compress uint8List'),
+            button(_compressPNG, 'Compress PNG'),
+            button(_compressHaveExif, 'Compress have exif'),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -66,23 +76,40 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<void> _compressAsset() async {
+  Future<Uint8List?> _compressAsset() {
     final assetName = R.IMG_IMG_JPG;
-    _changeImageWithUint8List(
-      await FlutterImageCompress.compressAssetImage(assetName),
-    );
+    return FlutterImageCompress.compressAssetImage(assetName);
   }
 
-  Future<void> _compressList() async {
+  Future<Uint8List?> _compressList() async {
     final bytes = await rootBundle
         .load(R.IMG_IMG_JPG)
         .then((value) => value.buffer.asUint8List());
-    _changeImageWithUint8List(
-      await FlutterImageCompress.compressWithList(
-        bytes,
-        minWidth: 400,
-        minHeight: 200,
-      ),
+    return FlutterImageCompress.compressWithList(
+      bytes,
+      minWidth: 400,
+      minHeight: 200,
+    );
+  }
+
+  Future<Uint8List?> _compressPNG() async {
+    final bytes = await rootBundle
+        .load(R.IMG_HEADER_PNG)
+        .then((value) => value.buffer.asUint8List());
+    return FlutterImageCompress.compressWithList(
+      bytes,
+      minWidth: 400,
+      minHeight: 200,
+      format: CompressFormat.png,
+    );
+  }
+
+  Future<Uint8List?> _compressHaveExif() {
+    return FlutterImageCompress.compressAssetImage(
+      R.IMG_HAVE_EXIF_JPG,
+      minWidth: 400,
+      minHeight: 200,
+      rotate: 180,
     );
   }
 
@@ -130,68 +157,4 @@ extension _StateExtension on State {
     });
     return completer.future;
   }
-}
-
-class TextButton extends StatelessWidget {
-  const TextButton({
-    Key? key,
-    required this.onPressed,
-    required this.child,
-  }) : super(key: key);
-  final VoidCallback onPressed;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        child: child,
-      ),
-    );
-  }
-}
-
-class XFileImageProvider extends ImageProvider<XFileImageProvider> {
-  const XFileImageProvider(this.file);
-
-  final XFile file;
-
-  @override
-  Future<XFileImageProvider> obtainKey(ImageConfiguration configuration) async {
-    return this;
-  }
-
-  Future<ui.Codec> _loadAsync(
-      XFileImageProvider key, DecoderBufferCallback decode) async {
-    final bytes = await file.readAsBytes();
-    final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-    return decode(buffer);
-  }
-
-  @override
-  ImageStreamCompleter loadBuffer(
-      XFileImageProvider key, DecoderBufferCallback decode) {
-    return MultiFrameImageStreamCompleter(
-      codec: _loadAsync(key, decode),
-      scale: 1.0,
-      informationCollector: () sync* {
-        yield ErrorDescription('Path: ${file.path}');
-      },
-    );
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    if (other.runtimeType != runtimeType) return false;
-    final XFileImageProvider typedOther = other;
-    return file.path == typedOther.file.path;
-  }
-
-  @override
-  int get hashCode => file.path.hashCode;
-
-  @override
-  String toString() => '$runtimeType("${file.path}",)';
 }
