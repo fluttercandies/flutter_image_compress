@@ -32,6 +32,7 @@ Compresses image as native plugin (Obj-C/Kotlin). This library works on Android 
     - [Compressing returns `null`](#compressing-returns-null)
   - [About EXIF information](#about-exif-information)
   - [Web](#web)
+  - [Platform Features](#platform-features)
 
 ## Why don't you use dart to do it
 
@@ -345,3 +346,21 @@ or your other cdn link
 About web compatibility: two methods with file will throw an exception when used on the web.
 
 [pica]: https://www.npmjs.com/package/pica?activeTab=readme
+
+## Platform Features
+
+| Feature                    | Android |  iOS  |                  Web                  |
+| :------------------------- | :-----: | :---: | :-----------------------------------: |
+| method: compressWithList   |    √    |   √   |                   √                   |
+| method: compressAssetImage |    √    |   √   |                   √                   |
+| method: compressWithFile   |    √    |   √   |                   x                   |
+| method: compressAndGetFile |    √    |   √   |                   x                   |
+| format: jpeg               |    √    |   √   |                   √                   |
+| format: png                |    √    |   √   |                   √                   |
+| format: webp               |    √    |   √   | [browser support][webp-compatibility] |
+| format: heic               |    √    |   √   |                   x                   |
+| param: quality             |    √    |   √   | [browser support][webp-compatibility] |
+| param: rotate              |    √    |   √   |                   x                   |
+| param: keepExif            |    √    |   √   |                   x                   |
+
+[webp-compatibility]: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob#browser_compatibility
