@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.1
+
+- Include web support.
+
 ## 2.0.0
 
 - Migrate platform interface
