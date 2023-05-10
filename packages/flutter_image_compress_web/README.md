@@ -45,7 +45,7 @@ even in release version. Using isolate does not solve the problem.
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^1.0.0-nullsafety
+  flutter_image_compress: ^2.0.1
 ```
 
 ```dart
