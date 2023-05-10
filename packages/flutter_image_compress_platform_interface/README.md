@@ -43,9 +43,11 @@ even in release version. Using isolate does not solve the problem.
 
 ## Usage
 
+See the ![pub](https://img.shields.io/pub/v/flutter_image_compress.svg) version.
+
 ```yaml
 dependencies:
-  flutter_image_compress: ^2.0.1
+  flutter_image_compress: ^2.0.2
 ```
 
 ```dart
