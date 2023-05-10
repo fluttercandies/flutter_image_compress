@@ -326,26 +326,22 @@ but not `direction` information.
 ## Web
 
 The web implementation is not required for many people,
-so you need to manually add the web plugin to pubspec.yaml.
-
-```yaml
-dependencies:
-  flutter_image_compress_web: ^0.1.0
-```
-
-[![pub package](https://img.shields.io/pub/v/flutter_image_compress_web.svg)](https://pub.dartlang.org/packages/flutter_image_compress_web)
 
 This plugin uses [pica][] to implement compression.
 
 Currently, [debug mode does not allow you to use the dynamic script loading scheme][flutter-126131].
-And when you actually deploy, you may choose server deployment or cdn deployment, so here we suggest you add script node to head or body by yourself.
+And when you actually deploy, you may choose server deployment or cdn deployment, so here we suggest you add script node to head or body by yourself in your `<flutte_project>/web/index.html`.
 
 [flutter-126131]: https://github.com/flutter/flutter/issues/126131
+
+Add for `<flutte_project>/web/index.html`:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js" ></script>
 
-or your other cdn link
+<!-- or -->
+
+<script src="https://unpkg.com/pica/dist/pica.min.js" ></script>
 ```
 
 About web compatibility: two methods with file will throw an exception when used on the web.
