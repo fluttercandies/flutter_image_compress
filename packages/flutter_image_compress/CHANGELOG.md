@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.2
+
+- Config default_plugin for web in pubspec.yaml.
+
 ## 2.0.1
 
 - Include web support.
