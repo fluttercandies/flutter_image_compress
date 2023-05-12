@@ -11,7 +11,18 @@ import '../const/resource.dart';
 import '../time_logger.dart';
 
 Future<void> runMain() async {
-  runApp(const MyApp());
+  // runApp(const MyApp());
+  runMainWithZoned();
+  FlutterImageCompress.showNativeLog = true;
+}
+
+Future<void> runMainWithZoned() async {
+  await runZonedGuarded(() async {
+    runApp(MyApp());
+  }, (err, st) {
+    print(err);
+    print(st);
+  });
   FlutterImageCompress.showNativeLog = true;
 }
 

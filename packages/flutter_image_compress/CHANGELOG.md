@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.3
+
+- Bump web version to `0.1.2`.
+
 ## 2.0.2
 
 - Config default_plugin for web in pubspec.yaml.
