@@ -43,12 +43,20 @@ even in release version. Using isolate does not solve the problem.
 
 ## Usage
 
-See the ![pub](https://img.shields.io/pub/v/flutter_image_compress.svg) version.
+See the [![pub](https://img.shields.io/pub/v/flutter_image_compress.svg)](https://pub.dev/packages/flutter_image_compress/versions) version.
 
 ```yaml
 dependencies:
-  flutter_image_compress: ^2.0.2
+  flutter_image_compress: <latest_version>
 ```
+
+or run this command:
+
+```bash
+flutter pub add flutter_image_compress
+```
+
+import the package in your code:
 
 ```dart
 import 'package:flutter_image_compress/flutter_image_compress.dart';
