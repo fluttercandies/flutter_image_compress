@@ -1,5 +1,9 @@
 # flutter_image_compress_web
 
+## 0.1.3
+
+- Change sdk constraint to `>=2.16.0 <4.0.0`.
+
 ## 0.1.2
 
 - Remove `WidgetsFlutterBinding.ensureInitialized();` in registerWith method.

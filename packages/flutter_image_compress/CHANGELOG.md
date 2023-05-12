@@ -2,7 +2,8 @@
 
 ## 2.0.3
 
-- Bump web version to `0.1.2`.
+- Bump dependencies version.
+- Change sdk constraint to `>=2.12.0 <4.0.0`.
 
 ## 2.0.2
 
