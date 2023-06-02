@@ -15,33 +15,34 @@ scripts:
     exec: dart format --set-exit-if-changed .
   try_build_apk:
     exec: |
+      set -e
       flutter pub get
-
       flutter build apk --debug
     packageFilters:
       fileExists: lib/main.dart
   try_build_ios:
     exec: |
+      set -e
       flutter pub get
-
       flutter build ios --debug --no-codesign
     packageFilters:
       fileExists: lib/main.dart
   try_build_web:
     exec: |
+      set -e
       flutter pub get
       flutter build web
     packageFilters:
       fileExists: lib/main.dart
   cp_files:
     exec: |
+      set -e
       if [ -f "../../LICENSE" ]; then
         cp ../../LICENSE LICENSE
       fi
       if [ -f "../../README.md" ]; then
         cp ../../README.md README.md
       fi
-
 sdkPath: auto
 
 command:
