@@ -1,3 +1,7 @@
+## 2.0.4
+
+ - **DOCS**: Update changelog. ([c847f5d5](https://github.com/fluttercandies/flutter_image_compress/commit/c847f5d5d03d4e727b1a83dd33e54d8d93787749))
+
 ## 2.0.3
 
 - Bump dependencies version.
