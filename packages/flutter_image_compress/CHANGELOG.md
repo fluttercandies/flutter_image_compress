@@ -1,3 +1,7 @@
+## 2.0.4
+
+ - Update a dependency to the latest release.
+
 # CHANGELOG
 
 ## 2.0.3
