@@ -24,6 +24,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.fluttercandies.flutter_image_compress'
+    }
+
     compileSdkVersion 31
 
     sourceSets {
