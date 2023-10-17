@@ -7,6 +7,11 @@ import 'package:flutter_image_compress_platform_interface/flutter_image_compress
 class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
   static const _channel = MethodChannel('flutter_image_compress');
 
+  /// For flutter plugin registration.
+  static void registerWith() {
+    FlutterImageCompressPlatform.instance = FlutterImageCompressMacos();
+  }
+
   @override
   Future<XFile?> compressAndGetFile(
     String path,

@@ -35,7 +35,7 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
         result(FlutterError(code: "Incoming byte arrays can't be converted to image.", message: nil, details: nil))
         return nil
       }
-      return Compressor(image: image)
+      return Compressor(image: image, params: params)
     }
 
     let havePath = params.contains { key, value in
@@ -48,7 +48,7 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
         result(FlutterError(code: "Incoming file can't be converted to image.", message: nil, details: nil))
         return nil
       }
-      return Compressor(image: image)
+      return Compressor(image: image, params: params)
     }
 
     result(FlutterError(code: "The incoming parameters do not contain image.", message: nil, details: nil))
@@ -83,17 +83,120 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
 class Compressor {
 
   let image: NSImage
+  let params: Dictionary<String, Any>
 
-  init(image: NSImage) {
+  init(image: NSImage, params: Dictionary<String, Any>) {
     self.image = image
+    self.params = params
+  }
+
+  func compress() -> NSImage {
+    let rotate = params["rotate"] as! Int
+
+    let minWidth = params["minWidth"] as! Int
+    let minHeight = params["minHeight"] as! Int
+
+    let srcWidth = image.size.width
+    let srcHeight = image.size.height
+
+    let ratio = srcWidth / srcHeight
+    let maxRatio = CGFloat(minWidth) / CGFloat(minHeight)
+    var scale = 1.0
+
+    if (ratio < maxRatio) {
+      scale = CGFloat(minWidth) / srcWidth
+    } else {
+      scale = CGFloat(minHeight) / srcHeight
+    }
+
+    let targetWidth = (srcWidth * scale).rounded()
+    let targetHeight = (srcHeight * scale).rounded()
+
+    let targetSize = NSMakeSize(targetWidth, targetHeight)
+    let targetRect = NSMakeRect(0, 0, targetWidth, targetHeight)
+
+    let targetImage = NSImage(size: targetSize)
+    targetImage.lockFocus()
+
+    let context = NSGraphicsContext.current?.cgContext
+    context?.interpolationQuality = .high
+    context?.setFillColor(NSColor.white.cgColor)
+    context?.fill(targetRect)
+    context?.draw(image.cgImage(forProposedRect: nil, context: nil, hints: nil)!, in: targetRect)
+
+    // rotate
+    if (rotate != 0) {
+      let rotateAngle = CGFloat(rotate) * CGFloat.pi / 180
+      let rotateTransform = CGAffineTransform(rotationAngle: rotateAngle)
+      context?.concatenate(rotateTransform)
+    }
+
+    targetImage.unlockFocus()
+
+    return targetImage
+  }
+
+  func compressData(_ resultHandler: @escaping (Any?) -> ()) -> Data? {
+    let resultImage = compress()
+    let data = resultImage.tiffRepresentation
+
+    let quality = params["quality"] as! Int
+    let format = params["format"] as! Int
+//    let keepExif = params["keepExif"] as! Bool
+//    let inSampleSize = params["inSampleSize"] as! Int
+//    let autoCorrectionAngle = params["autoCorrectionAngle"] as! Bool
+
+    let outputFormat = CompressFormat.convertInt(type: format)
+
+    if (outputFormat == .jpeg) {
+      let compressQuality = CGFloat(quality) / 100
+      let dictionary: [NSBitmapImageRep.PropertyKey: Any] = [
+        .compressionFactor: compressQuality,
+        .compressionMethod: 4,
+      ]
+      return NSBitmapImageRep(data: data!)!.representation(using: NSBitmapImageRep.FileType.jpeg, properties: dictionary)!
+    } else if (outputFormat == .png) {
+      return NSBitmapImageRep(data: data!)!.representation(using: NSBitmapImageRep.FileType.png, properties: [:])!
+    }
+
+    resultHandler(FlutterError(code: "The format cannot be converted", message: nil, details: nil))
+    return nil
   }
 
   func compressToPath(_ result: @escaping (Any?) -> (), _ path: String) {
-
+    if let data = compressData(result) {
+      let fileManager = FileManager.default
+      fileManager.createFile(atPath: path, contents: data, attributes: nil)
+      result(path)
+    }
   }
 
   func compressToBytes(_ result: @escaping (Any?) -> ()) {
-
+    if let data = compressData(result) {
+      result(FlutterStandardTypedData(bytes: data))
+    }
   }
 
+}
+
+enum CompressFormat {
+  case jpeg
+  case png
+  case heic
+  case webp
+
+  static func convertInt(type: Int) -> CompressFormat {
+    switch (type) {
+    case 0:
+      return .jpeg
+    case 1:
+      return .png
+    case 2:
+      return .heic
+    case 3:
+      return .webp
+    default:
+      return .jpeg
+    }
+  }
 }

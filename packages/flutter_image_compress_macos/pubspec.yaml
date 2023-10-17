@@ -1,5 +1,5 @@
 name: flutter_image_compress_macos
-description: A new Flutter plugin project.
+description: The implementation of macOS for flutter_image_compress.
 version: 1.0.0
 homepage: https://github.com/fluttercandies/flutter_image_compress
 
@@ -18,3 +18,4 @@ flutter:
     platforms:
       macos:
         pluginClass: FlutterImageCompressMacosPlugin
+        dartPluginClass: FlutterImageCompressMacos
