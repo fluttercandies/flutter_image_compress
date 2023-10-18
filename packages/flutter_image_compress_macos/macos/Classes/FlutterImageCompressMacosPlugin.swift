@@ -1,5 +1,6 @@
 import Cocoa
 import FlutterMacOS
+import AVFoundation
 
 class Logger {
 
@@ -14,11 +15,59 @@ class Logger {
   }
 }
 
+class ImageSrc {
+  let srcImage: CGImageSource
+  let params: Dictionary<String, Any>
+
+  init(srcImage: CGImageSource, params: Dictionary<String, Any>) {
+    self.srcImage = srcImage
+    self.params = params
+  }
+
+  func getSize() -> NSSize {
+    let image = CGImageSourceCreateImageAtIndex(srcImage, 0, nil)
+
+    let width = image?.width ?? 0
+    let height = image?.height ?? 0
+
+    let orientation = params[kCGImagePropertyOrientation as String] as? Int
+
+    if (orientation == 3 || orientation == 6) {
+      return NSMakeSize(CGFloat(height), CGFloat(width))
+    }
+
+    return NSMakeSize(CGFloat(width), CGFloat(height))
+  }
+}
+
 public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "flutter_image_compress", binaryMessenger: registrar.messenger)
     let instance = FlutterImageCompressMacosPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
+  }
+
+  func getImageSrc(params: Dictionary<String, Any>, sourceGetter: () -> CGImageSource?) -> ImageSrc? {
+    let keepExif = params["keepExif"] as! Bool
+
+    guard let source = sourceGetter() else {
+      return nil
+    }
+
+    if (!keepExif) {
+      return ImageSrc(srcImage: source, params: [String: Any]())
+    }
+
+    if let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] {
+      return ImageSrc(srcImage: source, params: properties)
+    } else {
+      return ImageSrc(srcImage: source, params: [String: Any]())
+    }
+
+  }
+
+  func makeFlutterError(code: String = "The incoming parameters do not contain image.") -> FlutterError {
+    FlutterError(code: code, message: nil, details: nil)
   }
 
   func handleResult(_ args: Any?, _ result: @escaping FlutterResult) -> Compressor? {
@@ -31,10 +80,16 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
     if (haveList) {
       let data = params["list"] as! FlutterStandardTypedData
       let nsData = data.data
-      guard let image = NSImage(data: nsData) else {
-        result(FlutterError(code: "Incoming byte arrays can't be converted to image.", message: nil, details: nil))
+
+      let image = getImageSrc(params: params) {
+        CGImageSourceCreateWithData(nsData as CFData, nil)
+      }
+
+      guard let image = image else {
+        result(makeFlutterError())
         return nil
       }
+
       return Compressor(image: image, params: params)
     }
 
@@ -44,14 +99,20 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
 
     if (havePath) {
       let path = params["path"] as! String
-      guard let image = NSImage(contentsOfFile: path) else {
-        result(FlutterError(code: "Incoming file can't be converted to image.", message: nil, details: nil))
+      let image = getImageSrc(params: params) {
+        let url = URL(fileURLWithPath: path)
+        return CGImageSourceCreateWithURL(url as CFURL, nil)
+      }
+
+      guard let image = image else {
+        result(makeFlutterError(code: "Incoming file can't be converted to image."))
         return nil
       }
+
       return Compressor(image: image, params: params)
     }
 
-    result(FlutterError(code: "The incoming parameters do not contain image.", message: nil, details: nil))
+    result(makeFlutterError())
 
     return nil
   }
@@ -79,25 +140,42 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
   }
 }
 
-
 class Compressor {
 
-  let image: NSImage
+  let image: ImageSrc
   let params: Dictionary<String, Any>
 
-  init(image: NSImage, params: Dictionary<String, Any>) {
+  init(image: ImageSrc, params: Dictionary<String, Any>) {
     self.image = image
     self.params = params
   }
 
-  func compress() -> NSImage {
+  func getOutputFormat() -> CFString {
+    let format = params["format"] as! Int
+
+    switch (format) {
+    case 0:
+      return kUTTypeJPEG
+    case 1:
+      return kUTTypePNG
+    case 2:
+      return AVFileType.heic as CFString
+    default:
+      return kUTTypeJPEG
+    }
+  }
+
+  func compress(destCreator: () -> CGImageDestination) {
     let rotate = params["rotate"] as! Int
+    let quality = params["quality"] as! Int
 
     let minWidth = params["minWidth"] as! Int
     let minHeight = params["minHeight"] as! Int
 
-    let srcWidth = image.size.width
-    let srcHeight = image.size.height
+    let size = image.getSize()
+
+    let srcWidth = size.width
+    let srcHeight = size.height
 
     let ratio = srcWidth / srcHeight
     let maxRatio = CGFloat(minWidth) / CGFloat(minHeight)
@@ -112,69 +190,52 @@ class Compressor {
     let targetWidth = (srcWidth * scale).rounded()
     let targetHeight = (srcHeight * scale).rounded()
 
-    let targetSize = NSMakeSize(targetWidth, targetHeight)
-    let targetRect = NSMakeRect(0, 0, targetWidth, targetHeight)
+//    let targetSize = NSMakeSize(targetWidth, targetHeight)
+//    let targetRect = NSMakeRect(0, 0, targetWidth, targetHeight)
 
-    let targetImage = NSImage(size: targetSize)
-    targetImage.lockFocus()
+    let dest = destCreator()
 
-    let context = NSGraphicsContext.current?.cgContext
-    context?.interpolationQuality = .high
-    context?.setFillColor(NSColor.white.cgColor)
-    context?.fill(targetRect)
-    context?.draw(image.cgImage(forProposedRect: nil, context: nil, hints: nil)!, in: targetRect)
+    let options = [
+      kCGImageDestinationLossyCompressionQuality: CGFloat(quality) / 100,
+      kCGImageDestinationImageMaxPixelSize: max(targetWidth, targetHeight),
+      kCGImageDestinationEmbedThumbnail: true
+    ] as CFDictionary
 
-    // rotate
-    if (rotate != 0) {
-      let rotateAngle = CGFloat(rotate) * CGFloat.pi / 180
-      let rotateTransform = CGAffineTransform(rotationAngle: rotateAngle)
-      context?.concatenate(rotateTransform)
-    }
-
-    targetImage.unlockFocus()
-
-    return targetImage
+    CGImageDestinationAddImageFromSource(dest, image.srcImage, 0, options)
+    CGImageDestinationFinalize(dest)
   }
 
-  func compressData(_ resultHandler: @escaping (Any?) -> ()) -> Data? {
-    let resultImage = compress()
-    let data = resultImage.tiffRepresentation
-
-    let quality = params["quality"] as! Int
-    let format = params["format"] as! Int
-//    let keepExif = params["keepExif"] as! Bool
-//    let inSampleSize = params["inSampleSize"] as! Int
-//    let autoCorrectionAngle = params["autoCorrectionAngle"] as! Bool
-
-    let outputFormat = CompressFormat.convertInt(type: format)
-
-    if (outputFormat == .jpeg) {
-      let compressQuality = CGFloat(quality) / 100
-      let dictionary: [NSBitmapImageRep.PropertyKey: Any] = [
-        .compressionFactor: compressQuality,
-        .compressionMethod: 4,
-      ]
-      return NSBitmapImageRep(data: data!)!.representation(using: NSBitmapImageRep.FileType.jpeg, properties: dictionary)!
-    } else if (outputFormat == .png) {
-      return NSBitmapImageRep(data: data!)!.representation(using: NSBitmapImageRep.FileType.png, properties: [:])!
-    }
-
-    resultHandler(FlutterError(code: "The format cannot be converted", message: nil, details: nil))
-    return nil
-  }
+//  func compressData(_ resultHandler: @escaping (Any?) -> ()) -> Data? {
+//    let data = NSMutableData()
+//    compress {
+//      CGImageDestinationCreateWithData(data, getOutputFormat(), 1, nil)!
+//    }
+//
+////    let quality = params["quality"] as! Int
+////    let format = params["format"] as! Int
+////    let keepExif = params["keepExif"] as! Bool
+////    let inSampleSize = params["inSampleSize"] as! Int
+////    let autoCorrectionAngle = params["autoCorrectionAngle"] as! Bool
+//
+//    resultHandler(data)
+//  }
 
   func compressToPath(_ result: @escaping (Any?) -> (), _ path: String) {
-    if let data = compressData(result) {
-      let fileManager = FileManager.default
-      fileManager.createFile(atPath: path, contents: data, attributes: nil)
-      result(path)
+    let url = URL(fileURLWithPath: path)
+    compress {
+      CGImageDestinationCreateWithURL(url as CFURL, getOutputFormat(), 1, nil)!
     }
+
+    result(path)
   }
 
   func compressToBytes(_ result: @escaping (Any?) -> ()) {
-    if let data = compressData(result) {
-      result(FlutterStandardTypedData(bytes: data))
+    let data = NSMutableData()
+    compress {
+      CGImageDestinationCreateWithData(data, getOutputFormat(), 1, nil)!
     }
+
+    result(FlutterStandardTypedData(bytes: data as Data))
   }
 
 }
