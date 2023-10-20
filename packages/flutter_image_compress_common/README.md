@@ -32,6 +32,7 @@ Compresses image as native plugin (Obj-C/Kotlin). This library works on Android 
     - [Compressing returns `null`](#compressing-returns-null)
   - [About EXIF information](#about-exif-information)
   - [Web](#web)
+  - [About macOS](#about-macos)
   - [Platform Features](#platform-features)
 
 ## Why don't you use dart to do it
@@ -64,7 +65,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 Use as:
 
-[See full example](https://github.com/fluttercandies/flutter_image_compress/blob/main/example/lib/main.dart)
+[See full example](https://github.com/fluttercandies/flutter_image_compress/blob/main/packages/flutter_image_compress/example/lib/main.dart)
 
 There are several ways to use the library api.
 
@@ -358,20 +359,29 @@ About web compatibility: two methods with file will throw an exception when used
 
 [pica]: https://www.npmjs.com/package/pica?activeTab=readme
 
+## About macOS
+
+You need change the minimum deployment target to 10.15.
+
+Open xcode project, select Runner target, and change the value of `macOS Deployment Target` to `10.15`.
+
+And, change the `Podfile`:
+Change `platform` to `platform :osx, '10.15'`.
+
 ## Platform Features
 
-| Feature                    | Android |  iOS  |           Web           |
-| :------------------------- | :-----: | :---: | :---------------------: |
-| method: compressWithList   |    ✅    |   ✅   |            ✅            |
-| method: compressAssetImage |    ✅    |   ✅   |            ✅            |
-| method: compressWithFile   |    ✅    |   ✅   |            ❌            |
-| method: compressAndGetFile |    ✅    |   ✅   |            ❌            |
-| format: jpeg               |    ✅    |   ✅   |            ✅            |
-| format: png                |    ✅    |   ✅   |            ✅            |
-| format: webp               |    ✅    |   ✅   | [🌐][webp-compatibility] |
-| format: heic               |    ✅    |   ✅   |            ❌            |
-| param: quality             |    ✅    |   ✅   | [🌐][webp-compatibility] |
-| param: rotate              |    ✅    |   ✅   |            ❌            |
-| param: keepExif            |    ✅    |   ✅   |            ❌            |
+| Feature                    | Android |  iOS  |           Web           | macOS |
+| :------------------------- | :-----: | :---: | :---------------------: | :---: |
+| method: compressWithList   |    ✅    |   ✅   |            ✅            |  ✅   |
+| method: compressAssetImage |    ✅    |   ✅   |            ✅            |  ✅   |
+| method: compressWithFile   |    ✅    |   ✅   |            ❌            |  ✅   |
+| method: compressAndGetFile |    ✅    |   ✅   |            ❌            |  ✅   |
+| format: jpeg               |    ✅    |   ✅   |            ✅            |  ✅   |
+| format: png                |    ✅    |   ✅   |            ✅            |  ✅   |
+| format: webp               |    ✅    |   ✅   | [🌐][webp-compatibility] |  ❌   |
+| format: heic               |    ✅    |   ✅   |            ❌            |  ✅   |
+| param: quality             |    ✅    |   ✅   | [🌐][webp-compatibility] |  ✅   |
+| param: rotate              |    ✅    |   ✅   |            ❌            |  ✅   |
+| param: keepExif            |    ✅    |   ✅   |            ❌            |  ✅   |
 
 [webp-compatibility]: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob#browser_compatibility "Browser support"
