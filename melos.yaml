@@ -34,6 +34,13 @@ scripts:
       flutter build web
     packageFilters:
       fileExists: lib/main.dart
+  try_build_macos:
+    exec: |
+      set -e
+      flutter pub get
+      flutter build macos
+    packageFilters:
+      fileExists: lib/main.dart
   cp_files:
     exec: |
       set -e
