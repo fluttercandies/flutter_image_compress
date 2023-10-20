@@ -11,33 +11,55 @@ class Logger {
   }
 
   static func log(msg: String) {
+    if (!isShowLog) {
+      return
+    }
     NSLog("\(msg)")
+  }
+
+  static func logFile(path: String) {
+    if (!isShowLog) {
+      return
+    }
+    let url = URL(fileURLWithPath: path)
+    NSLog("The file: \(url)")
+  }
+
+  static func logData(data: Data) {
+    if (!isShowLog) {
+      return
+    }
+    NSLog("The data: \(data), length: \(data.count)")
+
+    // check data type, maybe jpeg png or heic
+    let isJpeg = data[0] == 0xFF && data[1] == 0xD8
+    let isPng = data[0] == 0x89 && data[1] == 0x50
+
+    let heicHeader = "ftypheic"
+    let isHeic = data.count > heicHeader.count && String(data: data.subdata(in: 4..<heicHeader.count + 4), encoding: .utf8) == heicHeader
+
+    let outputFormat = isJpeg ? "jpg" : (isPng ? "png" : (isHeic ? "heic" : "unknown"))
+
+    // write data to file
+    let url = URL(fileURLWithPath: "\(NSTemporaryDirectory())/\(Date().timeIntervalSince1970).\(outputFormat)")
+    do {
+      try data.write(to: url)
+      NSLog("The file: \(url)")
+    } catch {
+      NSLog("Write file error: \(error)")
+    }
   }
 }
 
 class ImageSrc {
-  let srcImage: CGImageSource
+  let image: NSImage
   let params: Dictionary<String, Any>
 
-  init(srcImage: CGImageSource, params: Dictionary<String, Any>) {
-    self.srcImage = srcImage
+  init(image: NSImage, params: Dictionary<String, Any>) {
+    self.image = image
     self.params = params
   }
 
-  func getSize() -> NSSize {
-    let image = CGImageSourceCreateImageAtIndex(srcImage, 0, nil)
-
-    let width = image?.width ?? 0
-    let height = image?.height ?? 0
-
-    let orientation = params[kCGImagePropertyOrientation as String] as? Int
-
-    if (orientation == 3 || orientation == 6) {
-      return NSMakeSize(CGFloat(height), CGFloat(width))
-    }
-
-    return NSMakeSize(CGFloat(width), CGFloat(height))
-  }
 }
 
 public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
@@ -47,23 +69,30 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
 
-  func getImageSrc(params: Dictionary<String, Any>, sourceGetter: () -> CGImageSource?) -> ImageSrc? {
+  func injectDict(_ imageProperties: NSDictionary, _ dest: NSMutableDictionary, _ key: CFString) {
+    let dict = imageProperties[key]
+    if (dict != nil) {
+      let properties = dict as! NSDictionary
+      for (key, value) in properties {
+        dest[key] = value
+      }
+    }
+  }
+
+  func makeImageSrc(image: NSImage, source: CGImageSource, params: Dictionary<String, Any>) -> ImageSrc {
     let keepExif = params["keepExif"] as! Bool
 
-    guard let source = sourceGetter() else {
-      return nil
+    let exifDict = NSMutableDictionary()
+    if (keepExif) {
+      let imageProperties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil)! as NSDictionary
+
+      injectDict(imageProperties, exifDict, kCGImagePropertyExifDictionary)
+      injectDict(imageProperties, exifDict, kCGImagePropertyJFIFDictionary)
+      injectDict(imageProperties, exifDict, kCGImagePropertyTIFFDictionary)
+      injectDict(imageProperties, exifDict, kCGImagePropertyPNGDictionary)
     }
 
-    if (!keepExif) {
-      return ImageSrc(srcImage: source, params: [String: Any]())
-    }
-
-    if let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] {
-      return ImageSrc(srcImage: source, params: properties)
-    } else {
-      return ImageSrc(srcImage: source, params: [String: Any]())
-    }
-
+    return ImageSrc(image: image, params: exifDict as! Dictionary<String, Any>)
   }
 
   func makeFlutterError(code: String = "The incoming parameters do not contain image.") -> FlutterError {
@@ -81,15 +110,13 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
       let data = params["list"] as! FlutterStandardTypedData
       let nsData = data.data
 
-      let image = getImageSrc(params: params) {
-        CGImageSourceCreateWithData(nsData as CFData, nil)
-      }
-
-      guard let image = image else {
+      guard let nsImage = NSImage(data: nsData),
+            let source = CGImageSourceCreateWithData(nsData as CFData, nil)
+      else {
         result(makeFlutterError())
         return nil
       }
-
+      let image = makeImageSrc(image: nsImage, source: source, params: params)
       return Compressor(image: image, params: params)
     }
 
@@ -99,16 +126,14 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
 
     if (havePath) {
       let path = params["path"] as! String
-      let image = getImageSrc(params: params) {
-        let url = URL(fileURLWithPath: path)
-        return CGImageSourceCreateWithURL(url as CFURL, nil)
-      }
-
-      guard let image = image else {
-        result(makeFlutterError(code: "Incoming file can't be converted to image."))
+      guard let nsImage = NSImage(contentsOfFile: path),
+            let source = CGImageSourceCreateWithURL(URL(fileURLWithPath: path) as CFURL, nil)
+      else {
+        result(makeFlutterError())
         return nil
       }
 
+      let image = makeImageSrc(image: nsImage, source: source, params: params)
       return Compressor(image: image, params: params)
     }
 
@@ -165,60 +190,108 @@ class Compressor {
     }
   }
 
-  func compress(destCreator: () -> CGImageDestination) {
-    let rotate = params["rotate"] as! Int
-    let quality = params["quality"] as! Int
 
-    let minWidth = params["minWidth"] as! Int
-    let minHeight = params["minHeight"] as! Int
+  /**
+   处理图片
+   - Parameters:
+     - image: 源图片
+     - angle: 角度
+     - targetSize: 目标图片的尺寸
+     - dest: 目标图片
+   */
+  func handleImage(image: NSImage, angle: Int, targetSize: CGSize, dest: CGImageDestination) {
+    // 先处理一次图片到 targetSize 的尺寸
+    let srcCGContext = CGContext(data: nil, width: Int(targetSize.width), height: Int(targetSize.height), bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+    srcCGContext.draw(image.cgImage(forProposedRect: nil, context: nil, hints: nil)!, in: CGRect(x: 0, y: 0, width: targetSize.width, height: targetSize.height))
+    let srcCGImage = srcCGContext.makeImage()!
 
-    let size = image.getSize()
+    print("srcCGImage: \(srcCGImage.width) x \(srcCGImage.height)")
 
-    let srcWidth = size.width
-    let srcHeight = size.height
+    // 由于 angle 是 Int 类型，所以需要转换成弧度
+    let radian = CGFloat(angle) * CGFloat.pi / 180
 
-    let ratio = srcWidth / srcHeight
-    let maxRatio = CGFloat(minWidth) / CGFloat(minHeight)
-    var scale = 1.0
+    // 旋转图片，这里的旋转是以图片中心点为中心旋转，并且要考虑到图片的尺寸可能会有变化，因为可能不是90的倍数
+    let affine = CGAffineTransform(rotationAngle: radian)
+    let width = srcCGImage.width
+    let height = srcCGImage.height
 
-    if (ratio < maxRatio) {
-      scale = CGFloat(minWidth) / srcWidth
-    } else {
-      scale = CGFloat(minHeight) / srcHeight
-    }
+    let srcRect = CGRect(origin: .zero, size: CGSize(width: width, height: height))
+    let newRect = srcRect.applying(affine)
 
-    let targetWidth = (srcWidth * scale).rounded()
-    let targetHeight = (srcHeight * scale).rounded()
+    let rotatedSize = CGSize(width: newRect.width, height: newRect.height)
 
-//    let targetSize = NSMakeSize(targetWidth, targetHeight)
-//    let targetRect = NSMakeRect(0, 0, targetWidth, targetHeight)
+    // 获取一个旋转后的图片
+    let cgContext = CGContext(data: nil, width: Int(rotatedSize.width), height: Int(rotatedSize.height), bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
 
-    let dest = destCreator()
+    cgContext.translateBy(x: rotatedSize.width / 2, y: rotatedSize.height / 2)
+    cgContext.rotate(by: radian)
 
-    let options = [
-      kCGImageDestinationLossyCompressionQuality: CGFloat(quality) / 100,
-      kCGImageDestinationImageMaxPixelSize: max(targetWidth, targetHeight),
-      kCGImageDestinationEmbedThumbnail: true
-    ] as CFDictionary
+    cgContext.draw(srcCGImage, in: CGRect(x: -width / 2, y: -height / 2, width: width, height: height))
 
-    CGImageDestinationAddImageFromSource(dest, image.srcImage, 0, options)
+    let rotatedImage = cgContext.makeImage()!
+
+    // 将旋转后的图片写入到目标图片中
+    let options = makeOptions()
+
+    CGImageDestinationAddImage(dest, rotatedImage, options)
+//  CGImageDestinationAddImage(dest, srcCGImage, options)
+
     CGImageDestinationFinalize(dest)
   }
 
-//  func compressData(_ resultHandler: @escaping (Any?) -> ()) -> Data? {
-//    let data = NSMutableData()
-//    compress {
-//      CGImageDestinationCreateWithData(data, getOutputFormat(), 1, nil)!
-//    }
-//
-////    let quality = params["quality"] as! Int
-////    let format = params["format"] as! Int
-////    let keepExif = params["keepExif"] as! Bool
-////    let inSampleSize = params["inSampleSize"] as! Int
-////    let autoCorrectionAngle = params["autoCorrectionAngle"] as! Bool
-//
-//    resultHandler(data)
-//  }
+  private func makeOptions() -> CFDictionary {
+    let dict = NSMutableDictionary()
+
+    let quality = params["quality"] as! Int
+    let qualityValue = CGFloat(quality) / 100.0
+
+    let keepExif = params["keepExif"] as! Bool
+
+    if (keepExif) {
+      // remove orientation
+      dict[kCGImagePropertyOrientation] = 1
+
+      for param in image.params {
+        if kCGImagePropertyOrientation as String == param.key {
+          continue
+        }
+        dict[param.key] = param.value
+      }
+    }
+
+    dict[kCGImageDestinationLossyCompressionQuality] = qualityValue
+
+    return dict as CFDictionary
+  }
+
+  func compress(destCreator: () -> CGImageDestination) {
+    let minWidth = CGFloat(params["minWidth"] as! Int)
+    let minHeight = CGFloat(params["minHeight"] as! Int)
+
+    let srcWidth = image.image.size.width
+    let srcHeight = image.image.size.height
+
+    let srcRatio = srcWidth / srcHeight
+    let maxRatio = minWidth / minHeight
+    var scaleRatio = 1.0
+
+    if srcRatio < maxRatio {
+      scaleRatio = minWidth / srcWidth
+    } else {
+      scaleRatio = minHeight / srcHeight
+    }
+
+    scaleRatio = min(scaleRatio, 1.0)
+
+    let targetWidth = srcWidth * scaleRatio
+    let targetHeight = srcHeight * scaleRatio
+
+    let targetSize = CGSize(width: targetWidth, height: targetHeight)
+    let dest = destCreator()
+    let angle = params["rotate"] as! Int
+
+    handleImage(image: image.image, angle: angle, targetSize: targetSize, dest: dest)
+  }
 
   func compressToPath(_ result: @escaping (Any?) -> (), _ path: String) {
     let url = URL(fileURLWithPath: path)
@@ -226,6 +299,7 @@ class Compressor {
       CGImageDestinationCreateWithURL(url as CFURL, getOutputFormat(), 1, nil)!
     }
 
+    Logger.logFile(path: path)
     result(path)
   }
 
@@ -235,6 +309,7 @@ class Compressor {
       CGImageDestinationCreateWithData(data, getOutputFormat(), 1, nil)!
     }
 
+    Logger.logData(data: data as Data)
     result(FlutterStandardTypedData(bytes: data as Data))
   }
 

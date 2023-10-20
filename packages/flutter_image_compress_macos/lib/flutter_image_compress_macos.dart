@@ -12,6 +12,12 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
     FlutterImageCompressPlatform.instance = FlutterImageCompressMacos();
   }
 
+  Future<void> checkSupport(CompressFormat format) async {
+    if (!(await validator.checkSupportPlatform(format))) {
+      throw UnsupportedError('The image type $format is not supported.');
+    }
+  }
+
   @override
   Future<XFile?> compressAndGetFile(
     String path,
@@ -26,6 +32,8 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
     bool keepExif = false,
     int numberOfRetries = 5,
   }) async {
+    await checkSupport(format);
+
     final dstPath = await _channel.invokeMethod('compressAndGetFile', {
       'path': path,
       'targetPath': targetPath,
@@ -58,6 +66,8 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
   }) async {
+    await checkSupport(format);
+
     final bytes = await rootBundle
         .load(assetName)
         .then((value) => value.buffer.asUint8List());
@@ -87,6 +97,8 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
     bool keepExif = false,
     int numberOfRetries = 5,
   }) async {
+    await checkSupport(format);
+
     final result = await _channel.invokeMethod('compressWithFile', {
       'path': path,
       'minWidth': minWidth,
@@ -119,6 +131,8 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
     CompressFormat format = CompressFormat.jpeg,
     bool keepExif = false,
   }) async {
+    await checkSupport(format);
+    
     final result = await _channel.invokeMethod<Uint8List>('compressWithList', {
       'list': image,
       'minWidth': minWidth,
@@ -146,16 +160,26 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
   @override
   FlutterImageCompressValidator get validator => _validator;
   final FlutterImageCompressValidator _validator =
-      FlutterImageCompressValidator(_channel);
+      MacOSFlutterImageCompressValidator(_channel);
 
   @override
-  void ignoreCheckSupportPlatform(bool bool) {}
+  void ignoreCheckSupportPlatform(bool value) {
+    _validator.ignoreCheckSupportPlatform = value;
+  }
 }
 
 class MacOSFlutterImageCompressValidator extends FlutterImageCompressValidator {
   MacOSFlutterImageCompressValidator(MethodChannel channel) : super(channel);
 
   Future<bool> checkSupportPlatform(CompressFormat format) async {
+    if (ignoreCheckSupportPlatform) {
+      return true;
+    }
+
+    if (format == CompressFormat.webp) {
+      return false;
+    }
+
     return true;
   }
 }
