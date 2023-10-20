@@ -36,19 +36,10 @@ All changes need to be put into the README in the root directory and the `melos 
 
 ### About CHANGELOG
 
-The CHANGELOG for each package is independent.
-When you submit a pull request, please also modify the CHANGELOG file with the changes.
+The CHANGELOG for each package will use `melos` to manage it.
 
-If you don't have the current version of the section, you can add a secondary title
+Please don't change CHANGELOG manually.
 
-```md
-## Unreleased
+All changes will read from the git commit log and automatically generate the CHANGELOG.
 
-Feature:
-- xxxx
-
-Or 
-
-Fix:
-- xxx
-```
+Admins can use `melos version` to generate when before release.
