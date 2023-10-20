@@ -65,7 +65,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 Use as:
 
-[See full example](https://github.com/fluttercandies/flutter_image_compress/blob/main/example/lib/main.dart)
+[See full example](https://github.com/fluttercandies/flutter_image_compress/blob/main/packages/flutter_image_compress/example/lib/main.dart)
 
 There are several ways to use the library api.
 
