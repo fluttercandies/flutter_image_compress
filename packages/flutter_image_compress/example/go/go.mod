@@ -10,7 +10,7 @@ require (
 	github.com/go-flutter-desktop/plugins/path_provider v0.4.0
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/pkg/errors v0.9.1
-	golang.org/x/image v0.5.0 // indirect
+	golang.org/x/image v0.10.0 // indirect
 )
 
 replace github.com/fluttercandies/flutter_image_compress/go => /Users/caijinglong/Documents/GitHub/flutter_image_compress/go
