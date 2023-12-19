@@ -1,5 +1,5 @@
 name: flutter_image_compress
-repository: https://github.com/fluttercandies/flutter_image_compress
+repository: https://github.com/vaconingham/flutter_image_compress
 
 packages:
   - packages/**
@@ -51,7 +51,6 @@ scripts:
         cp ../../README.md README.md
       fi
 sdkPath: auto
-
 command:
   version:
     releaseUrl: true
