@@ -2,13 +2,14 @@ group 'com.fluttercandies.flutter_image_compress'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.9.22'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -38,10 +39,19 @@ android {
         minSdkVersion 16
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
 }
 
 dependencies {
-    implementation 'androidx.exifinterface:exifinterface:1.3.3'
+    implementation 'androidx.exifinterface:exifinterface:1.3.7'
     implementation 'androidx.heifwriter:heifwriter:1.0.0'
     implementation 'commons-io:commons-io:2.6'
 }
