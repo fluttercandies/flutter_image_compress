@@ -1,3 +1,7 @@
+## 0.1.4
+
+- **DEPS**: Update `js` to `>=0.6.0 <0.8.0`.
+
 ## 0.1.3+2
 
  - **DOCS**: Update README ([#266](https://github.com/fluttercandies/flutter_image_compress/issues/266)). ([235643ab](https://github.com/fluttercandies/flutter_image_compress/commit/235643ab0be9c9a39083031d9ab9de06a74241f3))
