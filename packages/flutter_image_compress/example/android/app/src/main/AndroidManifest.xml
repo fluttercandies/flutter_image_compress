@@ -7,6 +7,7 @@
         android:label="flutter_image_compress_example">
         <activity
             android:name=".MainActivity"
+            android:taskAffinity=""
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
