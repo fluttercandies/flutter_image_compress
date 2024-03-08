@@ -6,6 +6,8 @@ import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
+
 import '../button.dart';
 import 'package:flutter/material.dart' hide TextButton;
 import 'package:flutter/services.dart';
@@ -461,12 +463,14 @@ class XFileImageProvider extends ImageProvider<XFileImageProvider> {
   final XFile file;
 
   @override
-  Future<XFileImageProvider> obtainKey(ImageConfiguration configuration) async {
-    return this;
+  Future<XFileImageProvider> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture(this);
   }
 
   Future<ui.Codec> _loadAsync(
-      XFileImageProvider key, DecoderBufferCallback decode) async {
+    XFileImageProvider key,
+    DecoderBufferCallback decode,
+  ) async {
     final bytes = await file.readAsBytes();
     final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
     return decode(buffer);
@@ -474,7 +478,9 @@ class XFileImageProvider extends ImageProvider<XFileImageProvider> {
 
   @override
   ImageStreamCompleter loadBuffer(
-      XFileImageProvider key, DecoderBufferCallback decode) {
+    XFileImageProvider key,
+    DecoderBufferCallback decode,
+  ) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: 1.0,
@@ -485,15 +491,14 @@ class XFileImageProvider extends ImageProvider<XFileImageProvider> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    final XFileImageProvider typedOther = other;
-    return file.path == typedOther.file.path;
+    return other is XFileImageProvider && file.path == other.file.path;
   }
 
   @override
   int get hashCode => file.path.hashCode;
 
   @override
-  String toString() => '$runtimeType("${file.path}",)';
+  String toString() => '$runtimeType("${file.path}")';
 }
