@@ -116,7 +116,5 @@ jobs:
       - name: Get melos
         run: dart pub global activate melos
       - name: Init melos
-        run: |
-          melos bootstrap
-          melos run get
+        run: melos bootstrap
       - run: melos run try_build_web

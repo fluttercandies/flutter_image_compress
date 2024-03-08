@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-03-08
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+- There are no breaking changes in this release.
+
+Packages with other changes:
+
+- [`flutter_image_compress_common` - `v1.0.4`](#flutter_image_compress_common---v104)
+- [`flutter_image_compress_platform_interface` - `v1.0.4`](#flutter_image_compress_platform_interface---v104)
+- [`flutter_image_compress_web` - `v0.1.4`](#flutter_image_compress_web---v014)
+
+---
+
+#### `flutter_image_compress_common` - `v1.0.4`
+
+- **DEPS**: Bump KGP (Kotlin Gradle Plugin) to `1.8.20`.
+- **DEPS**: Bump Java source compatibility and the JVM target to `11.`
+
+#### `flutter_image_compress_platform_interface` - `v1.0.4`
+
+- **FEAT**: Implement `toString` for `CompressError`.
+
+#### `flutter_image_compress_web` - `v0.1.4`
+
+- **DEPS**: Update `js` to `>=0.6.0 <0.8.0`.
+
 ## 2023-10-20
 
 ### Changes
