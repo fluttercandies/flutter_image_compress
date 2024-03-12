@@ -394,5 +394,3 @@ Change `platform` to `platform :osx, '10.15'`.
 The currently supported image formats for parsing include JPEG, PNG, GIF, RAW, WebP, BMP, and SVG. However, the encoding output image formats are currently limited to JPEG, PNG, and WebP only.
 
 当前支持的解析图片格式包括 JPEG、PNG、GIF、RAW、WebP、BMP、SVG . 编码输出图片格式当前仅支持 JPEG、PNG 和 WebP.
-
-

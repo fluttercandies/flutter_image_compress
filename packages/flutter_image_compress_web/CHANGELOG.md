@@ -1,3 +1,7 @@
+## 0.1.4+1
+
+ - **DOCS**: The first version for OpenHarmony. ([5fcab8da](https://github.com/fluttercandies/flutter_image_compress/commit/5fcab8dac6277b36b7169962474e5af3cf88724b))
+
 ## 0.1.4
 
 - **DEPS**: Update `js` to `>=0.6.0 <0.8.0`.

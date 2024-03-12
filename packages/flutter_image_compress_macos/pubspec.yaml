@@ -1,6 +1,6 @@
 name: flutter_image_compress_macos
 description: The implementation of macOS for flutter_image_compress.
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/fluttercandies/flutter_image_compress
 
 environment:
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_image_compress_platform_interface: ^1.0.3
+  flutter_image_compress_platform_interface: ^1.0.5
   
 flutter:
   plugin:
