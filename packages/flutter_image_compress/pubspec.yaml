@@ -14,6 +14,7 @@ dependencies:
   flutter_image_compress_common: ^1.0.3
   flutter_image_compress_web: ^0.1.3+2
   flutter_image_compress_macos: ^1.0.1
+  flutter_image_compress_ohos: ^0.0.1
 
 flutter:
   plugin:
@@ -26,3 +27,5 @@ flutter:
         default_package: flutter_image_compress_macos
       web:
         default_package: flutter_image_compress_web
+      ohos:
+        default_package: flutter_image_compress_ohos    
