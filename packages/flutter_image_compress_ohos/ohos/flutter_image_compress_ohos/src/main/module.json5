@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "flutter_image_compress_ohos",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}
