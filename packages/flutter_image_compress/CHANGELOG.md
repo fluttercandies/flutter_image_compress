@@ -1,3 +1,7 @@
+## 2.2.0
+
+ - **FEAT**: support openharmony ([#290](https://github.com/fluttercandies/flutter_image_compress/issues/290)). ([d8c3fb95](https://github.com/fluttercandies/flutter_image_compress/commit/d8c3fb95f31e9199161dbf4306b2c98c80037c13))
+
 ## 2.1.0
 
  - **FEAT**: support macOS ([#264](https://github.com/fluttercandies/flutter_image_compress/issues/264)). ([06ab91ed](https://github.com/fluttercandies/flutter_image_compress/commit/06ab91ed470ea2c838daeb6c654ad06dadc99f1d))

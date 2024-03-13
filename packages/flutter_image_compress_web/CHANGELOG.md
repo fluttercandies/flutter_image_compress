@@ -1,3 +1,7 @@
+## 0.1.5
+
+ - **FEAT**: support openharmony ([#290](https://github.com/fluttercandies/flutter_image_compress/issues/290)). ([d8c3fb95](https://github.com/fluttercandies/flutter_image_compress/commit/d8c3fb95f31e9199161dbf4306b2c98c80037c13))
+
 ## 0.1.4
 
 - **DEPS**: Update `js` to `>=0.6.0 <0.8.0`.
