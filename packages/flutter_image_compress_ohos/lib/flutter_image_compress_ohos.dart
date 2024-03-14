@@ -167,6 +167,7 @@ class FlutterImageCompressOhos extends FlutterImageCompressPlatform {
       OhosFlutterImageCompressValidator(_channel);
 
   @override
+  // ignore: avoid_renaming_method_parameters
   void ignoreCheckSupportPlatform(bool value) {
     _validator.ignoreCheckSupportPlatform = value;
   }
