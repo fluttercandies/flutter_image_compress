@@ -3,6 +3,54 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-03-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`flutter_image_compress` - `v2.2.0`](#flutter_image_compress---v220)
+ - [`flutter_image_compress_common` - `v1.0.5`](#flutter_image_compress_common---v105)
+ - [`flutter_image_compress_macos` - `v1.0.2`](#flutter_image_compress_macos---v102)
+ - [`flutter_image_compress_ohos` - `v0.0.2`](#flutter_image_compress_ohos---v002)
+ - [`flutter_image_compress_platform_interface` - `v1.0.5`](#flutter_image_compress_platform_interface---v105)
+ - [`flutter_image_compress_web` - `v0.1.4+1`](#flutter_image_compress_web---v0141)
+
+---
+
+#### `flutter_image_compress` - `v2.2.0`
+
+ - **FEAT**: support openharmony ([#290](https://github.com/fluttercandies/flutter_image_compress/issues/290)). ([e9f10b28](https://github.com/fluttercandies/flutter_image_compress/commit/e9f10b28e089539fe7319d7bc1779b9a2c209fc4))
+ - **DOCS**: The first version for OpenHarmony. ([5fcab8da](https://github.com/fluttercandies/flutter_image_compress/commit/5fcab8dac6277b36b7169962474e5af3cf88724b))
+
+#### `flutter_image_compress_common` - `v1.0.5`
+
+ - **DOCS**: The first version for OpenHarmony. ([5fcab8da](https://github.com/fluttercandies/flutter_image_compress/commit/5fcab8dac6277b36b7169962474e5af3cf88724b))
+
+#### `flutter_image_compress_macos` - `v1.0.2`
+
+ - **DOCS**: The first version for OpenHarmony. ([5fcab8da](https://github.com/fluttercandies/flutter_image_compress/commit/5fcab8dac6277b36b7169962474e5af3cf88724b))
+
+#### `flutter_image_compress_ohos` - `v0.0.2`
+
+ - **FEAT**: support openharmony ([#290](https://github.com/fluttercandies/flutter_image_compress/issues/290)). ([e9f10b28](https://github.com/fluttercandies/flutter_image_compress/commit/e9f10b28e089539fe7319d7bc1779b9a2c209fc4))
+ - **FEAT**: support openharmony ([#290](https://github.com/fluttercandies/flutter_image_compress/issues/290)). ([d8c3fb95](https://github.com/fluttercandies/flutter_image_compress/commit/d8c3fb95f31e9199161dbf4306b2c98c80037c13))
+
+#### `flutter_image_compress_platform_interface` - `v1.0.5`
+
+ - **DOCS**: The first version for OpenHarmony. ([5fcab8da](https://github.com/fluttercandies/flutter_image_compress/commit/5fcab8dac6277b36b7169962474e5af3cf88724b))
+
+#### `flutter_image_compress_web` - `v0.1.4+1`
+
+ - **DOCS**: The first version for OpenHarmony. ([5fcab8da](https://github.com/fluttercandies/flutter_image_compress/commit/5fcab8dac6277b36b7169962474e5af3cf88724b))
+
+
 ## 2024-03-08
 
 ### Changes
