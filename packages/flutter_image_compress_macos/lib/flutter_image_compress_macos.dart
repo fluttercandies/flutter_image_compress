@@ -132,7 +132,7 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
     bool keepExif = false,
   }) async {
     await checkSupport(format);
-    
+
     final result = await _channel.invokeMethod<Uint8List>('compressWithList', {
       'list': image,
       'minWidth': minWidth,
