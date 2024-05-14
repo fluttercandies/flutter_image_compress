@@ -41,7 +41,6 @@ flutter:
     implements: flutter_image_compress
     platforms:
       ohos:  
-        package: com.fluttercandies.flutter_image_compress
         pluginClass: FlutterImageCompressOhosPlugin
         dartPluginClass: FlutterImageCompressOhos
 

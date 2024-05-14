@@ -28,14 +28,10 @@ jobs:
         run: |
           dart --version
           flutter --version
-      - name: Prepare dependencies
-        run: flutter pub get
-      - name: Get melos
+      - name: Install melos
         run: dart pub global activate melos
-      - name: Init melos
-        run: |
-          melos bootstrap
-          melos run get
+      - name: Melos bootstrap
+        run: melos bootstrap
       - name: Check Dart code formatting
         run: melos exec -- "dart format . -o none --set-exit-if-changed"
       - name: Analyze
@@ -59,13 +55,10 @@ jobs:
           channel: 'stable'
       - run: dart --version
       - run: flutter --version
-      - run: flutter pub get
-      - name: Get melos
+      - name: Install melos
         run: dart pub global activate melos
-      - name: Init melos
-        run: |
-          melos bootstrap
-          melos run get
+      - name: Melos bootstrap
+        run: melos bootstrap
       - name: Build iOS debug with melos
         run: melos run try_build_ios 
 
@@ -88,12 +81,10 @@ jobs:
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
-      - name: Get melos
+      - name: Install melos
         run: dart pub global activate melos
-      - name: Init melos
-        run: |
-          melos bootstrap
-          melos run get
+      - name: Melos bootstrap
+        run: melos bootstrap
       - run: melos run try_build_apk
 
   test_web:
@@ -114,9 +105,8 @@ jobs:
           channel: 'stable'
       - run: dart --version
       - run: flutter --version
-      - run: flutter pub get
-      - name: Get melos
+      - name: Install melos
         run: dart pub global activate melos
-      - name: Init melos
+      - name: Melos bootstrap
         run: melos bootstrap
       - run: melos run try_build_web
