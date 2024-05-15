@@ -1,6 +1,6 @@
 name: flutter_image_compress_ohos
 description: OpenHarmony implementation of the flutter_image_compress plugin.
-version: 0.0.2
+version: 0.0.3
 repository: https://github.com/fluttercandies/flutter_image_compress
 topics:
   - image-compress
