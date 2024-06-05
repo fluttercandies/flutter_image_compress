@@ -23,35 +23,41 @@
     int formatType = [args[6] intValue];
     BOOL keepExif = [args[7] boolValue];
 
-    
-    UIImage *img;
-    
-    NSURL *imageUrl = [NSURL fileURLWithPath:path];
-    NSData *nsdata = [NSData dataWithContentsOfURL:imageUrl];
-    
-    NSString *imageType = [self mimeTypeByGuessingFromData:nsdata];
-    
-    //  NSLog(@" nsdata length: %@", imageType);
-    
-    SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
-    [[SDImageCodersManager sharedManager] addCoder:webPCoder];
-    
-    if([imageType  isEqual: @"image/webp"]) {
-    img = [[SDImageWebPCoder sharedCoder] decodedImageWithData:nsdata options:nil];
-    } else {
-        img = [UIImage imageWithData:nsdata];
-    }
+    @autoreleasepool {
+        UIImage *img;
+
+        NSURL *imageUrl = [NSURL fileURLWithPath:path];
+        NSData *nsdata = [NSData dataWithContentsOfURL:imageUrl];
+
+        NSString *imageType = [self mimeTypeByGuessingFromData:nsdata];
+
+        //  NSLog(@" nsdata length: %@", imageType);
+
+        SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
+        [[SDImageCodersManager sharedManager] addCoder:webPCoder];
+
+        if ([imageType isEqual:@"image/webp"]) {
+            img = [[SDImageWebPCoder sharedCoder] decodedImageWithData:nsdata options:nil];
+        } else {
+            img = [UIImage imageWithData:nsdata];
+        }
 
 
-    NSData *data = [CompressHandler compressWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
+        NSData *data = [CompressHandler compressWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
 
-    if (keepExif) {
-        SYMetadata *metadata = [SYMetadata metadataWithFileURL:[NSURL fileURLWithPath:path]];
-        metadata.orientation = @0;
-        data = [SYMetadata dataWithImageData:data andMetadata:metadata];
+        if (keepExif) {
+            SYMetadata *metadata = [SYMetadata metadataWithFileURL:[NSURL fileURLWithPath:path]];
+            metadata.orientation = @0;
+            data = [SYMetadata dataWithImageData:data andMetadata:metadata];
+        }
+
+        img = nil;
+        nsdata = nil;
     }
 
     result([FlutterStandardTypedData typedDataWithBytes:data]);
+
+    data = nil;
 }
 
 - (void)handleCompressFileToFile:(FlutterMethodCall *)call result:(FlutterResult)result {
