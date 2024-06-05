@@ -66,34 +66,39 @@
     int formatType = [args[7] intValue];
     BOOL keepExif = [args[8] boolValue];
 
-    
-    UIImage *img;
-    
-    NSURL *imageUrl = [NSURL fileURLWithPath:path];
-    NSData *nsdata = [NSData dataWithContentsOfURL:imageUrl];
-    
-    NSString *imageType = [self mimeTypeByGuessingFromData:nsdata];
-    
-    //  NSLog(@" nsdata length: %@", imageType);
-    
-    SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
-    [[SDImageCodersManager sharedManager] addCoder:webPCoder];
-    
-    if([imageType  isEqual: @"image/webp"]) {
-    img = [[SDImageWebPCoder sharedCoder] decodedImageWithData:nsdata options:nil];
-    } else {
-        img = [UIImage imageWithData:nsdata];
-    }
-    
-    NSData *data = [CompressHandler compressDataWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
+    @autoreleasepool {
+        UIImage *img;
 
-    if (keepExif) {
-        SYMetadata *metadata = [SYMetadata metadataWithFileURL:[NSURL fileURLWithPath:path]];
-        metadata.orientation = @0;
-        data = [SYMetadata dataWithImageData:data andMetadata:metadata];
-    }
+        NSURL *imageUrl = [NSURL fileURLWithPath:path];
+        NSData *nsdata = [NSData dataWithContentsOfURL:imageUrl];
 
-    [data writeToURL:[[NSURL alloc] initFileURLWithPath:targetPath] atomically:YES];
+        NSString *imageType = [self mimeTypeByGuessingFromData:nsdata];
+
+        //  NSLog(@" nsdata length: %@", imageType);
+
+        SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
+        [[SDImageCodersManager sharedManager] addCoder:webPCoder];
+
+        if ([imageType isEqual:@"image/webp"]) {
+            img = [[SDImageWebPCoder sharedCoder] decodedImageWithData:nsdata options:nil];
+        } else {
+            img = [UIImage imageWithData:nsdata];
+        }
+
+        NSData *data = [CompressHandler compressDataWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
+
+        if (keepExif) {
+            SYMetadata *metadata = [SYMetadata metadataWithFileURL:[NSURL fileURLWithPath:path]];
+            metadata.orientation = @0;
+            data = [SYMetadata dataWithImageData:data andMetadata:metadata];
+        }
+
+        [data writeToURL:[[NSURL alloc] initFileURLWithPath:targetPath] atomically:YES];
+
+        img = nil;
+        nsdata = nil;
+        data = nil;
+    }
 
     result(targetPath);
 }
