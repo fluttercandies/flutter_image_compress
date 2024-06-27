@@ -9,8 +9,8 @@ import 'package:flutter_image_compress_platform_interface/flutter_image_compress
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
 
-import 'window.dart';
 import 'log.dart' as logger;
+import 'window.dart';
 
 @JS('pica.resize')
 external dynamic resize(
@@ -39,7 +39,11 @@ Future<Uint8List> resizeWithList({
   int quality = 88,
 }) async {
   final Stopwatch stopwatch = Stopwatch()..start();
-  final pica = jsWindow.pica() as Pica;
+  final pica = jsWindow.pica() as Pica?;
+  if (pica == null) {
+    throw Exception(
+        'Pica not found. This plugin requires pica for image compression on the web.');
+  }
   logger.jsLog('The pica instance', pica);
   logger.jsLog('src image buffer', buffer);
   logger.dartLog('src image buffer length: ${buffer.length}');
