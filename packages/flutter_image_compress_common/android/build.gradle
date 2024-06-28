@@ -28,7 +28,7 @@ android {
         namespace 'com.fluttercandies.flutter_image_compress'
     }
 
-    compileSdkVersion 31
+    compileSdk 34
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
