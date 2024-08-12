@@ -42,7 +42,8 @@ Future<Uint8List> resizeWithList({
   final pica = jsWindow.pica() as Pica?;
   if (pica == null) {
     throw Exception(
-        'Pica not found. This plugin requires pica for image compression on the web.');
+        'Pica not found. This plugin requires pica for image compression on the web. '
+        'See documentation for more details https://github.com/fluttercandies/flutter_image_compress?tab=readme-ov-file#web');
   }
   logger.jsLog('The pica instance', pica);
   logger.jsLog('src image buffer', buffer);
