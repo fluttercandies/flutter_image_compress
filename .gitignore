@@ -40,3 +40,7 @@ example/macos/Flutter/ephemeral/flutter_export_environment.sh
 
 pubspec_overrides.yaml
 pubspec.lock
+
+# FVM Version Cache
+.fvm/
+.fvmrc
