@@ -6,7 +6,7 @@ import 'package:flutter_image_compress_platform_interface/flutter_image_compress
 import 'package:flutter_image_compress_web/src/log.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
-import 'src/pica.dart';
+import 'src/compressor.dart';
 
 class FlutterImageCompressWeb extends FlutterImageCompressPlatform {
   static void registerWith(Registrar registrar) {
