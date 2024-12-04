@@ -26,7 +26,12 @@ Future<Uint8List> resizeWithList({
   int quality = 88,
 }) async {
   final Stopwatch stopwatch = Stopwatch()..start();
-  final pica = window.pica();
+  final pica = jsWindow.pica() as Pica?;
+  if (pica == null) {
+    throw Exception(
+        'Pica not found. This plugin requires pica for image compression on the web. '
+        'See documentation for more details https://github.com/fluttercandies/flutter_image_compress?tab=readme-ov-file#web');
+  }
   logger.jsLog('The pica instance', pica);
   logger.jsLog('src image buffer', buffer);
   logger.dartLog('src image buffer length: ${buffer.length}');
