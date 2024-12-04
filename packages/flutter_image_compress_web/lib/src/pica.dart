@@ -26,7 +26,7 @@ Future<Uint8List> resizeWithList({
   int quality = 88,
 }) async {
   final Stopwatch stopwatch = Stopwatch()..start();
-  final pica = jsWindow.pica() as Pica?;
+  final pica = window.pica() as Pica?;
   if (pica == null) {
     throw Exception(
         'Pica not found. This plugin requires pica for image compression on the web. '
