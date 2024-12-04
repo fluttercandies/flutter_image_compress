@@ -1,9 +1,10 @@
-@JS('console')
 library log;
 
-import 'package:js/js.dart';
+import 'dart:developer' as dev;
+import 'dart:js_interop';
 
-external void log(dynamic tag, dynamic msg);
+@JS('console.log')
+external void log(JSAny? tag, JSAny? msg);
 
 bool showLog = false;
 
@@ -15,7 +16,6 @@ void jsLog(dynamic tag, dynamic msg) {
 
 void dartLog(Object? msg) {
   if (showLog) {
-    // ignore: avoid_print
-    print(msg.toString());
+    dev.log(msg.toString());
   }
 }
