@@ -33,11 +33,11 @@ Future<Uint8List> resizeWithList({
   final canvas = HTMLCanvasElement();
   canvas.width = width;
   canvas.height = height;
-  
+
   final ctx = canvas.getContext('2d') as CanvasRenderingContext2D?;
   ctx?.clearRect(0, 0, width, height);
   ctx?.drawImage(bitmap, 0, 0, width, height);
-  
+
   final blob = canvas.toDataUrl(format.type, quality / 100);
   final str = blob.split(',')[1];
 
