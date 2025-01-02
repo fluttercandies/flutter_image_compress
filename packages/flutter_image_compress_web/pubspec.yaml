@@ -14,7 +14,7 @@ dependencies:
     sdk: flutter
 
   flutter_image_compress_platform_interface: ^1.0.5
-  web: ^0.5.1
+  web: ^1.1.0
 
 dev_dependencies:
   flutter_test:
