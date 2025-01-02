@@ -1,3 +1,8 @@
+## 0.1.5
+
+ - **FIX**: fix pica initialization to use window object instead of jsWindow for improved compatibility. ([dd5b101c](https://github.com/fluttercandies/flutter_image_compress/commit/dd5b101cfedaf3e45b1f9c056cd66c1981ce3c86))
+ - **FEAT**: remove pica from web ([#324](https://github.com/fluttercandies/flutter_image_compress/issues/324)). ([b56ce0fa](https://github.com/fluttercandies/flutter_image_compress/commit/b56ce0fa4763bf8084c26ea8e435e37e06997ba8))
+
 ## 0.1.4+1
 
  - **DOCS**: The first version for OpenHarmony. ([5fcab8da](https://github.com/fluttercandies/flutter_image_compress/commit/5fcab8dac6277b36b7169962474e5af3cf88724b))

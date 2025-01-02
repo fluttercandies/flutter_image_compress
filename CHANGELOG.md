@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-01-02
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`flutter_image_compress` - `v2.4.0`](#flutter_image_compress---v240)
+ - [`flutter_image_compress_macos` - `v1.0.3`](#flutter_image_compress_macos---v103)
+ - [`flutter_image_compress_web` - `v0.1.5`](#flutter_image_compress_web---v015)
+
+---
+
+#### `flutter_image_compress` - `v2.4.0`
+
+ - **FEAT**: remove pica from web ([#324](https://github.com/fluttercandies/flutter_image_compress/issues/324)). ([b56ce0fa](https://github.com/fluttercandies/flutter_image_compress/commit/b56ce0fa4763bf8084c26ea8e435e37e06997ba8))
+
+#### `flutter_image_compress_macos` - `v1.0.3`
+
+ - **FIX**: Correct image size calculation for macOS with NSImage ([#316](https://github.com/fluttercandies/flutter_image_compress/issues/316)). ([e67ddf96](https://github.com/fluttercandies/flutter_image_compress/commit/e67ddf96ad1495281d3c5ac017d153b81f95d456))
+
+#### `flutter_image_compress_web` - `v0.1.5`
+
+ - **FIX**: fix pica initialization to use window object instead of jsWindow for improved compatibility. ([dd5b101c](https://github.com/fluttercandies/flutter_image_compress/commit/dd5b101cfedaf3e45b1f9c056cd66c1981ce3c86))
+ - **FEAT**: remove pica from web ([#324](https://github.com/fluttercandies/flutter_image_compress/issues/324)). ([b56ce0fa](https://github.com/fluttercandies/flutter_image_compress/commit/b56ce0fa4763bf8084c26ea8e435e37e06997ba8))
+
+
 ## 2024-05-15
 
 ### Changes
