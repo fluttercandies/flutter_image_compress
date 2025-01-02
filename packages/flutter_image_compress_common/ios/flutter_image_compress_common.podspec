@@ -11,8 +11,8 @@ Compress image with native Objective-C with faster speed.
   s.source           = { :path => '.' }
   s.ios.deployment_target = '9.0'
 
-  s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
+  s.source_files = 'flutter_image_compress_common/Sources/**/*'
+  s.public_header_files = 'flutter_image_compress_common/Sources/**/*.h'
 
   s.dependency 'Flutter'
   s.dependency 'Mantle'
