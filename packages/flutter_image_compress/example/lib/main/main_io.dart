@@ -249,11 +249,28 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  /// The example for compressing heic format.
+  /// 
+  /// Convert jpeg to heic format, and then convert heic to jpg format.
+  /// 
+  /// Show the file path and size in the console.
   void _compressHeicExample() async {
     print('start compress');
     final logger = TimeLogger();
     logger.startRecorder();
-    final tmpDir = (await getTemporaryDirectory()).path;
+    // final tmpDir = (await getTemporaryDirectory()).path;
+    final tmpDir = (await path_provider.getExternalStorageDirectories())
+        ?.first
+        .absolute
+        .path;
+
+    if (tmpDir == null) {
+      print('tmpDir is null');
+      print(
+          'You need check your permission for the external storage on Android.');
+      return;
+    }
+
     final target = '$tmpDir/${DateTime.now().millisecondsSinceEpoch}.heic';
     final srcPath = await getExampleFilePath();
     final result = await FlutterImageCompress.compressAndGetFile(
@@ -272,6 +289,30 @@ class _MyAppState extends State<MyApp> {
       'Compress heic result path: ${result.path}, '
       'size: ${await result.length()}',
     );
+
+    // Convert heic to jpg
+    final jpgPath =
+        '$tmpDir/heic-to-jpg-${DateTime.now().millisecondsSinceEpoch}.jpg';
+    try {
+      final jpgResult = await FlutterImageCompress.compressAndGetFile(
+        result.path,
+        jpgPath,
+        format: CompressFormat.jpeg,
+        quality: 90,
+      );
+      if (jpgResult == null) {
+        print('Convert heic to jpg failed.');
+      } else {
+        print(
+          'Convert heic to jpg success. '
+          'Jpg path: ${jpgResult.path}, '
+          'size: ${await jpgResult.length()}',
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
+      print('Convert heic to jpg failed.');
+    }
   }
 
   void _compressAndroidWebpExample() async {
