@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.author           = { 'Caijinglong' => 'cjl_spy@163.com' }
 
   s.source           = { :path => '.' }
-  s.source_files     = 'Classes/**/*'
+  s.source_files     = 'flutter_image_compress_macos/Sources/**/*'
   s.dependency 'FlutterMacOS'
 
   s.platform = :osx, '10.15'

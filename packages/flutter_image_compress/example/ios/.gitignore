@@ -45,3 +45,4 @@ Icon?
 Pods/
 Podfile.lock
 .symlinks/
+swiftpm
