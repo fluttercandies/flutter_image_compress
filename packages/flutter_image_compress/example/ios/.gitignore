@@ -13,6 +13,7 @@ GeneratedPluginRegistrant.h
 GeneratedPluginRegistrant.m
 
 .generated/
+Flutter/ephemeral/
 
 *.pbxuser
 *.mode1v3
@@ -44,3 +45,4 @@ Icon?
 Pods/
 Podfile.lock
 .symlinks/
+swiftpm

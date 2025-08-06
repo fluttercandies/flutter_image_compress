@@ -9,10 +9,10 @@ Compress image with native Objective-C with faster speed.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'fluttercandies' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '12.0'
 
-  s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
+  s.source_files = 'flutter_image_compress_common/Sources/flutter_image_compress_common/**/*'
+  s.public_header_files = 'flutter_image_compress_common/Sources/flutter_image_compress_common/include/**/*.h'
 
   s.dependency 'Flutter'
   s.dependency 'Mantle'
