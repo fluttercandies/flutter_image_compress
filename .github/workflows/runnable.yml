@@ -14,16 +14,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - name: Log Dart/Flutter versions
         run: |
           dart --version
@@ -42,17 +42,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ macos-latest ]
+        os: [macos-latest]
+        build_cmd:
+          - melos run try_build_ios
+          - melos run try_build_ios_swift_package_manager
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
           architecture: x64
-          channel: 'stable'
+          channel: "stable"
       - run: dart --version
       - run: flutter --version
       - name: Install melos
@@ -60,7 +63,7 @@ jobs:
       - name: Melos bootstrap
         run: melos bootstrap
       - name: Build iOS debug with melos
-        run: melos run try_build_ios 
+        run: ${{ matrix.build_cmd }}
 
   test_android:
     needs: analyze
@@ -68,16 +71,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
@@ -93,16 +96,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - run: dart --version
       - run: flutter --version
       - name: Install melos

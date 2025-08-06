@@ -23,6 +23,15 @@ scripts:
   try_build_ios:
     exec: |
       set -e
+      flutter config --no-enable-swift-package-manager
+      flutter pub get
+      flutter build ios --debug --no-codesign
+    packageFilters:
+      fileExists: lib/main.dart
+  try_build_ios_swift_package_manager:
+    exec: |
+      set -e
+      flutter config --enable-swift-package-manager
       flutter pub get
       flutter build ios --debug --no-codesign
     packageFilters:
