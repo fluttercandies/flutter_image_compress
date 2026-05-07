@@ -63,8 +63,26 @@
         [options setObject:@(quality / 100) forKey: qualityKey];
         
         if (@available(iOS 11.0, *)) {
-            [ciContext writeHEIFRepresentationOfImage:ciImage toURL:url format: kCIFormatARGB8 colorSpace: ciImage.colorSpace options:options error:nil];
-            data = [NSData dataWithContentsOfURL:url];
+            CGColorSpaceRef colorSpace = ciImage.colorSpace;
+            if (colorSpace == NULL) {
+                colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+            }
+            
+            NSError *error = nil;
+            BOOL success = [ciContext writeHEIFRepresentationOfImage:ciImage toURL:url format:kCIFormatARGB8 colorSpace:colorSpace options:options error:&error];
+            
+            if (success) {
+                data = [NSData dataWithContentsOfURL:url];
+            } else {
+                data = nil;
+                if([ImageCompressPlugin showLog]){
+                    NSLog(@"HEIC write failed: %@", error.localizedDescription);
+                }
+            }
+            
+            if (colorSpace != ciImage.colorSpace) {
+                CGColorSpaceRelease(colorSpace);
+            }
         } else {
             // Fallback on earlier versions
             data = nil;
