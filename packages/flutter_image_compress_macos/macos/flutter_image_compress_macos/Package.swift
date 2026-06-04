@@ -11,11 +11,15 @@ let package = Package(
     products: [
         .library(name: "flutter-image-compress-macos", targets: ["flutter_image_compress_macos"])
     ],
-    dependencies: [],
+    dependencies: [
+        .package(name: "FlutterFramework", path: "../FlutterFramework")
+    ],
     targets: [
         .target(
             name: "flutter_image_compress_macos",
-            dependencies: []
+            dependencies: [
+                .product(name: "FlutterFramework", package: "FlutterFramework")
+            ]
         )
     ]
 )
