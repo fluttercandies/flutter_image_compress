@@ -4,14 +4,14 @@ version: 1.0.3
 homepage: https://github.com/fluttercandies/flutter_image_compress
 
 environment:
-  sdk: '>=2.12.0 <4.0.0'
-  flutter: '>=2.0.0'
+  sdk: ^3.11.0
+  flutter: ">=3.41.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_image_compress_platform_interface: ^1.0.5
-  
+
 flutter:
   plugin:
     implements: flutter_image_compress
