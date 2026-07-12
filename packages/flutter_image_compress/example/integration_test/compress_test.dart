@@ -124,8 +124,7 @@ void main() {
   });
 
   group('compressAndGetFile', () {
-    testWidgets('writes to targetPath and returns a readable file',
-        (_) async {
+    testWidgets('writes to targetPath and returns a readable file', (_) async {
       final srcBytes = await loadAssetBytes('img/img.jpg');
       final dir = await getTemporaryDirectory();
       final stamp = DateTime.now().microsecondsSinceEpoch;
@@ -198,8 +197,7 @@ void main() {
           minHeight: 600,
           quality: 85,
         );
-        expect(heicResult, isNotNull,
-            reason: 'HEIC compressAndGetFile failed');
+        expect(heicResult, isNotNull, reason: 'HEIC compressAndGetFile failed');
         final heicBytes = await File(heicResult!.path).readAsBytes();
         expectValidCompressed(
           bytes: heicBytes,
@@ -337,8 +335,7 @@ void main() {
       // current native code (arg[5] is not read by the Objective-C
       // handlers), so this test does not vary it — orientation handling
       // is a property of the decode path, not that flag.
-      testWidgets('portrait EXIF orientation is applied to output',
-          (_) async {
+      testWidgets('portrait EXIF orientation is applied to output', (_) async {
         final src = await loadAssetBytes('img/have-exif.jpg');
         final result = await FlutterImageCompress.compressWithList(
           src,
@@ -461,8 +458,7 @@ void main() {
         final retainedFromSource =
             keptKeys.intersection(srcKeys).difference(droppedKeys);
         expect(retainedFromSource, isNotEmpty,
-            reason:
-                'keepExif=true should retain at least one source EXIF key '
+            reason: 'keepExif=true should retain at least one source EXIF key '
                 'that keepExif=false does not emit '
                 '(src=$srcKeys kept=$keptKeys dropped=$droppedKeys)');
       });
