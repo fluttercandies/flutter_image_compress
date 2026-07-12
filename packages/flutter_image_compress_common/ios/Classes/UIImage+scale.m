@@ -24,10 +24,27 @@
     actualHeight = floor(scaleRatio * actualHeight);
     
     CGRect rect = CGRectMake(0.0, 0.0, actualWidth, actualHeight);
-    UIGraphicsBeginImageContext(rect.size);
-    [self drawInRect:rect];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+    UIImage *newImage;
+    if (@available(iOS 10.0, *)) {
+        // Match the legacy UIGraphicsBeginImageContext behavior:
+        //   - scale = 1.0 keeps output in logical pixels (renderer default is device screen scale, e.g. 2x/3x).
+        //   - preferredRange = Standard keeps output in sRGB (renderer default is automatic, which produces
+        //     P3/extended-range bitmaps on wide-gamut devices and can inflate compressed file sizes).
+        UIGraphicsImageRendererFormat *format = [[UIGraphicsImageRendererFormat alloc] init];
+        format.scale = 1.0;
+        if (@available(iOS 12.0, *)) {
+            format.preferredRange = UIGraphicsImageRendererFormatRangeStandard;
+        }
+        UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:rect.size format:format];
+        newImage = [renderer imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull context) {
+            [self drawInRect:rect];
+        }];
+    } else {
+        UIGraphicsBeginImageContext(rect.size);
+        [self drawInRect:rect];
+        newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
     
     if([ImageCompressPlugin showLog]){
         NSLog(@"scale = %.2f", scaleRatio);
@@ -52,22 +69,48 @@
     CGAffineTransform t = CGAffineTransformMakeRotation(degrees * M_PI / 180);
     rotatedViewBox.transform = t;
     CGSize rotatedSize = rotatedViewBox.frame.size;
-    // Create the bitmap context
-    UIGraphicsBeginImageContext(rotatedSize);
-    CGContextRef bitmap = UIGraphicsGetCurrentContext();
-    
-    // Move the origin to the middle of the image so we will rotate and scale around the center.
-    CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
-    
-    //   // Rotate the image context
-    CGContextRotateCTM(bitmap, (degrees * M_PI / 180));
-    
-    // Now, draw the rotated/scaled image into the context
-    CGContextScaleCTM(bitmap, 1.0, -1.0);
-    CGContextDrawImage(bitmap, CGRectMake(-oldImage.size.width / 2, -oldImage.size.height / 2, oldImage.size.width, oldImage.size.height), [oldImage CGImage]);
-    
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+
+    UIImage *newImage;
+    if (@available(iOS 10.0, *)) {
+        // See scaleWithMinWidth:minHeight: for why scale and preferredRange are pinned.
+        UIGraphicsImageRendererFormat *format = [[UIGraphicsImageRendererFormat alloc] init];
+        format.scale = 1.0;
+        if (@available(iOS 12.0, *)) {
+            format.preferredRange = UIGraphicsImageRendererFormatRangeStandard;
+        }
+        UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:rotatedSize format:format];
+        newImage = [renderer imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull context) {
+            CGContextRef bitmap = context.CGContext;
+
+            // Move the origin to the middle of the image so we will rotate and scale around the center.
+            CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
+
+            // Rotate the image context
+            CGContextRotateCTM(bitmap, (degrees * M_PI / 180));
+
+            // Now, draw the rotated/scaled image into the context
+            CGContextScaleCTM(bitmap, 1.0, -1.0);
+            CGContextDrawImage(bitmap, CGRectMake(-oldImage.size.width / 2, -oldImage.size.height / 2, oldImage.size.width, oldImage.size.height), [oldImage CGImage]);
+        }];
+    } else {
+        // Create the bitmap context
+        UIGraphicsBeginImageContext(rotatedSize);
+        CGContextRef bitmap = UIGraphicsGetCurrentContext();
+
+        // Move the origin to the middle of the image so we will rotate and scale around the center.
+        CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
+
+        // Rotate the image context
+        CGContextRotateCTM(bitmap, (degrees * M_PI / 180));
+
+        // Now, draw the rotated/scaled image into the context
+        CGContextScaleCTM(bitmap, 1.0, -1.0);
+        CGContextDrawImage(bitmap, CGRectMake(-oldImage.size.width / 2, -oldImage.size.height / 2, oldImage.size.width, oldImage.size.height), [oldImage CGImage]);
+
+        newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
+
     return newImage;
 }
 
