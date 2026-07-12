@@ -26,7 +26,9 @@
     CGRect rect = CGRectMake(0.0, 0.0, actualWidth, actualHeight);
     UIImage *newImage;
     if (@available(iOS 10.0, *)) {
-        UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:rect.size];
+        UIGraphicsImageRendererFormat *format = [[UIGraphicsImageRendererFormat alloc] init];
+        format.scale = 1.0;
+        UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:rect.size format:format];
         newImage = [renderer imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull context) {
             [self drawInRect:rect];
         }];
@@ -63,7 +65,9 @@
 
     UIImage *newImage;
     if (@available(iOS 10.0, *)) {
-        UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:rotatedSize];
+        UIGraphicsImageRendererFormat *format = [[UIGraphicsImageRendererFormat alloc] init];
+        format.scale = 1.0;
+        UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:rotatedSize format:format];
         newImage = [renderer imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull context) {
             CGContextRef bitmap = context.CGContext;
 
