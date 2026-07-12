@@ -10,10 +10,6 @@
 #import "SYMetadata.h"
 #import "NSDictionary+SY.h"
 
-#if !TARGET_OS_TV
-#import <AssetsLibrary/AssetsLibrary.h>
-#endif
-
 #define SYKeyForMetadata(name)          NSStringFromSelector(@selector(metadata##name))
 #define SYDictionaryForMetadata(name)   SYPaste(SYPaste(kCGImageProperty,name),Dictionary)
 #define SYClassForMetadata(name)        SYPaste(SYMetadata,name)
@@ -44,22 +40,6 @@
         NSLog(@"--> Error creating %@ object: %@", NSStringFromClass(self.class), error);
     
     return instance;
-}
-
-+ (instancetype)metadataWithAsset:(ALAsset *)asset
-{
-#if !TARGET_OS_TV
-    ALAssetRepresentation *representation = [asset defaultRepresentation];
-    return [self metadataWithDictionary:[representation metadata]];
-#else
-    return nil;
-#endif
-}
-
-+ (instancetype)metadataWithAssetURL:(NSURL *)assetURL
-{
-    NSDictionary *dictionary = [self dictionaryWithAssetURL:assetURL];
-    return [self metadataWithDictionary:dictionary];
 }
 
 + (instancetype)metadataWithFileURL:(NSURL *)fileURL
@@ -142,33 +122,6 @@
     CFRelease(source);
     
     return (success ? data : nil);
-}
-
-#pragma mark - Getting metadata
-
-+ (NSDictionary *)dictionaryWithAssetURL:(NSURL *)assetURL
-{
-#if !TARGET_OS_TV
-    __block ALAsset *assetAtUrl = nil;
-    ALAssetsLibrary* library = [[ALAssetsLibrary alloc] init];
-    
-    dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-    [library assetForURL:assetURL resultBlock:^(ALAsset *asset) {
-        assetAtUrl = asset;
-        dispatch_semaphore_signal(sema);
-    } failureBlock:^(NSError *error) {
-        dispatch_semaphore_signal(sema);
-    }];
-    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-    
-    if (!assetAtUrl)
-        return nil;
-    
-    ALAssetRepresentation *representation = [assetAtUrl defaultRepresentation];
-    return [representation metadata];
-#else
-    return nil;
-#endif
 }
 
 #pragma mark - Mapping

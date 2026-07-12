@@ -29,8 +29,6 @@
 // http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/index.html
 // http://www.exiv2.org/tags.html
 
-@class ALAsset;
-
 @interface SYMetadata : SYMetadataBase
 
 @property SYMETADATA_PROPERTY_COPY NSDictionary *originalDictionary;
@@ -72,12 +70,8 @@
 @property (nonatomic, copy, readonly)   NSString  *profileName;
 
 + (instancetype)metadataWithDictionary:(NSDictionary *)dictionary;
-+ (instancetype)metadataWithAsset:(ALAsset *)asset __TVOS_PROHIBITED;
-+ (instancetype)metadataWithAssetURL:(NSURL *)assetURL __TVOS_PROHIBITED;
 + (instancetype)metadataWithFileURL:(NSURL *)fileURL;
 + (instancetype)metadataWithImageData:(NSData *)imageData;
-
-+ (NSDictionary *)dictionaryWithAssetURL:(NSURL *)assetURL __TVOS_PROHIBITED;
 
 + (NSData *)dataWithImageData:(NSData *)imageData andMetadata:(SYMetadata *)metadata;
 
