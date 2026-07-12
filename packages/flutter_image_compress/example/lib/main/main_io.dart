@@ -250,9 +250,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   /// The example for compressing heic format.
-  /// 
+  ///
   /// Convert jpeg to heic format, and then convert heic to jpg format.
-  /// 
+  ///
   /// Show the file path and size in the console.
   void _compressHeicExample() async {
     print('start compress');
