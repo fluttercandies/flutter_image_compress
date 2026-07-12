@@ -44,3 +44,7 @@ pubspec.lock
 # FVM Version Cache
 .fvm/
 .fvmrc
+
+# Xcode derived data — should never be tracked.
+DerivedData/
+**/DerivedData/
