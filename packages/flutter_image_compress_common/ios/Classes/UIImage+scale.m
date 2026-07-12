@@ -26,8 +26,15 @@
     CGRect rect = CGRectMake(0.0, 0.0, actualWidth, actualHeight);
     UIImage *newImage;
     if (@available(iOS 10.0, *)) {
+        // Match the legacy UIGraphicsBeginImageContext behavior:
+        //   - scale = 1.0 keeps output in logical pixels (renderer default is device screen scale, e.g. 2x/3x).
+        //   - preferredRange = Standard keeps output in sRGB (renderer default is automatic, which produces
+        //     P3/extended-range bitmaps on wide-gamut devices and can inflate compressed file sizes).
         UIGraphicsImageRendererFormat *format = [[UIGraphicsImageRendererFormat alloc] init];
         format.scale = 1.0;
+        if (@available(iOS 12.0, *)) {
+            format.preferredRange = UIGraphicsImageRendererFormatRangeStandard;
+        }
         UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:rect.size format:format];
         newImage = [renderer imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull context) {
             [self drawInRect:rect];
@@ -65,8 +72,12 @@
 
     UIImage *newImage;
     if (@available(iOS 10.0, *)) {
+        // See scaleWithMinWidth:minHeight: for why scale and preferredRange are pinned.
         UIGraphicsImageRendererFormat *format = [[UIGraphicsImageRendererFormat alloc] init];
         format.scale = 1.0;
+        if (@available(iOS 12.0, *)) {
+            format.preferredRange = UIGraphicsImageRendererFormatRangeStandard;
+        }
         UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:rotatedSize format:format];
         newImage = [renderer imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull context) {
             CGContextRef bitmap = context.CGContext;
