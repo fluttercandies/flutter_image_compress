@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Detected image container format based on file magic bytes.
 enum DetectedFormat { jpeg, png, webp, heic, unknown }
@@ -141,6 +143,21 @@ Future<bool> imageHasAlpha(Uint8List bytes) async {
 
 const MethodChannel testHelperChannel =
     MethodChannel('flutter_image_compress/test');
+
+/// Return a scratch directory the tests can write into safely.
+///
+/// On macOS-sandboxed builds, the container's Caches directory returned by
+/// `getTemporaryDirectory()` may not exist on first launch (a fresh CI
+/// runner exercises this — a locally launched app happens to have created
+/// the directory already on prior runs). Create it first so writes are
+/// reliable across hosts.
+Future<Directory> ensureScratchDirectory() async {
+  final dir = await getTemporaryDirectory();
+  if (!dir.existsSync()) {
+    dir.createSync(recursive: true);
+  }
+  return dir;
+}
 
 /// Assert compressed output is a well-formed member of the requested format.
 ///

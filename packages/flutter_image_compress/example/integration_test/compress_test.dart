@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'helpers.dart';
 
@@ -99,7 +98,7 @@ void main() {
   group('compressWithFile', () {
     testWidgets('reads a file path, emits JPEG bytes', (_) async {
       final srcBytes = await loadAssetBytes('img/img.jpg');
-      final dir = await getTemporaryDirectory();
+      final dir = await ensureScratchDirectory();
       final srcFile = File(
         '${dir.path}/fic-baseline-with-file-${DateTime.now().microsecondsSinceEpoch}.jpg',
       )..writeAsBytesSync(srcBytes);
@@ -126,7 +125,7 @@ void main() {
   group('compressAndGetFile', () {
     testWidgets('writes to targetPath and returns a readable file', (_) async {
       final srcBytes = await loadAssetBytes('img/img.jpg');
-      final dir = await getTemporaryDirectory();
+      final dir = await ensureScratchDirectory();
       final stamp = DateTime.now().microsecondsSinceEpoch;
       final srcFile = File('${dir.path}/fic-baseline-src-$stamp.jpg')
         ..writeAsBytesSync(srcBytes);
@@ -182,7 +181,7 @@ void main() {
     () {
       testWidgets('JPEG -> HEIC -> JPEG round-trip is decodable', (_) async {
         final srcBytes = await loadAssetBytes('img/img.jpg');
-        final dir = await getTemporaryDirectory();
+        final dir = await ensureScratchDirectory();
         final stamp = DateTime.now().microsecondsSinceEpoch;
         final srcPath = '${dir.path}/fic-baseline-heic-src-$stamp.jpg';
         final heicPath = '${dir.path}/fic-baseline-heic-out-$stamp.heic';
