@@ -50,6 +50,31 @@ scripts:
       flutter build macos
     packageFilters:
       fileExists: lib/main.dart
+  verify_ios_behavior:
+    description: |
+      Run the integration_test behavior baseline on an iOS device/simulator.
+      Requires a booted iOS simulator or connected device. Pass DEVICE_ID via
+      env to target a specific one; otherwise Flutter picks the first iOS
+      device.
+    exec: |
+      set -e
+      flutter pub get
+      if [ -n "$DEVICE_ID" ]; then
+        flutter test integration_test/compress_test.dart -d "$DEVICE_ID"
+      else
+        flutter test integration_test/compress_test.dart
+      fi
+    packageFilters:
+      fileExists: integration_test/compress_test.dart
+  verify_macos_behavior:
+    description: |
+      Run the integration_test behavior baseline on macOS desktop.
+    exec: |
+      set -e
+      flutter pub get
+      flutter test integration_test/compress_test.dart -d macos
+    packageFilters:
+      fileExists: integration_test/compress_test.dart
   cp_files:
     exec: |
       set -e

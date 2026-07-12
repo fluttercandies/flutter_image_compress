@@ -1,3 +1,8 @@
+## 1.1.0
+
+- **FEAT**(macOS): Add Swift Package Manager support (Package.swift alongside podspec).
+- **REFACTOR**(macOS): Reorganize Swift sources into `Sources/flutter_image_compress_macos/` layout compatible with SPM. Cocoapods integration continues to work.
+
 ## 1.0.3
 
  - **FIX**: Correct image size calculation for macOS with NSImage ([#316](https://github.com/fluttercandies/flutter_image_compress/issues/316)). ([e67ddf96](https://github.com/fluttercandies/flutter_image_compress/commit/e67ddf96ad1495281d3c5ac017d153b81f95d456))

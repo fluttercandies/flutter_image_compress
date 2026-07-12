@@ -5,8 +5,8 @@
 #import "CompressFileHandler.h"
 #import "CompressHandler.h"
 #import "SYMetadata.h"
-#import <SDWebImageWebPCoder/SDWebImageWebPCoder.h>
-#import <SDWebImage/SDWebImage.h>
+@import SDWebImageWebPCoder;
+@import SDWebImage;
 
 @implementation CompressFileHandler {
 

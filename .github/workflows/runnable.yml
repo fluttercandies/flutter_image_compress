@@ -65,6 +65,74 @@ jobs:
       - name: Build iOS debug with melos
         run: ${{ matrix.build_cmd }}
 
+  integration_test_iOS:
+    needs: analyze
+    name: Integration test iOS (${{ matrix.spm }}) on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        spm: [cocoapods, swift-package-manager]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - run: flutter --version
+      - name: Install melos
+        run: dart pub global activate melos
+      - name: Melos bootstrap
+        run: melos bootstrap
+      - name: Configure Swift Package Manager
+        run: |
+          if [ "${{ matrix.spm }}" = "swift-package-manager" ]; then
+            flutter config --enable-swift-package-manager
+          else
+            flutter config --no-enable-swift-package-manager
+          fi
+      - name: Boot iOS simulator
+        run: |
+          UDID=$(xcrun simctl list devices available | grep -E "iPhone [0-9]+ \(" | head -n 1 | grep -oE "[0-9A-F-]{36}")
+          echo "Booting $UDID"
+          xcrun simctl boot "$UDID"
+          echo "DEVICE_ID=$UDID" >> $GITHUB_ENV
+      - name: Run integration tests
+        working-directory: packages/flutter_image_compress/example
+        env:
+          DEVICE_ID: ${{ env.DEVICE_ID }}
+        run: flutter test integration_test/compress_test.dart -d "$DEVICE_ID"
+
+  integration_test_macOS:
+    needs: analyze
+    name: Integration test macOS (${{ matrix.spm }}) on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        spm: [cocoapods, swift-package-manager]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - run: flutter --version
+      - name: Install melos
+        run: dart pub global activate melos
+      - name: Melos bootstrap
+        run: melos bootstrap
+      - name: Configure Swift Package Manager
+        run: |
+          if [ "${{ matrix.spm }}" = "swift-package-manager" ]; then
+            flutter config --enable-swift-package-manager
+          else
+            flutter config --no-enable-swift-package-manager
+          fi
+      - name: Run integration tests
+        working-directory: packages/flutter_image_compress/example
+        run: flutter test integration_test/compress_test.dart -d macos
+
   test_android:
     needs: analyze
     name: Test Android on ${{ matrix.os }}
