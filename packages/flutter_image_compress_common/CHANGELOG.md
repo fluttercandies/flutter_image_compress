@@ -1,3 +1,7 @@
+## 1.0.6
+
+- **DEPS**: Bump `compileSdk` to `34`.
+
 ## 1.0.5
 
  - **DOCS**: The first version for OpenHarmony. ([5fcab8da](https://github.com/fluttercandies/flutter_image_compress/commit/5fcab8dac6277b36b7169962474e5af3cf88724b))

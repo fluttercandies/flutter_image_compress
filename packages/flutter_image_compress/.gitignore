@@ -39,3 +39,4 @@ build/
 *.lock
 .env
 example/macos/Flutter/ephemeral/flutter_export_environment.sh
+build/

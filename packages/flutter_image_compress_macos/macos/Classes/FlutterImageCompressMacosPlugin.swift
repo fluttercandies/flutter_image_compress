@@ -267,9 +267,29 @@ class Compressor {
   func compress(destCreator: () -> CGImageDestination) {
     let minWidth = CGFloat(params["minWidth"] as! Int)
     let minHeight = CGFloat(params["minHeight"] as! Int)
+    
+    // NSImage sometimes returns wrong image size. See https://stackoverflow.com/a/9265331/3966361
 
-    let srcWidth = image.image.size.width
-    let srcHeight = image.image.size.height
+    // NSImage size method returns size information that is screen resolution dependent.
+    // let srcWidth = image.image.size.width
+    // let srcHeight = image.image.size.height
+
+    // NSImageRep should be used to get the size represented in the actual file image instead. 
+    var srcWidth:CGFloat = 0
+    var srcHeight:CGFloat = 0
+    
+    for imageRep in image.image.representations {
+        let width = CGFloat(imageRep.pixelsWide)
+        let height = CGFloat(imageRep.pixelsHigh)
+
+        if width > srcWidth {
+            srcWidth = width
+        }
+        
+        if height > srcHeight {
+            srcHeight = height
+        }
+    }
 
     let srcRatio = srcWidth / srcHeight
     let maxRatio = minWidth / minHeight

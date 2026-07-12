@@ -1,3 +1,7 @@
+## 2.4.0
+
+ - **FEAT**: remove pica from web ([#324](https://github.com/fluttercandies/flutter_image_compress/issues/324)). ([b56ce0fa](https://github.com/fluttercandies/flutter_image_compress/commit/b56ce0fa4763bf8084c26ea8e435e37e06997ba8))
+
 ## 2.3.0
 
  - **FEAT**: Update plugin structure for OpenHarmony ([#301](https://github.com/fluttercandies/flutter_image_compress/issues/301)). ([5e999c43](https://github.com/fluttercandies/flutter_image_compress/commit/5e999c431c5dcff880b8c217e40fa7d027ca0bdc))
