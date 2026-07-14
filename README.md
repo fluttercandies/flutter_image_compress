@@ -92,7 +92,7 @@ There are several ways to use the library api.
 ```dart
 
   // 1. compress file and get Uint8List
-  Future<Uint8List> testCompressFile(File file) async {
+  Future<Uint8List?> testCompressFile(File file) async {
     var result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       minWidth: 2300,
@@ -101,12 +101,14 @@ There are several ways to use the library api.
       rotate: 90,
     );
     print(file.lengthSync());
-    print(result.length);
+    if (result != null) {
+      print(result.length);
+    }
     return result;
   }
 
   // 2. compress file and get file.
-  Future<File> testCompressAndGetFile(File file, String targetPath) async {
+  Future<File?> testCompressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
         file.absolute.path, targetPath,
         quality: 88,
@@ -114,13 +116,16 @@ There are several ways to use the library api.
       );
 
     print(file.lengthSync());
-    print(result.lengthSync());
+    if (result != null) {
+      print(await result.length());
+      return File(result.path);
+    }
 
     return result;
   }
 
   // 3. compress asset and get Uint8List.
-  Future<Uint8List> testCompressAsset(String assetName) async {
+  Future<Uint8List?> testCompressAsset(String assetName) async {
     var list = await FlutterImageCompress.compressAssetImage(
       assetName,
       minHeight: 1920,
