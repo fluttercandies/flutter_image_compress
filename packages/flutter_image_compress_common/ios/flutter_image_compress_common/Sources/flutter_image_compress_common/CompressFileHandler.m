@@ -93,9 +93,12 @@
         data = [SYMetadata dataWithImageData:data andMetadata:metadata];
     }
 
-    [data writeToURL:[[NSURL alloc] initFileURLWithPath:targetPath] atomically:YES];
-
-    result(targetPath);
+    if (data == nil) {
+        result(nil);
+        return;
+    }
+    BOOL success = [data writeToURL:[[NSURL alloc] initFileURLWithPath:targetPath] atomically:YES];
+    result(success ? targetPath : nil);
 }
 
 
