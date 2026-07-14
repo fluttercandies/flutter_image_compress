@@ -69,6 +69,7 @@ jobs:
     needs: analyze
     name: Integration test iOS (${{ matrix.spm }}) on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -96,11 +97,19 @@ jobs:
           UDID=$(xcrun simctl list devices available | grep -E "iPhone [0-9]+ \(" | head -n 1 | grep -oE "[0-9A-F-]{36}")
           echo "Booting $UDID"
           xcrun simctl boot "$UDID"
+          # Wait until the simulator is fully booted (past the "Booted"
+          # state simctl returns immediately) before handing it to
+          # `flutter test`. Under SPM we have seen the test host launch
+          # against a not-yet-ready simulator and never emit any output,
+          # causing the job to sit at 'Xcode build done.' for the entire
+          # 60-minute default timeout.
+          xcrun simctl bootstatus "$UDID" -b
           echo "DEVICE_ID=$UDID" >> $GITHUB_ENV
       - name: Run integration tests
         working-directory: packages/flutter_image_compress/example
         env:
           DEVICE_ID: ${{ env.DEVICE_ID }}
+        timeout-minutes: 15
         run: flutter test integration_test/compress_test.dart -d "$DEVICE_ID"
 
   integration_test_macOS:
