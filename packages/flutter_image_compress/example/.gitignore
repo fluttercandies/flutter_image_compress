@@ -75,7 +75,5 @@ build/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 *.lock
 
-!pubspec.lock
-
 # FVM Version Cache
 .fvm/
