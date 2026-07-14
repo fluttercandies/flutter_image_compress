@@ -69,7 +69,7 @@ jobs:
     needs: analyze
     name: Integration test iOS (${{ matrix.spm }}) on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 25
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
@@ -105,12 +105,21 @@ jobs:
           # 60-minute default timeout.
           xcrun simctl bootstatus "$UDID" -b
           echo "DEVICE_ID=$UDID" >> $GITHUB_ENV
+      # `flutter test` on the iOS simulator intermittently hands the test
+      # host to a simulator that never becomes runnable and hangs without
+      # emitting any output (flutter/flutter#153433 / #115985 —
+      # partial fix in #154970 still leaks some failure paths). Retry
+      # once per attempt so a single flake doesn't fail the job; the
+      # 15-min per-attempt timeout keeps a real hang from eating a
+      # runner slot.
       - name: Run integration tests
-        working-directory: packages/flutter_image_compress/example
+        uses: nick-fields/retry@v3
         env:
           DEVICE_ID: ${{ env.DEVICE_ID }}
-        timeout-minutes: 15
-        run: flutter test integration_test/compress_test.dart -d "$DEVICE_ID"
+        with:
+          timeout_minutes: 15
+          max_attempts: 2
+          command: cd packages/flutter_image_compress/example && flutter test integration_test/compress_test.dart -d "$DEVICE_ID"
 
   integration_test_macOS:
     needs: analyze
