@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## Unreleased
+
+### Changes
+
+- **FEAT**(iOS/macOS): Swift Package Manager support. `flutter_image_compress_common` and `flutter_image_compress_macos` now ship `Package.swift` alongside their podspec. Existing Cocoapods integration continues to work.
+- **TEST**: Add `example/integration_test/compress_test.dart` — behavior baseline covering all four API surfaces, format container assertions, EXIF preservation, EXIF orientation, transparency, and rotation.
+
+Packages:
+- `flutter_image_compress_common` `v1.0.6` → `v1.1.0`
+- `flutter_image_compress_macos` `v1.0.3` → `v1.1.0`
+
 ## 2025-01-02
 
 ### Changes

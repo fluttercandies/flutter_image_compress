@@ -14,16 +14,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - name: Log Dart/Flutter versions
         run: |
           dart --version
@@ -42,17 +42,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ macos-latest ]
+        os: [macos-latest]
+        build_cmd:
+          - melos run try_build_ios
+          - melos run try_build_ios_swift_package_manager
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
           architecture: x64
-          channel: 'stable'
+          channel: "stable"
       - run: dart --version
       - run: flutter --version
       - name: Install melos
@@ -60,7 +63,84 @@ jobs:
       - name: Melos bootstrap
         run: melos bootstrap
       - name: Build iOS debug with melos
-        run: melos run try_build_ios 
+        run: ${{ matrix.build_cmd }}
+
+  integration_test_iOS:
+    needs: analyze
+    name: Integration test iOS (${{ matrix.spm }}) on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        spm: [cocoapods, swift-package-manager]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - run: flutter --version
+      - name: Install melos
+        run: dart pub global activate melos
+      - name: Melos bootstrap
+        run: melos bootstrap
+      - name: Configure Swift Package Manager
+        run: |
+          if [ "${{ matrix.spm }}" = "swift-package-manager" ]; then
+            flutter config --enable-swift-package-manager
+          else
+            flutter config --no-enable-swift-package-manager
+          fi
+      - name: Boot iOS simulator
+        run: |
+          UDID=$(xcrun simctl list devices available | grep -E "iPhone [0-9]+ \(" | head -n 1 | grep -oE "[0-9A-F-]{36}")
+          echo "Booting $UDID"
+          xcrun simctl boot "$UDID"
+          # Wait until the simulator is fully booted (past the "Booted"
+          # state simctl returns immediately) before handing it to
+          # `flutter test`. Under SPM we have seen the test host launch
+          # against a not-yet-ready simulator and never emit any output,
+          # causing the job to sit at 'Xcode build done.' for the entire
+          # 60-minute default timeout.
+          xcrun simctl bootstatus "$UDID" -b
+          echo "DEVICE_ID=$UDID" >> $GITHUB_ENV
+      - name: Run integration tests
+        working-directory: packages/flutter_image_compress/example
+        env:
+          DEVICE_ID: ${{ env.DEVICE_ID }}
+        timeout-minutes: 15
+        run: flutter test integration_test/compress_test.dart -d "$DEVICE_ID"
+
+  integration_test_macOS:
+    needs: analyze
+    name: Integration test macOS (${{ matrix.spm }}) on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        spm: [cocoapods, swift-package-manager]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - run: flutter --version
+      - name: Install melos
+        run: dart pub global activate melos
+      - name: Melos bootstrap
+        run: melos bootstrap
+      - name: Configure Swift Package Manager
+        run: |
+          if [ "${{ matrix.spm }}" = "swift-package-manager" ]; then
+            flutter config --enable-swift-package-manager
+          else
+            flutter config --no-enable-swift-package-manager
+          fi
+      - name: Run integration tests
+        working-directory: packages/flutter_image_compress/example
+        run: flutter test integration_test/compress_test.dart -d macos
 
   test_android:
     needs: analyze
@@ -68,16 +148,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
@@ -93,16 +173,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: "zulu"
+          java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - run: dart --version
       - run: flutter --version
       - name: Install melos
