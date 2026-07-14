@@ -4,7 +4,7 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: '>=2.19.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
   flutter: '>=2.0.0'
 
 dependencies:
@@ -20,6 +20,13 @@ dependencies:
      git:
        url: https://gitee.com/openharmony-sig/flutter_packages.git
        path: packages/path_provider/path_provider_ohos
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
 flutter:
   uses-material-design: true
 

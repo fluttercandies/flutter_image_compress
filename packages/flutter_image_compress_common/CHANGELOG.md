@@ -1,3 +1,8 @@
+## 1.1.0
+
+- **FEAT**(iOS): Add Swift Package Manager support (Package.swift alongside podspec).
+- **REFACTOR**(iOS): Reorganize Objective-C sources into `Sources/flutter_image_compress_common/` layout compatible with SPM. Public headers moved to `include/flutter_image_compress_common/`. Cocoapods integration continues to work.
+
 ## 1.0.6
 
 - **DEPS**: Bump `compileSdk` to `34`.
