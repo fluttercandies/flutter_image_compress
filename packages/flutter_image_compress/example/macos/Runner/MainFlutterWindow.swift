@@ -15,8 +15,6 @@ class MainFlutterWindow: NSWindow {
     super.awakeFromNib()
   }
 
-  // Test-only channel: mirrors the iOS AppDelegate helper so the
-  // integration_test suite can assert EXIF preservation on macOS.
   private static func registerTestHelperChannel(controller: FlutterViewController) {
     let channel = FlutterMethodChannel(
       name: "flutter_image_compress/test",
