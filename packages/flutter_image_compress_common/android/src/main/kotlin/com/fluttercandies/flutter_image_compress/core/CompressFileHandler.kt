@@ -32,20 +32,20 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                 reply(null)
                 return@execute
             }
-            val exifRotate = if (autoCorrectionAngle) {
-                val bytes = File(filePath).readBytes()
-                Exif.getRotationDegrees(bytes)
-            } else {
-                0
-            }
-            if (exifRotate == 270 || exifRotate == 90) {
-                val tmp = minWidth
-                minWidth = minHeight
-                minHeight = tmp
-            }
-            val targetRotate = rotate + exifRotate
             val outputStream = ByteArrayOutputStream()
             try {
+                val exifRotate = if (autoCorrectionAngle) {
+                    val bytes = File(filePath).readBytes()
+                    Exif.getRotationDegrees(bytes)
+                } else {
+                    0
+                }
+                if (exifRotate == 270 || exifRotate == 90) {
+                    val tmp = minWidth
+                    minWidth = minHeight
+                    minHeight = tmp
+                }
+                val targetRotate = rotate + exifRotate
                 formatHandler.handleFile(
                     context,
                     filePath,
@@ -79,11 +79,6 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
             val targetPath = args[4] as String
             val rotate = args[5] as Int
             val autoCorrectionAngle = args[6] as Boolean
-            val exifRotate = if (autoCorrectionAngle) {
-                Exif.getRotationDegrees(File(file))
-            } else {
-                0
-            }
             val format = args[7] as Int
             val keepExif = args[8] as Boolean
             val inSampleSize = args[9] as Int
@@ -94,14 +89,19 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                 reply(null)
                 return@execute
             }
-            if (exifRotate == 270 || exifRotate == 90) {
-                val tmp = minWidth
-                minWidth = minHeight
-                minHeight = tmp
-            }
-            val targetRotate = rotate + exifRotate
             var outputStream: OutputStream? = null
             try {
+                val exifRotate = if (autoCorrectionAngle) {
+                    Exif.getRotationDegrees(File(file))
+                } else {
+                    0
+                }
+                if (exifRotate == 270 || exifRotate == 90) {
+                    val tmp = minWidth
+                    minWidth = minHeight
+                    minHeight = tmp
+                }
+                val targetRotate = rotate + exifRotate
                 outputStream = File(targetPath).outputStream()
                 formatHandler.handleFile(
                     context,
