@@ -1,5 +1,6 @@
 ## 1.1.0
 
+- **FIX**(iOS): Don't crash on WebP + `keepExif: true`. `SYMetadata`'s ImageIO-backed rewrite returns `nil` for containers it can't author (e.g. WebP); the handlers now preserve the original compressed bytes on that failure instead of forwarding `nil` to `FlutterStandardTypedData` ([#217](https://github.com/fluttercandies/flutter_image_compress/issues/217)).
 - **FEAT**(iOS): Add Swift Package Manager support (Package.swift alongside podspec).
 - **REFACTOR**(iOS): Reorganize Objective-C sources into `Sources/flutter_image_compress_common/` layout compatible with SPM. Public headers moved to `include/flutter_image_compress_common/`. Cocoapods integration continues to work.
 
