@@ -17,27 +17,35 @@ class FlutterImageCompressValidator {
     if (ignoreCheckExtName) {
       return;
     }
-    name = name.toLowerCase();
+    final lower = name.toLowerCase();
+    late final Iterable<String> allowedExts;
+    late final String formatLabel;
     if (format == CompressFormat.jpeg) {
-      assert(
-        (name.endsWith('.jpg') || name.endsWith('.jpeg')),
-        'The jpeg format name must end with jpg or jpeg.',
-      );
+      allowedExts = const ['.jpg', '.jpeg'];
+      formatLabel = 'jpeg';
     } else if (format == CompressFormat.png) {
-      assert(
-        name.endsWith('.png'),
-        'The png format name must end with png.',
-      );
+      allowedExts = const ['.png'];
+      formatLabel = 'png';
     } else if (format == CompressFormat.heic) {
-      assert(
-        name.endsWith('.heic'),
-        'The heic format name must end with heic.',
-      );
+      allowedExts = const ['.heic'];
+      formatLabel = 'heic';
     } else if (format == CompressFormat.webp) {
-      assert(
-        name.endsWith('.webp'),
-        'The webp format name must end with webp.',
-      );
+      allowedExts = const ['.webp'];
+      formatLabel = 'webp';
+    } else {
+      return;
+    }
+    final ok = allowedExts.any(lower.endsWith);
+    if (!ok) {
+      final expected = allowedExts.join(' or ');
+      final msg =
+          'CompressFormat.$formatLabel requires the target file name to end '
+          'with $expected. Got: "$name". '
+          'If you deliberately want to bypass this check (for example the '
+          'target extension does not match the encoded format), set '
+          'FlutterImageCompress.validator.ignoreCheckExtName = true.';
+      assert(false, msg);
+      throw ArgumentError.value(name, 'name', msg);
     }
   }
 
