@@ -32,13 +32,32 @@ import ImageIO
         return
       }
       guard let src = CGImageSourceCreateWithData(typed.data as CFData, nil),
-            let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any],
-            let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any]
+            let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any]
       else {
         result([String]())
         return
       }
-      result(exif.keys.map { $0 as String })
+      // Return keys from every metadata sub-dict we care about, prefixed with
+      // the container name so tests can assert survival of both EXIF-side
+      // keys (DateTimeOriginal — #114) and TIFF-side keys (DateTime on iOS
+      // screenshots — #168). SYMetadata's typed model used to drop keys not
+      // modeled by its properties, so this helper walks the raw dictionary
+      // directly.
+      var keys: [String] = []
+      let dicts: [(String, CFString)] = [
+        ("exif", kCGImagePropertyExifDictionary),
+        ("tiff", kCGImagePropertyTIFFDictionary),
+        ("gps", kCGImagePropertyGPSDictionary),
+        ("iptc", kCGImagePropertyIPTCDictionary),
+        ("png", kCGImagePropertyPNGDictionary),
+      ]
+      for (prefix, dictKey) in dicts {
+        guard let sub = props[dictKey] as? [CFString: Any] else { continue }
+        for key in sub.keys {
+          keys.append("\(prefix):\(key as String)")
+        }
+      }
+      result(keys)
     }
   }
 }

@@ -5,7 +5,6 @@
 #import "CompressFileHandler.h"
 #import "CompressHandler.h"
 #import "ImageCompressPlugin.h"
-#import "SYMetadata.h"
 @import SDWebImageWebPCoder;
 @import SDWebImage;
 
@@ -61,14 +60,15 @@
 
     NSData *data = [CompressHandler compressWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
 
-    if (keepExif) {
-        SYMetadata *metadata = [SYMetadata metadataWithFileURL:[NSURL fileURLWithPath:path]];
-        metadata.orientation = @0;
-        // ImageIO can't write every container we can encode (notably WebP),
-        // so dataWithImageData:andMetadata: can return nil. Fall back to the
-        // original compressed bytes instead of overwriting them with nil —
-        // otherwise typedDataWithBytes: below crashes.
-        NSData *withMetadata = [SYMetadata dataWithImageData:data andMetadata:metadata];
+    if (keepExif && data.length > 0) {
+        // Pass the whole source property dictionary through
+        // CGImageSource → CGImageDestination directly. This preserves keys
+        // (TIFF DateTime on iOS screenshots — #168, GPS, IPTC, maker notes)
+        // that SYMetadata's typed model used to drop, and correctly
+        // overrides orientation/pixel dims for the re-encoded output.
+        // Returns nil when ImageIO can't author the container (WebP — see
+        // #217/#369) — fall back to the compressed bytes without metadata.
+        NSData *withMetadata = [CompressHandler dataByCopyingMetadataFromSource:nsdata intoEncoded:data];
         if (withMetadata.length > 0) {
             data = withMetadata;
         }
@@ -130,13 +130,11 @@
 
     NSData *data = [CompressHandler compressDataWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
 
-    if (keepExif) {
-        SYMetadata *metadata = [SYMetadata metadataWithFileURL:[NSURL fileURLWithPath:path]];
-        metadata.orientation = @0;
-        // See handleMethodCall: dataWithImageData:andMetadata: returns nil for
-        // containers ImageIO can't rewrite (e.g. WebP). Keep the original
-        // encoded bytes on failure so the caller still receives a valid file.
-        NSData *withMetadata = [SYMetadata dataWithImageData:data andMetadata:metadata];
+    if (keepExif && data.length > 0) {
+        // See handleMethodCall: for rationale. Direct CGImageSource →
+        // CGImageDestination passthrough of source properties, with
+        // orientation/dimensions overridden to match the re-encoded bytes.
+        NSData *withMetadata = [CompressHandler dataByCopyingMetadataFromSource:nsdata intoEncoded:data];
         if (withMetadata.length > 0) {
             data = withMetadata;
         }
