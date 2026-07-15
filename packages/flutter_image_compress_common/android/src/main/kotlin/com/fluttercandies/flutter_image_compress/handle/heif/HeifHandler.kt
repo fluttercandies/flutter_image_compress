@@ -65,7 +65,7 @@ class HeifHandler : FormatHandler {
     private fun makeOption(inSampleSize: Int): BitmapFactory.Options {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = false
-        options.inPreferredConfig = Bitmap.Config.RGB_565
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888
         options.inSampleSize = inSampleSize
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             @Suppress("DEPRECATION")
