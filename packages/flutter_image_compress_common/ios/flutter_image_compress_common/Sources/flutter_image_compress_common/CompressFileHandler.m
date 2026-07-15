@@ -193,6 +193,23 @@
         return @"image/jp2";
     }
 
+    // ISO BMFF (HEIC/HEIF/AVIF) — box at bytes 0-7 is [size][ftyp], brand at bytes 8-11.
+    const char ftyp[4] = {'f', 't', 'y', 'p'};
+    if (!memcmp(bytes + 4, ftyp, 4)) {
+        const char *brand = bytes + 8;
+        if (!memcmp(brand, "heic", 4) || !memcmp(brand, "heix", 4) || !memcmp(brand, "hevc", 4)) {
+            return @"image/heic";
+        }
+        if (!memcmp(brand, "mif1", 4) || !memcmp(brand, "msf1", 4)) {
+            return @"image/heif";
+        }
+        if (!memcmp(brand, "avif", 4) || !memcmp(brand, "avis", 4)) {
+            return @"image/avif";
+        }
+        // Unknown ISO BMFF brand (e.g. MP4/MOV — same container, not an image).
+        // Fall through so the octet-stream diagnostic still reflects reality.
+    }
+
     return @"application/octet-stream"; // default type
 
 }
