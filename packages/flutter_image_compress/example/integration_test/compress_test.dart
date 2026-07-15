@@ -614,8 +614,7 @@ void main() {
             final keptKeys = (await readExifKeys(result)).toSet();
             final survivors = srcCanaries.intersection(keptKeys);
             expect(survivors, srcCanaries,
-                reason:
-                    'HEIC + keepExif=true should preserve DateTime tags '
+                reason: 'HEIC + keepExif=true should preserve DateTime tags '
                     '(src=$srcCanaries survived=$survivors kept=$keptKeys)');
           }
         },
