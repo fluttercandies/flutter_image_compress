@@ -32,11 +32,20 @@ fun Bitmap.compress(
     val destH = h / scale
     log("dst width = $destW")
     log("dst height = $destH")
-    Bitmap.createScaledBitmap(
-        this,
-        destW.toInt(),
-        destH.toInt(), true
-    ).rotate(rotate).compress(convertFormatIndexToFormat(format), quality, outputStream)
+    val scaled = Bitmap.createScaledBitmap(this, destW.toInt(), destH.toInt(), true)
+    val rotated = scaled.rotate(rotate)
+    try {
+        rotated.compress(convertFormatIndexToFormat(format), quality, outputStream)
+    } finally {
+        // Recycle in reverse order, but only when the instance is distinct
+        // from its parent (createScaledBitmap and rotate can pass-through).
+        if (rotated !== scaled) {
+            rotated.recycle()
+        }
+        if (scaled !== this) {
+            scaled.recycle()
+        }
+    }
 }
 
 private fun log(any: Any?) {
