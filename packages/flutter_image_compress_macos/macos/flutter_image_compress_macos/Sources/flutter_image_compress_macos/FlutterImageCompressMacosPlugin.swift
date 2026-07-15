@@ -264,7 +264,7 @@ class Compressor {
     return dict as CFDictionary
   }
 
-  func compress(destCreator: () -> CGImageDestination) {
+  func compress(destCreator: () -> CGImageDestination?) -> Bool {
     let minWidth = CGFloat(params["minWidth"] as! Int)
     let minHeight = CGFloat(params["minHeight"] as! Int)
     
@@ -307,16 +307,28 @@ class Compressor {
     let targetHeight = srcHeight * scaleRatio
 
     let targetSize = CGSize(width: targetWidth, height: targetHeight)
-    let dest = destCreator()
+    guard let dest = destCreator() else {
+      return false
+    }
     let angle = params["rotate"] as! Int
 
     handleImage(image: image.image, angle: angle, targetSize: targetSize, dest: dest)
+    return true
   }
 
   func compressToPath(_ result: @escaping (Any?) -> (), _ path: String) {
     let url = URL(fileURLWithPath: path)
-    compress {
-      CGImageDestinationCreateWithURL(url as CFURL, getOutputFormat(), 1, nil)!
+    let ok = compress { () -> CGImageDestination? in
+      guard let dest = CGImageDestinationCreateWithURL(url as CFURL, getOutputFormat(), 1, nil) else {
+        Logger.log(msg: "CGImageDestinationCreateWithURL returned nil for path \(path) — format may be unsupported or path unwritable")
+        return nil
+      }
+      return dest
+    }
+
+    if (!ok) {
+      result(nil)
+      return
     }
 
     Logger.logFile(path: path)
@@ -325,8 +337,17 @@ class Compressor {
 
   func compressToBytes(_ result: @escaping (Any?) -> ()) {
     let data = NSMutableData()
-    compress {
-      CGImageDestinationCreateWithData(data, getOutputFormat(), 1, nil)!
+    let ok = compress { () -> CGImageDestination? in
+      guard let dest = CGImageDestinationCreateWithData(data, getOutputFormat(), 1, nil) else {
+        Logger.log(msg: "CGImageDestinationCreateWithData returned nil — output format may be unsupported on this macOS version")
+        return nil
+      }
+      return dest
+    }
+
+    if (!ok) {
+      result(nil)
+      return
     }
 
     Logger.logData(data: data as Data)
