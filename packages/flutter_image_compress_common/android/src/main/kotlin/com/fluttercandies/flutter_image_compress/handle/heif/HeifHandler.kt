@@ -30,8 +30,12 @@ class HeifHandler : FormatHandler {
         inSampleSize: Int
     ) {
         val tmpFile = TmpFileUtil.createTmpFile(context)
-        compress(byteArray, minWidth, minHeight, quality, rotate, inSampleSize, tmpFile.absolutePath)
-        outputStream.write(tmpFile.readBytes())
+        try {
+            compress(byteArray, minWidth, minHeight, quality, rotate, inSampleSize, tmpFile.absolutePath)
+            outputStream.write(tmpFile.readBytes())
+        } finally {
+            tmpFile.delete()
+        }
     }
 
     private fun compress(
@@ -123,7 +127,11 @@ class HeifHandler : FormatHandler {
         numberOfRetries: Int
     ) {
         val tmpFile = TmpFileUtil.createTmpFile(context)
-        compress(path, minWidth, minHeight, quality, rotate, inSampleSize, tmpFile.absolutePath)
-        outputStream.write(tmpFile.readBytes())
+        try {
+            compress(path, minWidth, minHeight, quality, rotate, inSampleSize, tmpFile.absolutePath)
+            outputStream.write(tmpFile.readBytes())
+        } finally {
+            tmpFile.delete()
+        }
     }
 }
