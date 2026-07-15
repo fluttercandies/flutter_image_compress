@@ -53,11 +53,18 @@ class Logger {
 
 class ImageSrc {
   let image: NSImage
-  let params: Dictionary<String, Any>
+  // Full CGImageSource property dictionary from the source, preserved with
+  // its nested sub-dicts (EXIF, TIFF, GPS, IPTC, PNG). Empty when the
+  // caller did not request keepExif. Consumers must NOT flatten the
+  // sub-dicts into top-level options: CGImageDestination requires them
+  // under their container keys (kCGImagePropertyExifDictionary, etc.), so
+  // the flattened-shape variant this used to write silently produced JPEGs
+  // with no source metadata.
+  let sourceProperties: [CFString: Any]
 
-  init(image: NSImage, params: Dictionary<String, Any>) {
+  init(image: NSImage, sourceProperties: [CFString: Any]) {
     self.image = image
-    self.params = params
+    self.sourceProperties = sourceProperties
   }
 
 }
@@ -69,30 +76,15 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
 
-  func injectDict(_ imageProperties: NSDictionary, _ dest: NSMutableDictionary, _ key: CFString) {
-    let dict = imageProperties[key]
-    if (dict != nil) {
-      let properties = dict as! NSDictionary
-      for (key, value) in properties {
-        dest[key] = value
-      }
-    }
-  }
-
   func makeImageSrc(image: NSImage, source: CGImageSource, params: Dictionary<String, Any>) -> ImageSrc {
     let keepExif = params["keepExif"] as! Bool
 
-    let exifDict = NSMutableDictionary()
-    if (keepExif) {
-      let imageProperties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil)! as NSDictionary
-
-      injectDict(imageProperties, exifDict, kCGImagePropertyExifDictionary)
-      injectDict(imageProperties, exifDict, kCGImagePropertyJFIFDictionary)
-      injectDict(imageProperties, exifDict, kCGImagePropertyTIFFDictionary)
-      injectDict(imageProperties, exifDict, kCGImagePropertyPNGDictionary)
+    guard keepExif,
+          let props = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any]
+    else {
+      return ImageSrc(image: image, sourceProperties: [:])
     }
-
-    return ImageSrc(image: image, params: exifDict as! Dictionary<String, Any>)
+    return ImageSrc(image: image, sourceProperties: props)
   }
 
   func makeFlutterError(code: String = "The incoming parameters do not contain image.") -> FlutterError {
@@ -268,7 +260,14 @@ class Compressor {
     CGImageDestinationAddImage(dest, rotatedImage, options)
 //  CGImageDestinationAddImage(dest, srcCGImage, options)
 
-    CGImageDestinationFinalize(dest)
+    // Check finalize's return — with metadata-rich options (keepExif=true),
+    // HEIC especially can silently reject a source-shape sub-dict and
+    // write nothing, in which case handleImage should report failure so
+    // the caller returns nil rather than a zero-byte file.
+    if !CGImageDestinationFinalize(dest) {
+      Logger.log(msg: "CGImageDestinationFinalize returned false — destination refused the image or options dict")
+      return false
+    }
     return true
   }
 
@@ -280,15 +279,53 @@ class Compressor {
 
     let keepExif = params["keepExif"] as! Bool
 
-    if (keepExif) {
-      // remove orientation
+    if keepExif {
+      // Copy the source property dictionary through with its nested
+      // sub-dicts intact. CGImageDestination reads sub-dicts (EXIF, TIFF,
+      // GPS, IPTC, PNG) only when they appear under their container keys
+      // — flattening them silently drops the data. Then sanitize the
+      // fields that describe the *source* pixel buffer / dimensions,
+      // which no longer describe the re-encoded output:
+      //  - PixelWidth/PixelHeight/FileSize removed (destination writes them)
+      //  - Orientation forced to 1 (rotation is baked into pixels by
+      //    handleImage: below)
+      //  - ProfileName/ColorModel/Depth/HasAlpha/IsFloat/IsIndexed removed
+      //    (a Display-P3 ProfileName lying on an sRGB JPEG output makes
+      //    color-managed viewers render wrong colors; HasAlpha=YES from
+      //    a transparent PNG source on a JPEG output writes contradictory
+      //    metadata)
+      let source = image.sourceProperties
+      let staleTopLevel: Set<CFString> = [
+        kCGImagePropertyPixelWidth,
+        kCGImagePropertyPixelHeight,
+        kCGImagePropertyFileSize,
+        kCGImagePropertyProfileName,
+        kCGImagePropertyColorModel,
+        kCGImagePropertyDepth,
+        kCGImagePropertyHasAlpha,
+        kCGImagePropertyIsFloat,
+        kCGImagePropertyIsIndexed,
+      ]
+      for (key, value) in source {
+        if key == kCGImagePropertyOrientation { continue }
+        if staleTopLevel.contains(key) { continue }
+        dict[key] = value
+      }
       dict[kCGImagePropertyOrientation] = 1
 
-      for param in image.params {
-        if kCGImagePropertyOrientation as String == param.key {
-          continue
-        }
-        dict[param.key] = param.value
+      // Overwrite TIFF-side orientation and drop EXIF-side pixel dimension
+      // hints so the sub-dicts don't contradict the reset top-level
+      // orientation or the encoder's real dimensions.
+      if let tiff = source[kCGImagePropertyTIFFDictionary] as? [CFString: Any] {
+        var updated = tiff
+        updated[kCGImagePropertyTIFFOrientation] = 1
+        dict[kCGImagePropertyTIFFDictionary] = updated
+      }
+      if let exif = source[kCGImagePropertyExifDictionary] as? [CFString: Any] {
+        var updated = exif
+        updated.removeValue(forKey: kCGImagePropertyExifPixelXDimension)
+        updated.removeValue(forKey: kCGImagePropertyExifPixelYDimension)
+        dict[kCGImagePropertyExifDictionary] = updated
       }
     }
 

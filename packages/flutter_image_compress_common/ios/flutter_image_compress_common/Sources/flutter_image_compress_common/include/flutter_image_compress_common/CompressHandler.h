@@ -18,11 +18,11 @@
 
 // Copy every top-level image property dict (EXIF, TIFF, GPS, IPTC, PNG,
 // maker notes, …) from `sourceData` into `encodedData`, and return the
-// merged bytes. Uses CGImageSource → CGImageDestination directly, so keys
-// SYMetadata's typed model would drop (e.g. TIFF DateTime on iOS
-// screenshots) survive. Returns nil when the encoded container can't be
-// re-authored by ImageIO (e.g. WebP) — callers must fall back to the
-// original encoded bytes in that case.
+// merged bytes. Uses CGImageSource → CGImageDestination directly, so
+// keys a typed-model middleman would drop (e.g. TIFF DateTime on iOS
+// screenshots) survive. Returns nil when the encoded container can't
+// be re-authored by ImageIO (e.g. WebP) — callers must fall back to
+// the original encoded bytes in that case.
 + (NSData *)dataByCopyingMetadataFromSource:(NSData *)sourceData
                                 intoEncoded:(NSData *)encodedData;
 @end

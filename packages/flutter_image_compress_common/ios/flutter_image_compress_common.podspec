@@ -15,7 +15,6 @@ Compress image with native Objective-C with faster speed.
   s.public_header_files = 'flutter_image_compress_common/Sources/flutter_image_compress_common/include/flutter_image_compress_common/**/*.h'
 
   s.dependency 'Flutter'
-  s.dependency 'Mantle'
   s.dependency 'SDWebImage'
   s.dependency 'SDWebImageWebPCoder'
 end
