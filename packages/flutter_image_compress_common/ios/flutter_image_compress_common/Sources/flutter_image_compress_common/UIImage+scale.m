@@ -65,10 +65,10 @@
     }
     
     // calculate the size of the rotated view's containing box for our drawing space
-    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,oldImage.size.width, oldImage.size.height)];
+    // compute rotated bbox without touching UIKit — this method runs off the main thread
     CGAffineTransform t = CGAffineTransformMakeRotation(degrees * M_PI / 180);
-    rotatedViewBox.transform = t;
-    CGSize rotatedSize = rotatedViewBox.frame.size;
+    CGRect rotatedRect = CGRectApplyAffineTransform(CGRectMake(0, 0, oldImage.size.width, oldImage.size.height), t);
+    CGSize rotatedSize = rotatedRect.size;
 
     UIImage *newImage;
     if (@available(iOS 10.0, *)) {
