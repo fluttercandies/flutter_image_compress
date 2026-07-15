@@ -461,6 +461,32 @@ void main() {
                 'that keepExif=false does not emit '
                 '(src=$srcKeys kept=$keptKeys dropped=$droppedKeys)');
       });
+
+      testWidgets(
+        'WebP + keepExif=true: does not crash, emits a valid WebP',
+        (_) async {
+          // Regression for issue #217: iOS crashed on WebP + keepExif=true
+          // because SYMetadata's ImageIO-backed rewrite returns nil for
+          // containers ImageIO can't author (WebP), and the nil bytes were
+          // then handed to FlutterStandardTypedData typedDataWithBytes:.
+          final src = await loadAssetBytes('img/auto-angle.jpg');
+          final result = await FlutterImageCompress.compressWithList(
+            src,
+            minWidth: 500,
+            minHeight: 500,
+            quality: 80,
+            format: CompressFormat.webp,
+            keepExif: true,
+          );
+          expectValidCompressed(
+            bytes: result,
+            expected: DetectedFormat.webp,
+            description: 'WebP + keepExif',
+          );
+        },
+        // WebP is iOS/Android only in the common package.
+        skip: !Platform.isIOS,
+      );
     },
     // macOS's keepExif implementation flattens source properties into the
     // CGImageDestination options dictionary as top-level keys, which is
