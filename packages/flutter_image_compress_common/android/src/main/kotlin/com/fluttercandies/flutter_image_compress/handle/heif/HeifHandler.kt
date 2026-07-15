@@ -96,22 +96,36 @@ class HeifHandler : FormatHandler {
         val destH = h / scale
         log("dst width = $destW")
         log("dst height = $destH")
-        val result = Bitmap.createScaledBitmap(
+        val scaled = Bitmap.createScaledBitmap(
             bitmap,
             destW.toInt(),
             destH.toInt(),
             true
-        ).rotate(rotate)
-        val heifWriter = HeifWriter.Builder(
-            targetPath,
-            result.width,
-            result.height,
-            HeifWriter.INPUT_MODE_BITMAP
-        ).setQuality(quality).setMaxImages(1).build()
-        heifWriter.start()
-        heifWriter.addBitmap(result)
-        heifWriter.stop(5000)
-        heifWriter.close()
+        )
+        val result = scaled.rotate(rotate)
+        try {
+            val heifWriter = HeifWriter.Builder(
+                targetPath,
+                result.width,
+                result.height,
+                HeifWriter.INPUT_MODE_BITMAP
+            ).setQuality(quality).setMaxImages(1).build()
+            try {
+                heifWriter.start()
+                heifWriter.addBitmap(result)
+                heifWriter.stop(5000)
+            } finally {
+                heifWriter.close()
+            }
+        } finally {
+            if (result !== scaled) {
+                result.recycle()
+            }
+            if (scaled !== bitmap) {
+                scaled.recycle()
+            }
+            bitmap.recycle()
+        }
     }
 
     override fun handleFile(
