@@ -64,7 +64,7 @@
         // Pass the whole source property dictionary through
         // CGImageSource → CGImageDestination directly. This preserves keys
         // (TIFF DateTime on iOS screenshots — #168, GPS, IPTC, maker notes)
-        // that SYMetadata's typed model used to drop, and correctly
+        // that a typed-model middleman used to drop, and correctly
         // overrides orientation/pixel dims for the re-encoded output.
         // Returns nil when ImageIO can't author the container (WebP — see
         // #217/#369) — fall back to the compressed bytes without metadata.

@@ -577,13 +577,54 @@ void main() {
         // WebP is iOS/Android only in the common package.
         skip: !Platform.isIOS,
       );
+
+      testWidgets(
+        'HEIC + keepExif=true: emits a valid HEIC with a preserved '
+        'DateTime-family tag — smoke test that the metadata-rich options '
+        'dict does not trip the HEIC destination (macOS ImageIO used to '
+        'be silently rejected by metadata sub-dicts before the finalize '
+        'return was checked)',
+        (_) async {
+          final src = await loadAssetBytes('img/auto-angle.jpg');
+          final srcKeys = (await readExifKeys(src)).toSet();
+          const canaries = <String>{
+            'exif:DateTimeOriginal',
+            'exif:DateTimeDigitized',
+            'tiff:DateTime',
+          };
+          final srcCanaries = srcKeys.intersection(canaries);
+
+          final result = await FlutterImageCompress.compressWithList(
+            src,
+            minWidth: 500,
+            minHeight: 500,
+            quality: 85,
+            format: CompressFormat.heic,
+            keepExif: true,
+          );
+          expectValidCompressed(
+            bytes: result,
+            expected: DetectedFormat.heic,
+            description: 'HEIC + keepExif',
+          );
+
+          // Only assert metadata survival when the source carries one of
+          // the canary tags — some CI base images may strip them.
+          if (srcCanaries.isNotEmpty) {
+            final keptKeys = (await readExifKeys(result)).toSet();
+            final survivors = srcCanaries.intersection(keptKeys);
+            expect(survivors, srcCanaries,
+                reason:
+                    'HEIC + keepExif=true should preserve DateTime tags '
+                    '(src=$srcCanaries survived=$survivors kept=$keptKeys)');
+          }
+        },
+      );
     },
-    // macOS's keepExif implementation flattens source properties into the
-    // CGImageDestination options dictionary as top-level keys, which is
-    // not the shape CGImageDestination expects for EXIF preservation — so
-    // no source EXIF keys survive to the output. This is a known gap in
-    // flutter_image_compress_macos and must be fixed separately from this
-    // SPM migration; the baseline captures iOS behavior only for now.
-    skip: !Platform.isIOS,
+    // Now that macOS pumps source properties through as nested sub-dicts
+    // (matching iOS's direct passthrough), the keepExif invariants run on
+    // both platforms. The WebP-inner test stays iOS-only because the
+    // macOS package doesn't ship the WebP coder.
+    skip: !(Platform.isIOS || Platform.isMacOS),
   );
 }
