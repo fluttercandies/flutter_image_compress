@@ -199,11 +199,29 @@ class Compressor {
      - targetSize: 目标图片的尺寸
      - dest: 目标图片
    */
-  func handleImage(image: NSImage, angle: Int, targetSize: CGSize, dest: CGImageDestination) {
+  func handleImage(image: NSImage, angle: Int, targetSize: CGSize, dest: CGImageDestination) -> Bool {
     // 先处理一次图片到 targetSize 的尺寸
-    let srcCGContext = CGContext(data: nil, width: Int(targetSize.width), height: Int(targetSize.height), bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
-    srcCGContext.draw(image.cgImage(forProposedRect: nil, context: nil, hints: nil)!, in: CGRect(x: 0, y: 0, width: targetSize.width, height: targetSize.height))
-    let srcCGImage = srcCGContext.makeImage()!
+    guard let srcCGContext = CGContext(
+      data: nil,
+      width: Int(targetSize.width),
+      height: Int(targetSize.height),
+      bitsPerComponent: 8,
+      bytesPerRow: 0,
+      space: CGColorSpaceCreateDeviceRGB(),
+      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    ) else {
+      Logger.log(msg: "CGContext creation failed for targetSize \(targetSize) — bitmap params may be invalid")
+      return false
+    }
+    guard let sourceCGImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+      Logger.log(msg: "NSImage has no CGImage representation — cannot compress")
+      return false
+    }
+    srcCGContext.draw(sourceCGImage, in: CGRect(x: 0, y: 0, width: targetSize.width, height: targetSize.height))
+    guard let srcCGImage = srcCGContext.makeImage() else {
+      Logger.log(msg: "srcCGContext.makeImage() returned nil — could not snapshot resized source")
+      return false
+    }
 
     print("srcCGImage: \(srcCGImage.width) x \(srcCGImage.height)")
 
@@ -221,14 +239,28 @@ class Compressor {
     let rotatedSize = CGSize(width: newRect.width, height: newRect.height)
 
     // 获取一个旋转后的图片
-    let cgContext = CGContext(data: nil, width: Int(rotatedSize.width), height: Int(rotatedSize.height), bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+    guard let cgContext = CGContext(
+      data: nil,
+      width: Int(rotatedSize.width),
+      height: Int(rotatedSize.height),
+      bitsPerComponent: 8,
+      bytesPerRow: 0,
+      space: CGColorSpaceCreateDeviceRGB(),
+      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    ) else {
+      Logger.log(msg: "CGContext creation failed for rotatedSize \(rotatedSize) — bitmap params may be invalid")
+      return false
+    }
 
     cgContext.translateBy(x: rotatedSize.width / 2, y: rotatedSize.height / 2)
     cgContext.rotate(by: radian)
 
     cgContext.draw(srcCGImage, in: CGRect(x: -width / 2, y: -height / 2, width: width, height: height))
 
-    let rotatedImage = cgContext.makeImage()!
+    guard let rotatedImage = cgContext.makeImage() else {
+      Logger.log(msg: "cgContext.makeImage() returned nil — could not snapshot rotated image")
+      return false
+    }
 
     // 将旋转后的图片写入到目标图片中
     let options = makeOptions()
@@ -237,6 +269,7 @@ class Compressor {
 //  CGImageDestinationAddImage(dest, srcCGImage, options)
 
     CGImageDestinationFinalize(dest)
+    return true
   }
 
   private func makeOptions() -> CFDictionary {
@@ -312,7 +345,9 @@ class Compressor {
     }
     let angle = params["rotate"] as! Int
 
-    handleImage(image: image.image, angle: angle, targetSize: targetSize, dest: dest)
+    if !handleImage(image: image.image, angle: angle, targetSize: targetSize, dest: dest) {
+      return false
+    }
     return true
   }
 
