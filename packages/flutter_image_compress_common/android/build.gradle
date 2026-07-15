@@ -1,15 +1,21 @@
 group 'com.fluttercandies.flutter_image_compress'
 version '1.0-SNAPSHOT'
 
-buildscript {
-    ext.kotlin_version = '1.8.20'
-    repositories {
-        google()
-        mavenCentral()
-    }
+def builtInKotlinFlag = (project.findProperty("android.builtInKotlin") ?: "false").toString().toBoolean()
+def hasKotlinExtension = project.extensions.findByName("kotlin") != null
+def useBuiltInKotlin = builtInKotlinFlag && hasKotlinExtension
 
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+if (!useBuiltInKotlin) {
+    buildscript {
+        ext.kotlin_version = '1.8.20'
+        repositories {
+            google()
+            mavenCentral()
+        }
+
+        dependencies {
+            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        }
     }
 }
 
@@ -21,7 +27,10 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+
+if (!useBuiltInKotlin) {
+    apply plugin: 'kotlin-android'
+}
 
 android {
     if (project.android.hasProperty("namespace")) {
@@ -39,14 +48,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    kotlinOptions {
-        jvmTarget = '11'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
-    compileOptions {
-        // Sets Java compatibility to Java 11
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+    if (!useBuiltInKotlin) {
+        kotlinOptions {
+            jvmTarget = '17'
+        }
     }
 }
 
@@ -54,4 +64,12 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.3.3'
     implementation 'androidx.heifwriter:heifwriter:1.0.0'
     implementation 'commons-io:commons-io:2.16.1'
+}
+
+if (useBuiltInKotlin) {
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        }
+    }
 }
