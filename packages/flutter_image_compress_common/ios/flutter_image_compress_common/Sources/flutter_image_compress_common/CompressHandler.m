@@ -52,24 +52,23 @@
         CIImage *ciImage = [CIImage imageWithCGImage:image.CGImage];
         CIContext *ciContext = [[CIContext alloc]initWithOptions:nil];
         NSString *tmpDir = NSTemporaryDirectory();
-        double time = [[NSDate alloc]init].timeIntervalSince1970;
-        NSString *target = [NSString stringWithFormat:@"%@%.0f.heic",tmpDir, time * 1000];
+        NSString *target = [NSString stringWithFormat:@"%@%@.heic", tmpDir, [[NSUUID UUID] UUIDString]];
         NSURL *url = [NSURL fileURLWithPath:target];
-        
+
         NSMutableDictionary *options = [NSMutableDictionary new];
         NSString *qualityKey = (__bridge NSString *)kCGImageDestinationLossyCompressionQuality;
 //        CIImageRepresentationOption
         [options setObject:@(quality / 100) forKey: qualityKey];
-        
+
         if (@available(iOS 11.0, *)) {
             CGColorSpaceRef colorSpace = ciImage.colorSpace;
             if (colorSpace == NULL) {
                 colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
             }
-            
+
             NSError *error = nil;
             BOOL success = [ciContext writeHEIFRepresentationOfImage:ciImage toURL:url format:kCIFormatARGB8 colorSpace:colorSpace options:options error:&error];
-            
+
             if (success) {
                 data = [NSData dataWithContentsOfURL:url];
             } else {
@@ -78,10 +77,14 @@
                     NSLog(@"HEIC write failed: %@", error.localizedDescription);
                 }
             }
-            
+
             if (colorSpace != ciImage.colorSpace) {
                 CGColorSpaceRelease(colorSpace);
             }
+
+            // Always attempt cleanup; ignore errors (file may already be gone
+            // or may have been partially written on failure).
+            [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
         } else {
             // Fallback on earlier versions
             data = nil;
