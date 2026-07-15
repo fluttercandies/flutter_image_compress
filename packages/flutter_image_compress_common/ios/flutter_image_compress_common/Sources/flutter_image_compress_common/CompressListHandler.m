@@ -34,7 +34,14 @@
     if (keepExif) {
         SYMetadata *metadata = [SYMetadata metadataWithImageData:data];
         metadata.orientation = @0;
-        compressedData = [SYMetadata dataWithImageData:compressedData andMetadata:metadata];
+        // ImageIO's CGImageDestination doesn't support writing every container
+        // we can encode (notably WebP), so dataWithImageData:andMetadata: can
+        // return nil. Preserve the original compressed bytes on failure —
+        // otherwise typedDataWithBytes: below would receive nil and crash.
+        NSData *withMetadata = [SYMetadata dataWithImageData:compressedData andMetadata:metadata];
+        if (withMetadata.length > 0) {
+            compressedData = withMetadata;
+        }
     }
 
     result([FlutterStandardTypedData typedDataWithBytes:compressedData]);

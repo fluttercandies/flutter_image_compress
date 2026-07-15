@@ -48,9 +48,20 @@
     if (keepExif) {
         SYMetadata *metadata = [SYMetadata metadataWithFileURL:[NSURL fileURLWithPath:path]];
         metadata.orientation = @0;
-        data = [SYMetadata dataWithImageData:data andMetadata:metadata];
+        // ImageIO can't write every container we can encode (notably WebP),
+        // so dataWithImageData:andMetadata: can return nil. Fall back to the
+        // original compressed bytes instead of overwriting them with nil —
+        // otherwise typedDataWithBytes: below crashes.
+        NSData *withMetadata = [SYMetadata dataWithImageData:data andMetadata:metadata];
+        if (withMetadata.length > 0) {
+            data = withMetadata;
+        }
     }
 
+    if (data == nil) {
+        result(nil);
+        return;
+    }
     result([FlutterStandardTypedData typedDataWithBytes:data]);
 }
 
@@ -90,7 +101,13 @@
     if (keepExif) {
         SYMetadata *metadata = [SYMetadata metadataWithFileURL:[NSURL fileURLWithPath:path]];
         metadata.orientation = @0;
-        data = [SYMetadata dataWithImageData:data andMetadata:metadata];
+        // See handleMethodCall: dataWithImageData:andMetadata: returns nil for
+        // containers ImageIO can't rewrite (e.g. WebP). Keep the original
+        // encoded bytes on failure so the caller still receives a valid file.
+        NSData *withMetadata = [SYMetadata dataWithImageData:data andMetadata:metadata];
+        if (withMetadata.length > 0) {
+            data = withMetadata;
+        }
     }
 
     if (data == nil) {
