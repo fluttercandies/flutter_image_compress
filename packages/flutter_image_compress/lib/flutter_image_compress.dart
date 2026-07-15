@@ -102,6 +102,21 @@ class FlutterImageCompress {
     bool keepExif = false,
     int numberOfRetries = 5,
   }) async {
+    // Guard against source and target resolving to the same file. The native
+    // Android/iOS handlers open the target for writing (truncating it) before
+    // they read the source, so a same-path call would silently corrupt the
+    // source before compression could read it.
+    final normalizedSource = Uri.file(path).normalizePath().toFilePath();
+    final normalizedTarget = Uri.file(targetPath).normalizePath().toFilePath();
+    if (normalizedSource == normalizedTarget) {
+      throw ArgumentError.value(
+        targetPath,
+        'targetPath',
+        'compressAndGetFile source and targetPath resolve to the same file '
+            '($normalizedSource). Use compressWithFile to get bytes only, or '
+            'pass a different targetPath.',
+      );
+    }
     return _platform.compressAndGetFile(
       path,
       targetPath,
