@@ -301,6 +301,101 @@ Future<void> writeToFile(List<int> image, String filePath) {
 }
 ```
 
+## FAQ
+
+### Compressing to a target file size
+
+Both `quality` (0-100 lossy) and `minWidth`/`minHeight` (max output dimensions,
+see below) influence the output size, but neither maps linearly to bytes. If
+you need the output under a specific limit, iterate:
+
+```dart
+Future<Uint8List> compressToUnder(Uint8List src, int limitBytes) async {
+  var quality = 88;
+  var out = src;
+  while (quality > 10) {
+    out = await FlutterImageCompress.compressWithList(
+      src,
+      quality: quality,
+      minWidth: 1920,
+      minHeight: 1920,
+    );
+    if (out.lengthInBytes <= limitBytes) return out;
+    quality -= 10;
+  }
+  return out;
+}
+```
+
+For very small targets, drop `minWidth`/`minHeight` as well when the quality
+loop bottoms out — the biggest byte-count lever is usually pixel count.
+
+### Why is `minWidth`/`minHeight` named that if it acts like a max?
+
+Historical name. In practice they are **aspect-preserving upper bounds** on
+the output: the pipeline scales down (never up) so that both dimensions fit
+inside the given box while keeping the source aspect ratio. So:
+
+- source 4032×3024, `minWidth: 1920, minHeight: 1920` → output around 1920×1440.
+- source 1000×1000, `minWidth: 500, minHeight: 500`   → output 500×500.
+- source 800×600, `minWidth: 1920, minHeight: 1080`   → output 800×600 (no upscale).
+
+If you want strict maximum-dimension bounds and aren't tied to this plugin,
+that's the mental model to keep — the aspect ratio is always preserved
+(never cropped), only the scale is adjusted.
+
+### Compressed image is larger than the original
+
+Two common causes:
+
+- **PNG re-encoded from PNG.** PNG is lossless; re-encoding a PNG rarely
+  makes it smaller unless you also downscale. `quality` doesn't apply to
+  PNG in the underlying encoders — it just runs the same DEFLATE. If your
+  source PNG was already tightly encoded (e.g. by pngcrush), the output
+  can be a few percent larger.
+- **`minWidth`/`minHeight` larger than the source.** The plugin never
+  upscales, but the re-encoding step still runs and can produce a slightly
+  larger JPEG than the input.
+
+If the source is already small enough for your needs, skip compression when
+`src.lengthInBytes` is below your threshold rather than always calling
+through.
+
+### Calling from a background Isolate / `compute()`
+
+Plugin channels don't work in a background isolate unless you initialize
+the binary messenger first. Inside the isolate:
+
+```dart
+BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+final out = await FlutterImageCompress.compressWithList(bytes, quality: 80);
+```
+
+`rootIsolateToken` must be obtained from the main isolate (via
+`RootIsolateToken.instance!`) and passed into the isolate's arguments.
+
+Without this, you'll see `UnimplementedError` with a message pointing
+back here — that's the platform interface's `UnsupportedFlutterImageCompress`
+fallback firing.
+
+### Which platforms support which formats?
+
+See the platform-features table near the top of this README. Quick reference:
+
+- **JPEG / PNG**: everywhere.
+- **WebP**: Android + iOS + macOS via SDWebImageWebPCoder, Web via browser
+  (quality-support varies).
+- **HEIC / HEIF**: iOS 11+, Android API 28+ with a hardware encoder — falls
+  back to `UnsupportedError` when unavailable. macOS: no.
+
+### How do I clear the temp files the plugin creates?
+
+The `compressAndGetFile` path writes to your `targetPath`. Anything else
+lands in the system cache directory (`context.cacheDir` on Android,
+`NSTemporaryDirectory()` on iOS). Both are OS-managed — call
+`path_provider`'s `getTemporaryDirectory()` and delete its contents
+yourself if you want manual control.
+
 ## Runtime Error
 
 Because of some support issues,
