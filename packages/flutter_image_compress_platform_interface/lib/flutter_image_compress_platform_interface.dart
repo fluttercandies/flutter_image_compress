@@ -10,6 +10,15 @@ export 'src/errors.dart';
 export 'src/validator.dart';
 export 'package:cross_file/cross_file.dart';
 
+const _kUnsupportedHint = '\n\nCommon causes:\n'
+    '  * Calling from a background Isolate - either move to the main '
+    'isolate, or call BackgroundIsolateBinaryMessenger.ensureInitialized(...) '
+    'inside the isolate before use.\n'
+    '  * No implementation registered for the current platform (Windows is '
+    'not supported; for Linux, add package:flutter_image_compress_linux).\n'
+    '  * Release/minified web build where platform detection fails - try '
+    'flutter build web --profile to confirm.';
+
 abstract class FlutterImageCompressPlatform extends PlatformInterface {
   static const _token = Object();
 
@@ -85,7 +94,10 @@ class UnsupportedFlutterImageCompress extends FlutterImageCompressPlatform {
       bool autoCorrectionAngle = true,
       CompressFormat format = CompressFormat.jpeg,
       bool keepExif = false}) {
-    throw UnimplementedError();
+    throw UnimplementedError(
+      'FlutterImageCompress.compressAssetImage is not available.'
+      '$_kUnsupportedHint',
+    );
   }
 
   @override
@@ -99,7 +111,10 @@ class UnsupportedFlutterImageCompress extends FlutterImageCompressPlatform {
       CompressFormat format = CompressFormat.jpeg,
       bool keepExif = false,
       int numberOfRetries = 5}) {
-    throw UnimplementedError();
+    throw UnimplementedError(
+      'FlutterImageCompress.compressWithFile is not available.'
+      '$_kUnsupportedHint',
+    );
   }
 
   @override
@@ -113,7 +128,10 @@ class UnsupportedFlutterImageCompress extends FlutterImageCompressPlatform {
       CompressFormat format = CompressFormat.jpeg,
       bool keepExif = false,
       int numberOfRetries = 5}) {
-    throw UnimplementedError();
+    throw UnimplementedError(
+      'FlutterImageCompress.compressAndGetFile is not available.'
+      '$_kUnsupportedHint',
+    );
   }
 
   @override
@@ -126,19 +144,31 @@ class UnsupportedFlutterImageCompress extends FlutterImageCompressPlatform {
       bool autoCorrectionAngle = true,
       CompressFormat format = CompressFormat.jpeg,
       bool keepExif = false}) {
-    throw UnimplementedError();
+    throw UnimplementedError(
+      'FlutterImageCompress.compressWithList is not available.'
+      '$_kUnsupportedHint',
+    );
   }
 
   @override
   Future<void> showNativeLog(bool value) {
-    throw UnimplementedError();
+    throw UnimplementedError(
+      'FlutterImageCompress.showNativeLog is not available.'
+      '$_kUnsupportedHint',
+    );
   }
 
   @override
   void ignoreCheckSupportPlatform(bool bool) {
-    throw UnimplementedError();
+    throw UnimplementedError(
+      'FlutterImageCompress.ignoreCheckSupportPlatform is not available.'
+      '$_kUnsupportedHint',
+    );
   }
 
   @override
-  FlutterImageCompressValidator get validator => throw UnimplementedError();
+  FlutterImageCompressValidator get validator => throw UnimplementedError(
+        'FlutterImageCompress.validator is not available.'
+        '$_kUnsupportedHint',
+      );
 }
