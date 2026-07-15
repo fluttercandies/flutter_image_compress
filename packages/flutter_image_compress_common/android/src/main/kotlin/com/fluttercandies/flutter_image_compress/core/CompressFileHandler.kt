@@ -102,6 +102,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                     minHeight = tmp
                 }
                 val targetRotate = rotate + exifRotate
+                File(targetPath).parentFile?.mkdirs()
                 outputStream = File(targetPath).outputStream()
                 formatHandler.handleFile(
                     context,
