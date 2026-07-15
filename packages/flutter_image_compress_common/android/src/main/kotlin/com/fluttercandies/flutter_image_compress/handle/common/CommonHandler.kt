@@ -68,21 +68,32 @@ class CommonHandler(override val type: Int) : FormatHandler {
         }
         val bitmap = BitmapFactory.decodeByteArray(arr, 0, arr.count(), options)
         val outputStream = ByteArrayOutputStream()
-        val w = bitmap.width.toFloat()
-        val h = bitmap.height.toFloat()
-        log("src width = $w")
-        log("src height = $h")
-        val scale = bitmap.calcScale(minWidth, minHeight)
-        log("scale = $scale")
-        val destW = w / scale
-        val destH = h / scale
-        log("dst width = $destW")
-        log("dst height = $destH")
-        Bitmap.createScaledBitmap(
-            bitmap, destW.toInt(),
-            destH.toInt(),
-            true
-        ).rotate(rotate).compress(bitmapFormat, quality, outputStream)
+        try {
+            val w = bitmap.width.toFloat()
+            val h = bitmap.height.toFloat()
+            log("src width = $w")
+            log("src height = $h")
+            val scale = bitmap.calcScale(minWidth, minHeight)
+            log("scale = $scale")
+            val destW = w / scale
+            val destH = h / scale
+            log("dst width = $destW")
+            log("dst height = $destH")
+            val scaled = Bitmap.createScaledBitmap(
+                bitmap, destW.toInt(),
+                destH.toInt(),
+                true
+            )
+            val rotated = scaled.rotate(rotate)
+            try {
+                rotated.compress(bitmapFormat, quality, outputStream)
+            } finally {
+                if (rotated !== scaled) rotated.recycle()
+                if (scaled !== bitmap) scaled.recycle()
+            }
+        } finally {
+            bitmap.recycle()
+        }
         return outputStream.toByteArray()
     }
 
@@ -110,7 +121,11 @@ class CommonHandler(override val type: Int) : FormatHandler {
                 options.inDither = true
             }
             val bitmap = BitmapFactory.decodeFile(path, options)
-            val array = bitmap.compress(minWidth, minHeight, quality, rotate, type)
+            val array = try {
+                bitmap.compress(minWidth, minHeight, quality, rotate, type)
+            } finally {
+                bitmap.recycle()
+            }
             if (keepExif && bitmapFormat == Bitmap.CompressFormat.JPEG) {
                 val byteArrayOutputStream = ByteArrayOutputStream()
                 byteArrayOutputStream.write(array)
