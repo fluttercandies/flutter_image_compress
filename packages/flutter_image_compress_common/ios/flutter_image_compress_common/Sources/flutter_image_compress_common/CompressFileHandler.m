@@ -4,6 +4,7 @@
 
 #import "CompressFileHandler.h"
 #import "CompressHandler.h"
+#import "ImageCompressPlugin.h"
 #import "SYMetadata.h"
 @import SDWebImageWebPCoder;
 @import SDWebImage;
@@ -28,20 +29,35 @@
     
     NSURL *imageUrl = [NSURL fileURLWithPath:path];
     NSData *nsdata = [NSData dataWithContentsOfURL:imageUrl];
-    
+
+    if (nsdata == nil) {
+        if ([ImageCompressPlugin showLog]) {
+            NSLog(@"Input file could not be read (path=%@)", path);
+        }
+        result(nil);
+        return;
+    }
+
     NSString *imageType = [self mimeTypeByGuessingFromData:nsdata];
-    
+
     //  NSLog(@" nsdata length: %@", imageType);
-    
+
     SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
     [[SDImageCodersManager sharedManager] addCoder:webPCoder];
-    
+
     if([imageType  isEqual: @"image/webp"]) {
     img = [[SDImageWebPCoder sharedCoder] decodedImageWithData:nsdata options:nil];
     } else {
         img = [UIImage imageWithData:nsdata];
     }
 
+    if (img == nil) {
+        if ([ImageCompressPlugin showLog]) {
+            NSLog(@"Input file is not a decodable image (mime=%@, path=%@)", imageType, path);
+        }
+        result(nil);
+        return;
+    }
 
     NSData *data = [CompressHandler compressWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
 
@@ -82,20 +98,36 @@
     
     NSURL *imageUrl = [NSURL fileURLWithPath:path];
     NSData *nsdata = [NSData dataWithContentsOfURL:imageUrl];
-    
+
+    if (nsdata == nil) {
+        if ([ImageCompressPlugin showLog]) {
+            NSLog(@"Input file could not be read (path=%@)", path);
+        }
+        result(nil);
+        return;
+    }
+
     NSString *imageType = [self mimeTypeByGuessingFromData:nsdata];
-    
+
     //  NSLog(@" nsdata length: %@", imageType);
-    
+
     SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
     [[SDImageCodersManager sharedManager] addCoder:webPCoder];
-    
+
     if([imageType  isEqual: @"image/webp"]) {
     img = [[SDImageWebPCoder sharedCoder] decodedImageWithData:nsdata options:nil];
     } else {
         img = [UIImage imageWithData:nsdata];
     }
-    
+
+    if (img == nil) {
+        if ([ImageCompressPlugin showLog]) {
+            NSLog(@"Input file is not a decodable image (mime=%@, path=%@)", imageType, path);
+        }
+        result(nil);
+        return;
+    }
+
     NSData *data = [CompressHandler compressDataWithUIImage:img minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
 
     if (keepExif) {
