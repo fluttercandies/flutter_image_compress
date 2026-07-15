@@ -463,6 +463,96 @@ void main() {
       });
 
       testWidgets(
+        'keepExif=true preserves DateTime-family EXIF/TIFF tags — locks in '
+        'the direct CGImageSource->CGImageDestination passthrough path so '
+        'later refactors that revert to a typed-model middleman (like the '
+        'old SYMetadata roundtrip) cannot silently drop these keys',
+        (_) async {
+          final src = await loadAssetBytes('img/auto-angle.jpg');
+          final srcKeys = (await readExifKeys(src)).toSet();
+          const canaries = <String>{
+            'exif:DateTimeOriginal',
+            'exif:DateTimeDigitized',
+            'tiff:DateTime',
+          };
+          final srcCanaries = srcKeys.intersection(canaries);
+          if (srcCanaries.isEmpty) {
+            markTestSkipped(
+                'auto-angle.jpg has no DateTime-family EXIF/TIFF tag '
+                '(srcKeys=$srcKeys) — nothing to assert survival for');
+            return;
+          }
+
+          final kept = await FlutterImageCompress.compressWithList(
+            src,
+            minWidth: 500,
+            minHeight: 500,
+            quality: 90,
+            keepExif: true,
+          );
+          final keptKeys = (await readExifKeys(kept)).toSet();
+          final survivors = srcCanaries.intersection(keptKeys);
+          expect(survivors, srcCanaries,
+              reason: 'keepExif=true should preserve every DateTime-family '
+                  'EXIF/TIFF tag present in the source '
+                  '(src=$srcCanaries survived=$survivors kept=$keptKeys)');
+        },
+      );
+
+      testWidgets(
+        'keepExif=false does not leak source-identifying EXIF/TIFF tags — '
+        'locks in the current re-encode-only path (UIImageJPEGRepresentation '
+        'discards source EXIF, so a future refactor that shares an ImageIO '
+        'destination between the two branches cannot regress this invariant)',
+        (_) async {
+          final src = await loadAssetBytes('img/auto-angle.jpg');
+          final srcKeys = (await readExifKeys(src)).toSet();
+          if (srcKeys.isEmpty) {
+            markTestSkipped(
+                'auto-angle.jpg has no EXIF/TIFF metadata reachable via helper');
+            return;
+          }
+
+          final dropped = await FlutterImageCompress.compressWithList(
+            src,
+            minWidth: 500,
+            minHeight: 500,
+            quality: 90,
+            keepExif: false,
+          );
+          final droppedKeys = (await readExifKeys(dropped)).toSet();
+
+          // Anchor tags that identify the source photo (camera model, capture
+          // time, lens). Encoder-injected defaults (ColorSpace, PixelXDimension,
+          // PixelYDimension) are excluded on purpose — every JPEG carries
+          // those regardless of source and asserting on them would fail
+          // trivially, not usefully.
+          const identifyingKeys = <String>{
+            'exif:DateTimeOriginal',
+            'exif:DateTimeDigitized',
+            'exif:LensMake',
+            'exif:LensModel',
+            'tiff:DateTime',
+            'tiff:Make',
+            'tiff:Model',
+            'tiff:Software',
+          };
+          final srcIdentifying = srcKeys.intersection(identifyingKeys);
+          if (srcIdentifying.isEmpty) {
+            markTestSkipped(
+                'auto-angle.jpg carries none of the identifying tags this '
+                'test asserts stripping of (srcKeys=$srcKeys)');
+            return;
+          }
+          final leaked = srcIdentifying.intersection(droppedKeys);
+          expect(leaked, isEmpty,
+              reason:
+                  'keepExif=false must not leak source identifying metadata '
+                  '(leaked=$leaked droppedKeys=$droppedKeys)');
+        },
+      );
+
+      testWidgets(
         'WebP + keepExif=true: does not crash, emits a valid WebP',
         (_) async {
           // Regression for issue #217: iOS crashed on WebP + keepExif=true

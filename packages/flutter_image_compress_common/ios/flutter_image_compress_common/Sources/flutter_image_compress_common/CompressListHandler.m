@@ -8,7 +8,6 @@
 #import <Flutter/Flutter.h>
 #import "CompressListHandler.h"
 #import "CompressHandler.h"
-#import "SYMetadata.h"
 
 @implementation CompressListHandler
 
@@ -25,20 +24,19 @@
 
     NSData *data = [list data];
     NSData *compressedData = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
-    
+
     if (compressedData == nil) {
         result(nil);
         return;
     }
-    
-    if (keepExif) {
-        SYMetadata *metadata = [SYMetadata metadataWithImageData:data];
-        metadata.orientation = @0;
-        // ImageIO's CGImageDestination doesn't support writing every container
-        // we can encode (notably WebP), so dataWithImageData:andMetadata: can
-        // return nil. Preserve the original compressed bytes on failure —
-        // otherwise typedDataWithBytes: below would receive nil and crash.
-        NSData *withMetadata = [SYMetadata dataWithImageData:compressedData andMetadata:metadata];
+
+    if (keepExif && compressedData.length > 0) {
+        // Direct CGImageSource → CGImageDestination passthrough of every
+        // top-level source property dict — preserves EXIF, TIFF DateTime
+        // (#168 screenshots), GPS, IPTC, PNG chunks. Returns nil for
+        // containers ImageIO can't author (e.g. WebP — #217/#369); in that
+        // case keep the compressed bytes without metadata.
+        NSData *withMetadata = [CompressHandler dataByCopyingMetadataFromSource:data intoEncoded:compressedData];
         if (withMetadata.length > 0) {
             compressedData = withMetadata;
         }
