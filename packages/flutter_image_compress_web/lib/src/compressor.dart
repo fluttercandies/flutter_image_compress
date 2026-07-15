@@ -1,6 +1,7 @@
 library pica;
 
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter_image_compress_platform_interface/flutter_image_compress_platform_interface.dart';
@@ -22,10 +23,13 @@ Future<Uint8List> resizeWithList({
   final srcWidth = bitmap.width;
   final srcHeight = bitmap.height;
 
-  final ratio = srcWidth / srcHeight;
-
-  final width = srcWidth > minWidth ? minWidth : srcWidth;
-  final height = width ~/ ratio;
+  final scaleW = srcWidth / minWidth;
+  final scaleH = srcHeight / minHeight;
+  // Take the smaller downscale factor so at least one output dimension
+  // meets its min bound; clamp at 1 so we never upscale.
+  final scale = math.max(1.0, math.min(scaleW, scaleH));
+  final width = (srcWidth / scale).toInt();
+  final height = (srcHeight / scale).toInt();
 
   logger.jsLog('src size', '$srcWidth x $srcHeight');
   logger.jsLog('target size', '$width x $height');
