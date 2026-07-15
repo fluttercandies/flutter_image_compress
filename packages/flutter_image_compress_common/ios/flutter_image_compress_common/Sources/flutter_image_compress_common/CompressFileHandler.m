@@ -146,7 +146,23 @@
         result(nil);
         return;
     }
-    BOOL success = [data writeToURL:[[NSURL alloc] initFileURLWithPath:targetPath] atomically:YES];
+    NSURL *targetURL = [[NSURL alloc] initFileURLWithPath:targetPath];
+    NSURL *parentURL = [targetURL URLByDeletingLastPathComponent];
+    if (parentURL) {
+        NSError *dirErr = nil;
+        // Create the parent directory if missing. If it already exists,
+        // withIntermediateDirectories:YES makes this a no-op. If it fails
+        // (permission denied, path is a file, etc.), we log and continue —
+        // writeToURL: below will report the actual failure back to Dart.
+        [[NSFileManager defaultManager] createDirectoryAtURL:parentURL
+                                 withIntermediateDirectories:YES
+                                                  attributes:nil
+                                                       error:&dirErr];
+        if (dirErr != nil && [ImageCompressPlugin showLog]) {
+            NSLog(@"Failed to create target parent directory %@: %@", parentURL.path, dirErr.localizedDescription);
+        }
+    }
+    BOOL success = [data writeToURL:targetURL atomically:YES];
     result(success ? targetPath : nil);
 }
 
