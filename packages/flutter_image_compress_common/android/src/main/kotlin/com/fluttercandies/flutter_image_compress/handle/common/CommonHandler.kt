@@ -60,7 +60,7 @@ class CommonHandler(override val type: Int) : FormatHandler {
     ): ByteArray {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = false
-        options.inPreferredConfig = Bitmap.Config.RGB_565
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888
         options.inSampleSize = inSampleSize
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
             @Suppress("DEPRECATION")
@@ -103,7 +103,7 @@ class CommonHandler(override val type: Int) : FormatHandler {
             if (numberOfRetries <= 0) return;
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = false
-            options.inPreferredConfig = Bitmap.Config.RGB_565
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888
             options.inSampleSize = inSampleSize
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
                 @Suppress("DEPRECATION")
