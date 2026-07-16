@@ -49,5 +49,5 @@ dependencies {
     // The plugin itself uses this but declares it as `implementation` scope, so
     // the example app can't see it transitively — declare explicitly here.
     // KEEP IN SYNC with `flutter_image_compress_common/android/build.gradle`.
-    implementation("androidx.exifinterface:exifinterface:1.3.3")
+    implementation("androidx.exifinterface:exifinterface:1.4.2")
 }

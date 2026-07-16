@@ -92,7 +92,7 @@ There are several ways to use the library api.
 ```dart
 
   // 1. compress file and get Uint8List
-  Future<Uint8List> testCompressFile(File file) async {
+  Future<Uint8List?> testCompressFile(File file) async {
     var result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       minWidth: 2300,
@@ -101,12 +101,14 @@ There are several ways to use the library api.
       rotate: 90,
     );
     print(file.lengthSync());
-    print(result.length);
+    if (result != null) {
+      print(result.length);
+    }
     return result;
   }
 
   // 2. compress file and get file.
-  Future<File> testCompressAndGetFile(File file, String targetPath) async {
+  Future<File?> testCompressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
         file.absolute.path, targetPath,
         quality: 88,
@@ -114,13 +116,16 @@ There are several ways to use the library api.
       );
 
     print(file.lengthSync());
-    print(result.lengthSync());
+    if (result != null) {
+      print(await result.length());
+      return File(result.path);
+    }
 
     return result;
   }
 
   // 3. compress asset and get Uint8List.
-  Future<Uint8List> testCompressAsset(String assetName) async {
+  Future<Uint8List?> testCompressAsset(String assetName) async {
     var list = await FlutterImageCompress.compressAssetImage(
       assetName,
       minHeight: 1920,
@@ -254,8 +259,23 @@ If this parameter is true, EXIF information is saved in the compressed result.
 Attention should be paid to the following points:
 
 1. Default value is false.
-2. Even if set to true, the direction attribute is not included.
-3. Only support jpg format, PNG format does not support.
+2. Even if set to true, the `Orientation` tag is normalized to `1`/`ORIENTATION_NORMAL` — the pipeline bakes rotation into pixels, so preserving the source orientation tag would cause viewers to double-rotate.
+3. Support varies by output format **and** platform:
+
+   | Output format | iOS / macOS | Android |
+   | --- | --- | --- |
+   | JPEG | ✅ full sub-dict passthrough (EXIF, TIFF, GPS, IPTC, PNG) | ✅ ~90 EXIF tags via `androidx.exifinterface` |
+   | PNG  | ✅ same passthrough | ✅ ~90 EXIF tags via `androidx.exifinterface` |
+   | WebP | ❌ ImageIO cannot author WebP metadata; output is a valid WebP without EXIF | ✅ ~90 EXIF tags via `androidx.exifinterface` |
+   | HEIC | ✅ same passthrough | ❌ `androidx.exifinterface` refuses HEIF write; the resulting HEIC is valid but has no EXIF. `HeifHandler` logs a clear warning in this case. |
+
+   The rows marked ❌ still return valid image bytes — you just do not get EXIF back. `keepExif: true` never fails the whole compression call.
+
+##### Follow-ups tracked on [#130](https://github.com/fluttercandies/flutter_image_compress/issues/130)
+
+- **iOS WebP + `keepExif`**: `ImageIO` cannot author WebP containers with metadata. Manual VP8X + EXIF chunk splicing via `SDWebImageWebPCoder` would fix this but is not currently implemented.
+- **Android HEIC + `keepExif`**: `androidx.exifinterface` refuses HEIF write across all versions. Manual ISO/IEC 23008-12 metadata box injection (~400 LoC) would fix this but is not currently implemented.
+- **Web / OpenHarmony `keepExif`**: the Canvas / packing pipelines used by these platforms strip metadata at encode time — no in-tree fix path.
 
 ## Result
 
@@ -295,6 +315,101 @@ Future<void> writeToFile(List<int> image, String filePath) {
   return File(filePath).writeAsBytes(image, flush: true);
 }
 ```
+
+## FAQ
+
+### Compressing to a target file size
+
+Both `quality` (0-100 lossy) and `minWidth`/`minHeight` (max output dimensions,
+see below) influence the output size, but neither maps linearly to bytes. If
+you need the output under a specific limit, iterate:
+
+```dart
+Future<Uint8List> compressToUnder(Uint8List src, int limitBytes) async {
+  var quality = 88;
+  var out = src;
+  while (quality > 10) {
+    out = await FlutterImageCompress.compressWithList(
+      src,
+      quality: quality,
+      minWidth: 1920,
+      minHeight: 1920,
+    );
+    if (out.lengthInBytes <= limitBytes) return out;
+    quality -= 10;
+  }
+  return out;
+}
+```
+
+For very small targets, drop `minWidth`/`minHeight` as well when the quality
+loop bottoms out — the biggest byte-count lever is usually pixel count.
+
+### Why is `minWidth`/`minHeight` named that if it acts like a max?
+
+Historical name. In practice they are **aspect-preserving upper bounds** on
+the output: the pipeline scales down (never up) so that both dimensions fit
+inside the given box while keeping the source aspect ratio. So:
+
+- source 4032×3024, `minWidth: 1920, minHeight: 1920` → output around 1920×1440.
+- source 1000×1000, `minWidth: 500, minHeight: 500`   → output 500×500.
+- source 800×600, `minWidth: 1920, minHeight: 1080`   → output 800×600 (no upscale).
+
+If you want strict maximum-dimension bounds and aren't tied to this plugin,
+that's the mental model to keep — the aspect ratio is always preserved
+(never cropped), only the scale is adjusted.
+
+### Compressed image is larger than the original
+
+Two common causes:
+
+- **PNG re-encoded from PNG.** PNG is lossless; re-encoding a PNG rarely
+  makes it smaller unless you also downscale. `quality` doesn't apply to
+  PNG in the underlying encoders — it just runs the same DEFLATE. If your
+  source PNG was already tightly encoded (e.g. by pngcrush), the output
+  can be a few percent larger.
+- **`minWidth`/`minHeight` larger than the source.** The plugin never
+  upscales, but the re-encoding step still runs and can produce a slightly
+  larger JPEG than the input.
+
+If the source is already small enough for your needs, skip compression when
+`src.lengthInBytes` is below your threshold rather than always calling
+through.
+
+### Calling from a background Isolate / `compute()`
+
+Plugin channels don't work in a background isolate unless you initialize
+the binary messenger first. Inside the isolate:
+
+```dart
+BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+final out = await FlutterImageCompress.compressWithList(bytes, quality: 80);
+```
+
+`rootIsolateToken` must be obtained from the main isolate (via
+`RootIsolateToken.instance!`) and passed into the isolate's arguments.
+
+Without this, you'll see `UnimplementedError` with a message pointing
+back here — that's the platform interface's `UnsupportedFlutterImageCompress`
+fallback firing.
+
+### Which platforms support which formats?
+
+See the platform-features table near the top of this README. Quick reference:
+
+- **JPEG / PNG**: everywhere.
+- **WebP**: Android + iOS + macOS via SDWebImageWebPCoder, Web via browser
+  (quality-support varies).
+- **HEIC / HEIF**: iOS 11+, Android API 28+ with a hardware encoder — falls
+  back to `UnsupportedError` when unavailable. macOS: no.
+
+### How do I clear the temp files the plugin creates?
+
+The `compressAndGetFile` path writes to your `targetPath`. Anything else
+lands in the system cache directory (`context.cacheDir` on Android,
+`NSTemporaryDirectory()` on iOS). Both are OS-managed — call
+`path_provider`'s `getTemporaryDirectory()` and delete its contents
+yourself if you want manual control.
 
 ## Runtime Error
 
@@ -342,42 +457,25 @@ and use a permission plugin to request permission to access SD cards on Android/
 
 ## About EXIF information
 
-Using this library, EXIF information will be removed by default.
+By default (`keepExif: false`, the default), the compressed output carries no source EXIF — only the encoder-injected minimum required by the container (image dimensions, color space).
 
-EXIF information can be retained by setting keepExif to true,
-but not `direction` information.
+With `keepExif: true`, the plugin copies source EXIF onto the compressed output. The **[keepExif section above](#keepexif)** has the full per-format-per-platform matrix; the short version is:
 
-- PNG/JPEG encoder: System API.
-- WebP encoder:
-  - [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder) on iOS.
-  - System API on Android.
-- HEIF encoder: System API.
-  - [HeifWriter](https://developer.android.com/jetpack/androidx/releases/heifwriter) on Android P+.
+- **iOS + macOS**: full sub-dict passthrough (EXIF, TIFF, GPS, IPTC, PNG chunks) via `CGImageSource → CGImageDestination`. Works for JPEG, PNG, HEIC. Not WebP (ImageIO cannot author WebP metadata).
+- **Android**: ~90-tag copy via `androidx.exifinterface`. Works for JPEG, PNG, WebP. Not HEIC (`ExifInterface` refuses HEIF write; `HeifHandler` logs a warning).
+- **Web + OpenHarmony**: not supported. The Canvas / packing pipelines strip metadata at encode time.
+
+Regardless of platform, the `Orientation` tag is normalized to `1` / `ORIENTATION_NORMAL` on the output — the pipeline bakes rotation into pixels, so preserving the source orientation would cause viewers to double-rotate.
+
+### Encoders in use
+
+- JPEG / PNG: system APIs everywhere.
+- WebP: system API on Android, [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder) on iOS, browser Canvas on Web.
+- HEIC / HEIF: system API on iOS 11+ (ImageIO). Android uses [HeifWriter](https://developer.android.com/jetpack/androidx/releases/heifwriter) on API 28+ (with hardware encoder — falls back to `UnsupportedError` if the device can't produce HEIC).
 
 ## Web
 
 The web implementation is not required for many people,
-
-This plugin uses [pica][] to implement compression.
-
-Currently, [debug mode does not allow you to use the dynamic script loading scheme][flutter-126131].
-And when you actually deploy, you may choose server deployment or cdn deployment, so here we suggest you add script node to head or body by yourself in your `<flutte_project>/web/index.html`.
-
-[flutter-126131]: https://github.com/flutter/flutter/issues/126131
-
-Add for `<flutte_project>/web/index.html`:
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js" ></script>
-
-<!-- or -->
-
-<script src="https://unpkg.com/pica/dist/pica.min.js" ></script>
-```
-
-About web compatibility: two methods with file will throw an exception when used on the web.
-
-[pica]: https://www.npmjs.com/package/pica?activeTab=readme
 
 ## About macOS
 
@@ -388,11 +486,8 @@ Open xcode project, select Runner target, and change the value of `macOS Deploym
 And, change the `Podfile`:
 Change `platform` to `platform :osx, '10.15'`.
 
-
 ## OpenHarmony
 
 The currently supported image formats for parsing include JPEG, PNG, GIF, RAW, WebP, BMP, and SVG. However, the encoding output image formats are currently limited to JPEG, PNG, and WebP only.
 
 当前支持的解析图片格式包括 JPEG、PNG、GIF、RAW、WebP、BMP、SVG . 编码输出图片格式当前仅支持 JPEG、PNG 和 WebP.
-
-

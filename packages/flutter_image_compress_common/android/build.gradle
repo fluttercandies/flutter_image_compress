@@ -61,7 +61,15 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.exifinterface:exifinterface:1.3.3'
+    // 1.3.7+ fixes several WebP writer bugs relevant to keepExif=true on
+    // WebP output: VP8-only / VP8L-only streams (which Bitmap.compress emits
+    // for lossy/lossless WebP without a VP8X header), corrupted output for
+    // WebP > 8191px, "invalid APP1 marker" writes, and the VP8X E flag not
+    // getting set on the RIFF header so viewers didn't look at the EXIF
+    // chunk. 1.3.3 pre-dates all of these. If bumped, also bump the
+    // KEEP-IN-SYNC copy in the example app: packages/flutter_image_compress/
+    // example/android/app/build.gradle.kts.
+    implementation 'androidx.exifinterface:exifinterface:1.4.2'
     implementation 'androidx.heifwriter:heifwriter:1.0.0'
     implementation 'commons-io:commons-io:2.16.1'
 }
