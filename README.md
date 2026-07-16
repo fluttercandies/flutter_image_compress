@@ -265,15 +265,17 @@ Attention should be paid to the following points:
    | Output format | iOS / macOS | Android |
    | --- | --- | --- |
    | JPEG | ✅ full sub-dict passthrough (EXIF, TIFF, GPS, IPTC, PNG) | ✅ ~90 EXIF tags via `androidx.exifinterface` |
-   | PNG  | ✅ same passthrough | ❌ dropped — see [PNG/WebP note](#png--webp-keepexif-on-android) below |
-   | WebP | ❌ ImageIO cannot author WebP metadata; output is a valid WebP without EXIF | ❌ same as PNG |
+   | PNG  | ✅ same passthrough | ✅ ~90 EXIF tags via `androidx.exifinterface` |
+   | WebP | ❌ ImageIO cannot author WebP metadata; output is a valid WebP without EXIF | ✅ ~90 EXIF tags via `androidx.exifinterface` |
    | HEIC | ✅ same passthrough | ❌ `androidx.exifinterface` refuses HEIF write; the resulting HEIC is valid but has no EXIF. `HeifHandler` logs a clear warning in this case. |
 
    The rows marked ❌ still return valid image bytes — you just do not get EXIF back. `keepExif: true` never fails the whole compression call.
 
-##### PNG / WebP keepExif on Android
+##### Follow-ups tracked on [#130](https://github.com/fluttercandies/flutter_image_compress/issues/130)
 
-Android's `CommonHandler` currently only invokes `ExifKeeper` when the output format is JPEG. PNG and WebP output paths drop EXIF regardless of `keepExif`. See issue [#130](https://github.com/fluttercandies/flutter_image_compress/issues/130).
+- **iOS WebP + `keepExif`**: `ImageIO` cannot author WebP containers with metadata. Manual VP8X + EXIF chunk splicing via `SDWebImageWebPCoder` would fix this but is not currently implemented.
+- **Android HEIC + `keepExif`**: `androidx.exifinterface` refuses HEIF write across all versions. Manual ISO/IEC 23008-12 metadata box injection (~400 LoC) would fix this but is not currently implemented.
+- **Web / OpenHarmony `keepExif`**: the Canvas / packing pipelines used by these platforms strip metadata at encode time — no in-tree fix path.
 
 ## Result
 

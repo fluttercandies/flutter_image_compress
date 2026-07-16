@@ -609,7 +609,103 @@ void main() {
           );
         },
         // WebP is iOS/Android only in the common package.
-        skip: !Platform.isIOS,
+        skip: !(Platform.isIOS || Platform.isAndroid),
+      );
+
+      testWidgets(
+        'Android PNG + keepExif=true: source EXIF DateTime-family tag '
+        'survives (regression for #130 — CommonHandler used to short-circuit '
+        'ExifKeeper unless bitmapFormat == JPEG, silently dropping EXIF for '
+        'PNG output)',
+        (_) async {
+          final src = await loadAssetBytes('img/auto-angle.jpg');
+          final srcKeys = (await readExifKeys(src)).toSet();
+          const canaries = <String>{
+            'exif:DateTimeOriginal',
+            'exif:DateTimeDigitized',
+            'tiff:DateTime',
+          };
+          final srcCanaries = srcKeys.intersection(canaries);
+          if (srcCanaries.isEmpty) {
+            markTestSkipped(
+              'auto-angle.jpg has no DateTime-family tag reachable via helper',
+            );
+            return;
+          }
+
+          final result = await FlutterImageCompress.compressWithList(
+            src,
+            minWidth: 500,
+            minHeight: 500,
+            format: CompressFormat.png,
+            keepExif: true,
+          );
+          expectValidCompressed(
+            bytes: result,
+            expected: DetectedFormat.png,
+            description: 'Android PNG + keepExif',
+          );
+          final keptKeys = (await readExifKeys(result)).toSet();
+          final survivors = srcCanaries.intersection(keptKeys);
+          expect(
+            survivors,
+            srcCanaries,
+            reason:
+                'PNG + keepExif=true should preserve DateTime tags on Android '
+                '(src=$srcCanaries survived=$survivors kept=$keptKeys)',
+          );
+        },
+        // Android-only regression: iOS/macOS PNG already preserved EXIF via
+        // the CGImageDestination passthrough (#391 / #392).
+        skip: !Platform.isAndroid,
+      );
+
+      testWidgets(
+        'Android WebP + keepExif=true: source EXIF DateTime-family tag '
+        'survives (regression for #130 — same JPEG-only guard dropped EXIF '
+        'for WebP output)',
+        (_) async {
+          final src = await loadAssetBytes('img/auto-angle.jpg');
+          final srcKeys = (await readExifKeys(src)).toSet();
+          const canaries = <String>{
+            'exif:DateTimeOriginal',
+            'exif:DateTimeDigitized',
+            'tiff:DateTime',
+          };
+          final srcCanaries = srcKeys.intersection(canaries);
+          if (srcCanaries.isEmpty) {
+            markTestSkipped(
+              'auto-angle.jpg has no DateTime-family tag reachable via helper',
+            );
+            return;
+          }
+
+          final result = await FlutterImageCompress.compressWithList(
+            src,
+            minWidth: 500,
+            minHeight: 500,
+            quality: 85,
+            format: CompressFormat.webp,
+            keepExif: true,
+          );
+          expectValidCompressed(
+            bytes: result,
+            expected: DetectedFormat.webp,
+            description: 'Android WebP + keepExif',
+          );
+          final keptKeys = (await readExifKeys(result)).toSet();
+          final survivors = srcCanaries.intersection(keptKeys);
+          expect(
+            survivors,
+            srcCanaries,
+            reason:
+                'WebP + keepExif=true should preserve DateTime tags on Android '
+                '(src=$srcCanaries survived=$survivors kept=$keptKeys)',
+          );
+        },
+        // Android-only: iOS WebP cannot preserve EXIF (ImageIO can't author
+        // WebP metadata); macOS package doesn't ship WebP.
+        skip: !Platform.isAndroid,
       );
 
       testWidgets(

@@ -37,14 +37,20 @@ class CommonHandler(override val type: Int) : FormatHandler {
         inSampleSize: Int
     ) {
         val result = compress(byteArray, minWidth, minHeight, quality, rotate, inSampleSize)
-        if (keepExif && bitmapFormat == Bitmap.CompressFormat.JPEG) {
-            val byteArrayOutputStream = ByteArrayOutputStream()
-            byteArrayOutputStream.write(result)
-            val resultStream = ExifKeeper(byteArray).writeToOutputStream(
-                context,
-                byteArrayOutputStream
-            )
-            outputStream.write(resultStream.toByteArray())
+        if (keepExif && supportsExifWrite(bitmapFormat)) {
+            // ExifKeeper writes to a tmp file and opens it via
+            // ExifInterface(path). ExifInterface sniffs the container from
+            // magic bytes, not the tmp filename's extension, so the same
+            // ExifKeeper path works for JPEG, PNG, and WebP outputs.
+            //
+            // If the SOURCE bytes don't carry readable EXIF (corrupt file,
+            // odd container), ExifKeeper's constructor throws IOException.
+            // Fall back to the raw compressed bytes without EXIF — the
+            // whole compression call must never fail just because there
+            // was no source metadata to copy.
+            outputStream.write(runExifKeeperOrRaw(context, result) {
+                ExifKeeper(byteArray)
+            })
         } else {
             outputStream.write(result)
         }
@@ -126,14 +132,11 @@ class CommonHandler(override val type: Int) : FormatHandler {
             } finally {
                 bitmap.recycle()
             }
-            if (keepExif && bitmapFormat == Bitmap.CompressFormat.JPEG) {
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                byteArrayOutputStream.write(array)
-                val tmpOutputStream = ExifKeeper(path).writeToOutputStream(
-                    context,
-                    byteArrayOutputStream
-                )
-                outputStream.write(tmpOutputStream.toByteArray())
+            if (keepExif && supportsExifWrite(bitmapFormat)) {
+                // See handleByteArray for the format-guard rationale.
+                outputStream.write(runExifKeeperOrRaw(context, array) {
+                    ExifKeeper(path)
+                })
             } else {
                 outputStream.write(array)
             }
@@ -152,5 +155,40 @@ class CommonHandler(override val type: Int) : FormatHandler {
                 numberOfRetries - 1
             );
         }
+    }
+
+    // androidx.exifinterface's `saveAttributes()` accepts JPEG, PNG, and
+    // WebP output containers (the underlying error for anything else is
+    // "ExifInterface only supports saving attributes for JPEG, PNG, and
+    // WebP formats"). WebP-writer correctness requires 1.3.7+ (see the
+    // dependency-version comment in flutter_image_compress_common/android/
+    // build.gradle). Enumerating explicitly instead of `!= HEIC` protects
+    // us if Android adds another `Bitmap.CompressFormat` value in a
+    // future SDK — new formats stay ❌ until proven supported.
+    private fun supportsExifWrite(format: Bitmap.CompressFormat): Boolean =
+        format == Bitmap.CompressFormat.JPEG ||
+                format == Bitmap.CompressFormat.PNG ||
+                format == Bitmap.CompressFormat.WEBP
+
+    // ExifKeeper's constructor calls `new ExifInterface(ByteArrayInputStream)`
+    // (or `ExifInterface(String path)`) which throws IOException when the
+    // source is corrupt or a container ExifInterface doesn't understand.
+    // Fall back to the raw compressed bytes without EXIF instead of
+    // propagating the exception — the whole compression call must never
+    // fail just because there was no source metadata to copy.
+    private inline fun runExifKeeperOrRaw(
+        context: Context,
+        raw: ByteArray,
+        makeKeeper: () -> ExifKeeper
+    ): ByteArray {
+        val keeper = try {
+            makeKeeper()
+        } catch (e: Exception) {
+            log("keepExif=true: could not read source EXIF, falling back to raw compressed bytes: $e")
+            return raw
+        }
+        val buffer = ByteArrayOutputStream()
+        buffer.write(raw)
+        return keeper.writeToOutputStream(context, buffer).toByteArray()
     }
 }
