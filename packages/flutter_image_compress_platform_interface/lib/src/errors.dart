@@ -11,6 +11,7 @@ class CompressError extends Error {
   final String? code;
 
   @override
-  String toString() =>
-      code == null ? 'CompressError: $message' : 'CompressError($code): $message';
+  String toString() => code == null
+      ? 'CompressError: $message'
+      : 'CompressError($code): $message';
 }
