@@ -77,3 +77,4 @@ build/
 
 # FVM Version Cache
 .fvm/
+/lib/const/assets.g.preview.dart

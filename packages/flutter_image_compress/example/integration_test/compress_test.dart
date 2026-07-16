@@ -142,7 +142,8 @@ void main() {
       expect(result, isNotNull, reason: 'compressAndGetFile returned null');
       final outFile = File(result!.path);
       expect(outFile.existsSync(), isTrue,
-          reason: 'output file was not written to disk');
+          reason: 'output file was not written to disk',
+      );
       final outBytes = await outFile.readAsBytes();
       expectValidCompressed(
         bytes: outBytes,
@@ -213,7 +214,7 @@ void main() {
           quality: 85,
         );
         expect(jpgResult, isNotNull,
-            reason: 'round-trip HEIC->JPEG returned null');
+            reason: 'round-trip HEIC->JPEG returned null',);
         final jpgBytes = await File(jpgResult!.path).readAsBytes();
         expectValidCompressed(
           bytes: jpgBytes,
@@ -265,7 +266,7 @@ void main() {
           final baseDims = await decodeDimensions(base);
           final rotDims = await decodeDimensions(rotated);
           expect(rotDims.width, approxEquals(baseDims.height),
-              reason: 'rotate=90 should swap width/height');
+              reason: 'rotate=90 should swap width/height',);
           expect(rotDims.height, approxEquals(baseDims.width));
         },
       );
@@ -345,7 +346,7 @@ void main() {
         final dims = await decodeDimensions(result);
         expect(dims.height, greaterThan(dims.width),
             reason:
-                'output should be portrait (h>w) because source EXIF Orientation=6');
+                'output should be portrait (h>w) because source EXIF Orientation=6',);
       });
     },
     // macOS uses a different decode path (NSBitmapImageRep) which does not
@@ -362,7 +363,7 @@ void main() {
         // Confirm the source really has transparent pixels somewhere —
         // otherwise the plugin's "preserved alpha" would be meaningless.
         expect(await imageHasAlpha(src), isTrue,
-            reason: 'source PNG has no alpha < 255 anywhere — asset issue');
+            reason: 'source PNG has no alpha < 255 anywhere — asset issue',);
 
         final result = await FlutterImageCompress.compressWithList(
           src,
@@ -380,7 +381,7 @@ void main() {
 
         expect(await imageHasAlpha(result), isTrue,
             reason:
-                'output PNG has no pixel with alpha<255 — alpha channel was dropped');
+                'output PNG has no pixel with alpha<255 — alpha channel was dropped',);
       },
     );
   });
@@ -396,7 +397,7 @@ void main() {
           quality: 90,
         );
         expect(result, isNotNull,
-            reason: 'compressAssetImage for WebP source returned null');
+            reason: 'compressAssetImage for WebP source returned null',);
         final bytes = Uint8List.fromList(result!);
         expectValidCompressed(
           bytes: bytes,
@@ -429,7 +430,7 @@ void main() {
         final srcKeys = (await readExifKeys(src)).toSet();
         if (srcKeys.isEmpty) {
           markTestSkipped(
-              'auto-angle.jpg has no EXIF metadata reachable via test helper');
+              'auto-angle.jpg has no EXIF metadata reachable via test helper',);
           return;
         }
 
@@ -451,7 +452,7 @@ void main() {
         final droppedKeys = (await readExifKeys(dropped)).toSet();
 
         expect(keptKeys, isNotEmpty,
-            reason: 'keepExif=true should retain EXIF keys');
+            reason: 'keepExif=true should retain EXIF keys',);
         // The load-bearing invariant: keepExif=true retains at least one
         // source-provided EXIF key that keepExif=false does not emit.
         final retainedFromSource =
@@ -459,7 +460,7 @@ void main() {
         expect(retainedFromSource, isNotEmpty,
             reason: 'keepExif=true should retain at least one source EXIF key '
                 'that keepExif=false does not emit '
-                '(src=$srcKeys kept=$keptKeys dropped=$droppedKeys)');
+                '(src=$srcKeys kept=$keptKeys dropped=$droppedKeys)',);
       });
 
       testWidgets(
@@ -495,7 +496,7 @@ void main() {
           expect(survivors, srcCanaries,
               reason: 'keepExif=true should preserve every DateTime-family '
                   'EXIF/TIFF tag present in the source '
-                  '(src=$srcCanaries survived=$survivors kept=$keptKeys)');
+                  '(src=$srcCanaries survived=$survivors kept=$keptKeys)',);
         },
       );
 
@@ -509,7 +510,7 @@ void main() {
           final srcKeys = (await readExifKeys(src)).toSet();
           if (srcKeys.isEmpty) {
             markTestSkipped(
-                'auto-angle.jpg has no EXIF/TIFF metadata reachable via helper');
+                'auto-angle.jpg has no EXIF/TIFF metadata reachable via helper',);
             return;
           }
 
@@ -548,7 +549,7 @@ void main() {
           expect(leaked, isEmpty,
               reason:
                   'keepExif=false must not leak source identifying metadata '
-                  '(leaked=$leaked droppedKeys=$droppedKeys)');
+                  '(leaked=$leaked droppedKeys=$droppedKeys)',);
         },
       );
 
@@ -615,7 +616,7 @@ void main() {
             final survivors = srcCanaries.intersection(keptKeys);
             expect(survivors, srcCanaries,
                 reason: 'HEIC + keepExif=true should preserve DateTime tags '
-                    '(src=$srcCanaries survived=$survivors kept=$keptKeys)');
+                    '(src=$srcCanaries survived=$survivors kept=$keptKeys)',);
           }
         },
       );

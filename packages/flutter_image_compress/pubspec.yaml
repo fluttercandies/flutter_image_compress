@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   flutter_image_compress_platform_interface: ^1.0.5
   flutter_image_compress_common: ^1.0.5
   flutter_image_compress_web: ^0.1.5

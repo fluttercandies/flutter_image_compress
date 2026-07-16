@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 class TextButton extends StatelessWidget {
   const TextButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.child,
-  }) : super(key: key);
+  });
+
   final VoidCallback onPressed;
   final Widget child;
 

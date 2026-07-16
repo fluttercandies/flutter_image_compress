@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import '../button.dart';
-import '../const/resource.dart';
+import '../const/assets.g.dart';
 import '../time_logger.dart';
 
 Future<void> runMain() async {
@@ -18,7 +18,7 @@ Future<void> runMain() async {
 
 Future<void> runMainWithZoned() async {
   await runZonedGuarded(() async {
-    runApp(MyApp());
+    runApp(const MyApp());
   }, (err, st) {
     print(err);
     print(st);
@@ -27,7 +27,7 @@ Future<void> runMainWithZoned() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
                 child: DecoratedBox(
                   decoration: BoxDecoration(border: Border.all(width: 2)),
                   child: Image(
-                    image: provider ?? AssetImage('img/img.jpg'),
+                    image: provider ?? const AssetImage('img/img.jpg'),
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -79,22 +79,23 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.settings_backup_restore),
           onPressed: () => setState(() => provider = null),
           tooltip: 'Show default asset',
+          child: const Icon(Icons.settings_backup_restore),
         ),
       ),
     );
   }
 
   Future<Uint8List?> _compressAsset() {
-    final assetName = R.IMG_IMG_JPG;
-    return FlutterImageCompress.compressAssetImage(assetName);
+    return FlutterImageCompress.compressAssetImage(
+      Assets.img_img_jpg,
+    );
   }
 
   Future<Uint8List?> _compressList() async {
     final bytes = await rootBundle
-        .load(R.IMG_IMG_JPG)
+        .load(Assets.img_img_jpg)
         .then((value) => value.buffer.asUint8List());
     return FlutterImageCompress.compressWithList(
       bytes,
@@ -105,7 +106,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<Uint8List?> _compressPNG() async {
     final bytes = await rootBundle
-        .load(R.IMG_HEADER_PNG)
+        .load(Assets.img_header_png)
         .then((value) => value.buffer.asUint8List());
     return FlutterImageCompress.compressWithList(
       bytes,
@@ -117,7 +118,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<Uint8List?> _compressHaveExif() {
     return FlutterImageCompress.compressAssetImage(
-      R.IMG_HAVE_EXIF_JPG,
+      Assets.img_have_exif_jpg,
       minWidth: 400,
       minHeight: 200,
       rotate: 180,

@@ -15,7 +15,9 @@ enum DetectedFormat { jpeg, png, webp, heic, unknown }
 /// container without doing byte-exact goldens, which are unstable across
 /// iOS/macOS versions.
 DetectedFormat detectFormat(Uint8List bytes) {
-  if (bytes.length < 12) return DetectedFormat.unknown;
+  if (bytes.length < 12) {
+    return DetectedFormat.unknown;
+  }
   // JPEG: FF D8 FF
   if (bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF) {
     return DetectedFormat.jpeg;
@@ -58,7 +60,9 @@ DetectedFormat detectFormat(Uint8List bytes) {
       'heim',
       'heis',
     };
-    if (heifBrands.contains(brand)) return DetectedFormat.heic;
+    if (heifBrands.contains(brand)) {
+      return DetectedFormat.heic;
+    }
   }
   return DetectedFormat.unknown;
 }
@@ -110,7 +114,9 @@ Future<List<String>> readExifKeys(Uint8List bytes) async {
     'readExifKeys',
     bytes,
   );
-  if (result == null) return const <String>[];
+  if (result == null) {
+    return const <String>[];
+  }
   return result.whereType<String>().toList(growable: false);
 }
 
@@ -127,10 +133,14 @@ Future<bool> imageHasAlpha(Uint8List bytes) async {
     final image = frame.image;
     try {
       final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-      if (data == null) return false;
+      if (data == null) {
+        return false;
+      }
       final total = image.width * image.height;
       for (var i = 0; i < total; i++) {
-        if (data.getUint8(i * 4 + 3) < 255) return true;
+        if (data.getUint8(i * 4 + 3) < 255) {
+          return true;
+        }
       }
       return false;
     } finally {

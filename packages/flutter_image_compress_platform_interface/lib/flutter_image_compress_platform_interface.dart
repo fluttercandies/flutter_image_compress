@@ -1,14 +1,15 @@
+import 'dart:typed_data' as typed_data;
+
 import 'package:cross_file/cross_file.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'dart:typed_data' as typed_data;
 
 import 'src/compress_format.dart';
 import 'src/validator.dart';
 
+export 'package:cross_file/cross_file.dart';
 export 'src/compress_format.dart';
 export 'src/errors.dart';
 export 'src/validator.dart';
-export 'package:cross_file/cross_file.dart';
 
 const _kUnsupportedHint = '\n\nCommon causes:\n'
     '  * Calling from a background Isolate - either move to the main '
@@ -20,12 +21,12 @@ const _kUnsupportedHint = '\n\nCommon causes:\n'
     'flutter build web --profile to confirm.';
 
 abstract class FlutterImageCompressPlatform extends PlatformInterface {
+  FlutterImageCompressPlatform() : super(token: _token);
+
   static const _token = Object();
 
   static FlutterImageCompressPlatform instance =
       UnsupportedFlutterImageCompress();
-
-  FlutterImageCompressPlatform() : super(token: _token);
 
   FlutterImageCompressValidator get validator;
 
@@ -86,14 +87,16 @@ abstract class FlutterImageCompressPlatform extends PlatformInterface {
 
 class UnsupportedFlutterImageCompress extends FlutterImageCompressPlatform {
   @override
-  Future<typed_data.Uint8List?> compressAssetImage(String assetName,
-      {int minWidth = 1920,
-      int minHeight = 1080,
-      int quality = 95,
-      int rotate = 0,
-      bool autoCorrectionAngle = true,
-      CompressFormat format = CompressFormat.jpeg,
-      bool keepExif = false}) {
+  Future<typed_data.Uint8List?> compressAssetImage(
+    String assetName, {
+    int minWidth = 1920,
+    int minHeight = 1080,
+    int quality = 95,
+    int rotate = 0,
+    bool autoCorrectionAngle = true,
+    CompressFormat format = CompressFormat.jpeg,
+    bool keepExif = false,
+  }) {
     throw UnimplementedError(
       'FlutterImageCompress.compressAssetImage is not available.'
       '$_kUnsupportedHint',
@@ -101,16 +104,18 @@ class UnsupportedFlutterImageCompress extends FlutterImageCompressPlatform {
   }
 
   @override
-  Future<typed_data.Uint8List?> compressWithFile(String path,
-      {int minWidth = 1920,
-      int minHeight = 1080,
-      int inSampleSize = 1,
-      int quality = 95,
-      int rotate = 0,
-      bool autoCorrectionAngle = true,
-      CompressFormat format = CompressFormat.jpeg,
-      bool keepExif = false,
-      int numberOfRetries = 5}) {
+  Future<typed_data.Uint8List?> compressWithFile(
+    String path, {
+    int minWidth = 1920,
+    int minHeight = 1080,
+    int inSampleSize = 1,
+    int quality = 95,
+    int rotate = 0,
+    bool autoCorrectionAngle = true,
+    CompressFormat format = CompressFormat.jpeg,
+    bool keepExif = false,
+    int numberOfRetries = 5,
+  }) {
     throw UnimplementedError(
       'FlutterImageCompress.compressWithFile is not available.'
       '$_kUnsupportedHint',
@@ -118,16 +123,19 @@ class UnsupportedFlutterImageCompress extends FlutterImageCompressPlatform {
   }
 
   @override
-  Future<XFile?> compressAndGetFile(String path, String targetPath,
-      {int minWidth = 1920,
-      int minHeight = 1080,
-      int inSampleSize = 1,
-      int quality = 95,
-      int rotate = 0,
-      bool autoCorrectionAngle = true,
-      CompressFormat format = CompressFormat.jpeg,
-      bool keepExif = false,
-      int numberOfRetries = 5}) {
+  Future<XFile?> compressAndGetFile(
+    String path,
+    String targetPath, {
+    int minWidth = 1920,
+    int minHeight = 1080,
+    int inSampleSize = 1,
+    int quality = 95,
+    int rotate = 0,
+    bool autoCorrectionAngle = true,
+    CompressFormat format = CompressFormat.jpeg,
+    bool keepExif = false,
+    int numberOfRetries = 5,
+  }) {
     throw UnimplementedError(
       'FlutterImageCompress.compressAndGetFile is not available.'
       '$_kUnsupportedHint',
@@ -135,15 +143,17 @@ class UnsupportedFlutterImageCompress extends FlutterImageCompressPlatform {
   }
 
   @override
-  Future<typed_data.Uint8List> compressWithList(typed_data.Uint8List image,
-      {int minWidth = 1920,
-      int minHeight = 1080,
-      int quality = 95,
-      int rotate = 0,
-      int inSampleSize = 1,
-      bool autoCorrectionAngle = true,
-      CompressFormat format = CompressFormat.jpeg,
-      bool keepExif = false}) {
+  Future<typed_data.Uint8List> compressWithList(
+    typed_data.Uint8List image, {
+    int minWidth = 1920,
+    int minHeight = 1080,
+    int quality = 95,
+    int rotate = 0,
+    int inSampleSize = 1,
+    bool autoCorrectionAngle = true,
+    CompressFormat format = CompressFormat.jpeg,
+    bool keepExif = false,
+  }) {
     throw UnimplementedError(
       'FlutterImageCompress.compressWithList is not available.'
       '$_kUnsupportedHint',

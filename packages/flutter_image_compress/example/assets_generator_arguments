@@ -1,0 +1,1 @@
+--save --type=d --folder=img --out=lib/const --no-watch --g-suffix --use-key-name

@@ -3,18 +3,18 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 
-import '../button.dart';
 import 'package:flutter/material.dart' hide TextButton;
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart' as path_provider;
 
-import '../const/resource.dart';
+import '../button.dart';
+import '../const/assets.g.dart';
 import '../time_logger.dart';
 
 Future<void> runMain() async {
@@ -24,7 +24,7 @@ Future<void> runMain() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -33,40 +33,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   ImageProvider? provider;
 
-  Future<void> compress() async {
-    final img = AssetImage('img/img.jpg');
-    print('pre compress');
-    final config = ImageConfiguration();
-    final AssetBundleImageKey key = await img.obtainKey(config);
-    final ByteData data = await key.bundle.load(key.name);
-    final beforeCompress = data.lengthInBytes;
-    print('beforeCompress = $beforeCompress');
-    final result = await FlutterImageCompress.compressWithList(
-      data.buffer.asUint8List(),
-    );
-    print('after = ${result.length}');
-  }
-
   Future<Directory> getTemporaryDirectory() async {
-    return Directory.systemTemp;
-  }
-
-  void _testCompressFile() async {
-    final img = AssetImage('img/img.jpg');
-    print('pre compress');
-    final config = ImageConfiguration();
-    final AssetBundleImageKey key = await img.obtainKey(config);
-    final ByteData data = await key.bundle.load(key.name);
     final dir = await path_provider.getTemporaryDirectory();
-    final File file = createFile('${dir.absolute.path}/test.png');
-    file.writeAsBytesSync(data.buffer.asUint8List());
-
-    final result = await testCompressFile(file);
-    if (result == null) return;
-
-    safeSetState(() {
-      provider = MemoryImage(result);
-    });
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
+    return dir;
   }
 
   File createFile(String path) {
@@ -77,29 +49,63 @@ class _MyAppState extends State<MyApp> {
     return file;
   }
 
-  Future<String> getExampleFilePath() async {
-    final img = AssetImage('img/img.jpg');
+  Future<void> compress() async {
+    const img = AssetImage('img/img.jpg');
     print('pre compress');
-    final config = ImageConfiguration();
+    const config = ImageConfiguration();
     final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
-    final dir = await path_provider.getTemporaryDirectory();
-    final File file = createFile('${dir.absolute.path}/test.png');
+    final beforeCompress = data.lengthInBytes;
+    print('beforeCompress = $beforeCompress');
+    final result = await FlutterImageCompress.compressWithList(
+      data.buffer.asUint8List(),
+    );
+    print('after = ${result.length}');
+  }
+
+  Future<void> _testCompressFile() async {
+    const img = AssetImage(Assets.img_img_jpg);
+    print('pre compress');
+    const config = ImageConfiguration();
+    final AssetBundleImageKey key = await img.obtainKey(config);
+    final ByteData data = await key.bundle.load(key.name);
+    final dir = await getTemporaryDirectory();
+    final file = createFile(p.join(dir.absolute.path, 'test.png'));
+    file.writeAsBytesSync(data.buffer.asUint8List());
+
+    final result = await testCompressFile(file);
+    if (result == null) {
+      return;
+    }
+
+    safeSetState(() {
+      provider = MemoryImage(result);
+    });
+  }
+
+  Future<String> getExampleFilePath() async {
+    const img = AssetImage('img/img.jpg');
+    print('pre compress');
+    const config = ImageConfiguration();
+    final AssetBundleImageKey key = await img.obtainKey(config);
+    final ByteData data = await key.bundle.load(key.name);
+    final dir = await getTemporaryDirectory();
+    final File file = createFile(p.join(dir.absolute.path, 'test.png'));
     file.createSync(recursive: true);
     file.writeAsBytesSync(data.buffer.asUint8List());
     return file.absolute.path;
   }
 
-  void getFileImage() async {
-    final img = AssetImage('img/img.jpg');
+  Future<void> getFileImage() async {
+    const img = AssetImage('img/img.jpg');
     print('pre compress');
-    final config = ImageConfiguration();
+    const config = ImageConfiguration();
     final AssetBundleImageKey key = await img.obtainKey(config);
     final ByteData data = await key.bundle.load(key.name);
-    final dir = await path_provider.getTemporaryDirectory();
-    final File file = createFile('${dir.absolute.path}/test.png');
+    final dir = await getTemporaryDirectory();
+    final File file = createFile(p.join(dir.absolute.path, 'test.png'));
     file.writeAsBytesSync(data.buffer.asUint8List());
-    final targetPath = dir.absolute.path + '/temp.jpg';
+    final targetPath = p.join(dir.absolute.path, 'temp.jpg');
     final imgFile = await testCompressAndGetFile(file, targetPath);
     if (imgFile == null) {
       return;
@@ -109,7 +115,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<typed_data.Uint8List?> testCompressFile(File file) async {
+  Future<Uint8List?> testCompressFile(File file) async {
     print('testCompressFile');
     final result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
@@ -134,7 +140,9 @@ class _MyAppState extends State<MyApp> {
       rotate: 90,
     );
 
-    if (result == null) return null;
+    if (result == null) {
+      return null;
+    }
 
     final bytes = await result.readAsBytes();
 
@@ -154,9 +162,11 @@ class _MyAppState extends State<MyApp> {
       quality: 96,
       rotate: 135,
     );
-    if (list == null) return;
+    if (list == null) {
+      return;
+    }
     safeSetState(() {
-      provider = MemoryImage(typed_data.Uint8List.fromList(list));
+      provider = MemoryImage(Uint8List.fromList(list));
     });
   }
 
@@ -168,8 +178,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<typed_data.Uint8List> testComporessList(
-    typed_data.Uint8List list,
+  Future<Uint8List> testComporessList(
+    Uint8List list,
   ) async {
     final result = await FlutterImageCompress.compressWithList(
       list,
@@ -188,34 +198,38 @@ class _MyAppState extends State<MyApp> {
     return File(filePath).writeAsBytes(list, flush: true);
   }
 
-  void _compressAssetAndAutoRotate() async {
+  Future<void> _compressAssetAndAutoRotate() async {
     final result = await FlutterImageCompress.compressAssetImage(
-      R.IMG_AUTO_ANGLE_JPG,
+      Assets.img_auto_angle_jpg,
       minWidth: 1000,
       quality: 95,
       // autoCorrectionAngle: false,
     );
-    if (result == null) return;
+    if (result == null) {
+      return;
+    }
     safeSetState(() {
-      provider = MemoryImage(typed_data.Uint8List.fromList(result));
+      provider = MemoryImage(Uint8List.fromList(result));
     });
   }
 
-  void _compressPngImage() async {
+  Future<void> _compressPngImage() async {
     final result = await FlutterImageCompress.compressAssetImage(
-      R.IMG_HEADER_PNG,
+      Assets.img_header_png,
       minWidth: 300,
       minHeight: 500,
     );
-    if (result == null) return;
+    if (result == null) {
+      return;
+    }
     safeSetState(() {
-      provider = MemoryImage(typed_data.Uint8List.fromList(result));
+      provider = MemoryImage(Uint8List.fromList(result));
     });
   }
 
-  void _compressTransPNG() async {
+  Future<void> _compressTransPNG() async {
     final bytes = await getAssetImageUint8List(
-      R.IMG_TRANSPARENT_BACKGROUND_PNG,
+      Assets.img_transparent_background_png,
     );
     final result = await FlutterImageCompress.compressWithList(
       bytes,
@@ -223,29 +237,31 @@ class _MyAppState extends State<MyApp> {
       minWidth: 100,
       format: CompressFormat.png,
     );
-    final u8list = typed_data.Uint8List.fromList(result);
+    final u8list = Uint8List.fromList(result);
     safeSetState(() {
       provider = MemoryImage(u8list);
     });
   }
 
-  void _restoreTransPNG() async {
-    setState(() {
-      provider = AssetImage(R.IMG_TRANSPARENT_BACKGROUND_PNG);
+  void _restoreTransPNG() {
+    safeSetState(() {
+      provider = const AssetImage(Assets.img_transparent_background_png);
     });
   }
 
-  void _compressImageAndKeepExif() async {
+  Future<void> _compressImageAndKeepExif() async {
     final result = await FlutterImageCompress.compressAssetImage(
-      R.IMG_AUTO_ANGLE_JPG,
+      Assets.img_auto_angle_jpg,
       minWidth: 500,
       minHeight: 600,
       // autoCorrectionAngle: false,
       keepExif: true,
     );
-    if (result == null) return;
+    if (result == null) {
+      return;
+    }
     safeSetState(() {
-      provider = MemoryImage(typed_data.Uint8List.fromList(result));
+      provider = MemoryImage(Uint8List.fromList(result));
     });
   }
 
@@ -254,24 +270,17 @@ class _MyAppState extends State<MyApp> {
   /// Convert jpeg to heic format, and then convert heic to jpg format.
   ///
   /// Show the file path and size in the console.
-  void _compressHeicExample() async {
+  Future<void> _compressHeicExample() async {
     print('start compress');
     final logger = TimeLogger();
     logger.startRecorder();
-    // final tmpDir = (await getTemporaryDirectory()).path;
-    final tmpDir = (await path_provider.getExternalStorageDirectories())
-        ?.first
-        .absolute
-        .path;
-
-    if (tmpDir == null) {
-      print('tmpDir is null');
-      print(
-          'You need check your permission for the external storage on Android.');
-      return;
+    final tempDir = await getTemporaryDirectory();
+    if (!tempDir.existsSync()) {
+      tempDir.createSync(recursive: true);
     }
-
-    final target = '$tmpDir/${DateTime.now().millisecondsSinceEpoch}.heic';
+    final tempPath = tempDir.absolute.path;
+    final target =
+        p.join(tempPath, '${DateTime.now().millisecondsSinceEpoch}.heic');
     final srcPath = await getExampleFilePath();
     final result = await FlutterImageCompress.compressAndGetFile(
       srcPath,
@@ -279,7 +288,9 @@ class _MyAppState extends State<MyApp> {
       format: CompressFormat.heic,
       quality: 90,
     );
-    if (result == null) return;
+    if (result == null) {
+      return;
+    }
 
     print('Compress heic success.');
     logger.logTime();
@@ -291,39 +302,38 @@ class _MyAppState extends State<MyApp> {
     );
 
     // Convert heic to jpg
-    final jpgPath =
-        '$tmpDir/heic-to-jpg-${DateTime.now().millisecondsSinceEpoch}.jpg';
-    try {
-      final jpgResult = await FlutterImageCompress.compressAndGetFile(
-        result.path,
-        jpgPath,
-        format: CompressFormat.jpeg,
-        quality: 90,
-      );
-      if (jpgResult == null) {
-        print('Convert heic to jpg failed.');
-      } else {
-        print(
-          'Convert heic to jpg success. '
-          'Jpg path: ${jpgResult.path}, '
-          'size: ${await jpgResult.length()}',
-        );
-      }
-    } catch (e) {
-      print('Error: $e');
+    final jpgPath = p.join(
+      tempPath,
+      'heic-to-jpg-${DateTime.now().millisecondsSinceEpoch}.jpg',
+    );
+    final jpgResult = await FlutterImageCompress.compressAndGetFile(
+      result.path,
+      jpgPath,
+      format: CompressFormat.jpeg,
+      quality: 90,
+    );
+    if (jpgResult == null) {
       print('Convert heic to jpg failed.');
+    } else {
+      print(
+        'Convert heic to jpg success. '
+        'Jpg path: ${jpgResult.path}, '
+        'size: ${await jpgResult.length()}',
+      );
     }
   }
 
-  void _compressAndroidWebpExample() async {
+  Future<void> _compressAndroidWebpExample() async {
     // Android compress very nice, but the iOS encode UIImage to webp is slow.
     final logger = TimeLogger();
     logger.startRecorder();
     print('start compress webp');
-    final quality = 90;
+    const quality = 90;
     final tmpDir = (await getTemporaryDirectory()).path;
-    final target =
-        '$tmpDir/${DateTime.now().millisecondsSinceEpoch}-$quality.webp';
+    final target = p.join(
+      tmpDir,
+      '${DateTime.now().millisecondsSinceEpoch}-$quality.webp',
+    );
     final srcPath = await getExampleFilePath();
     final result = await FlutterImageCompress.compressAndGetFile(
       srcPath,
@@ -333,7 +343,9 @@ class _MyAppState extends State<MyApp> {
       minWidth: 800,
       quality: quality,
     );
-    if (result == null) return;
+    if (result == null) {
+      return;
+    }
     print('Compress webp success.');
     logger.logTime();
     print('src, path = $srcPath length = ${File(srcPath).lengthSync()}');
@@ -346,15 +358,17 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _compressFromWebPImage() async {
+  Future<void> _compressFromWebPImage() async {
     // Converting webp to jpeg
     final result = await FlutterImageCompress.compressAssetImage(
-      R.IMG_ICON_WEBP,
+      Assets.img_icon_webp,
     );
-    if (result == null) return;
+    if (result == null) {
+      return;
+    }
     // Show result image
     safeSetState(() {
-      provider = MemoryImage(typed_data.Uint8List.fromList(result));
+      provider = MemoryImage(Uint8List.fromList(result));
     });
   }
 
@@ -371,7 +385,7 @@ class _MyAppState extends State<MyApp> {
                 child: DecoratedBox(
                   decoration: BoxDecoration(border: Border.all(width: 2)),
                   child: Image(
-                    image: provider ?? AssetImage('img/img.jpg'),
+                    image: provider ?? const AssetImage('img/img.jpg'),
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -379,89 +393,92 @@ class _MyAppState extends State<MyApp> {
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('CompressFile and rotate 180'),
                 onPressed: _testCompressFile,
+                child: const Text('CompressFile and rotate 180'),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('CompressAndGetFile and rotate 90'),
                 onPressed: getFileImage,
+                child: const Text('CompressAndGetFile and rotate 90'),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('CompressAsset and rotate 135'),
+                child: const Text('CompressAsset and rotate 135'),
                 onPressed: () => testCompressAsset('img/img.jpg'),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('CompressList and rotate 270'),
                 onPressed: compressListExample,
+                child: const Text('CompressList and rotate 270'),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('test compress auto angle'),
                 onPressed: _compressAssetAndAutoRotate,
+                child: const Text('test compress auto angle'),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('Test png '),
                 onPressed: _compressPngImage,
+                child: const Text('Test png '),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('Format transparent PNG'),
                 onPressed: _compressTransPNG,
+                child: const Text('Format transparent PNG'),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('Restore transparent PNG'),
                 onPressed: _restoreTransPNG,
+                child: const Text('Restore transparent PNG'),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('Keep exif image'),
                 onPressed: _compressImageAndKeepExif,
+                child: const Text('Keep exif image'),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('Convert to heic format and print the file url'),
                 onPressed: _compressHeicExample,
+                child:
+                    const Text('Convert to heic format and print the file url'),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('Convert to webp format, Just support android'),
                 onPressed: _compressAndroidWebpExample,
+                child: const Text(
+                  'Convert to webp format with 90% quality (Android only)',
+                ),
               ),
             ),
             SliverToBoxAdapter(
               child: TextButton(
-                child: Text('Convert from webp format'),
                 onPressed: _compressFromWebPImage,
+                child: const Text('Convert from webp format'),
               ),
             ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.settings_backup_restore),
           onPressed: () => setState(() => provider = null),
           tooltip: 'Show default asset',
+          child: const Icon(Icons.settings_backup_restore),
         ),
       ),
     );
   }
 }
 
-Future<typed_data.Uint8List> getAssetImageUint8List(String key) async {
+Future<Uint8List> getAssetImageUint8List(String key) async {
   final byteData = await rootBundle.load(key);
   return byteData.buffer.asUint8List();
 }
@@ -533,7 +550,9 @@ class XFileImageProvider extends ImageProvider<XFileImageProvider> {
 
   @override
   bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
     return other is XFileImageProvider && file.path == other.file.path;
   }
 
