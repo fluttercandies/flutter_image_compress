@@ -26,7 +26,9 @@
     NSData *compressedData = [CompressHandler compressWithData:data minWidth:minWidth minHeight:minHeight quality:quality rotate:rotate format:formatType];
 
     if (compressedData == nil) {
-        result(nil);
+        result([FlutterError errorWithCode:@"encode_failed"
+                                   message:@"Encoder returned no data"
+                                   details:nil]);
         return;
     }
 
