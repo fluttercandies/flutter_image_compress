@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
+import android.util.Log
 import androidx.heifwriter.HeifWriter
 import com.fluttercandies.flutter_image_compress.ext.calcScale
 import com.fluttercandies.flutter_image_compress.ext.rotate
@@ -32,6 +33,10 @@ class HeifHandler : FormatHandler {
         val tmpFile = TmpFileUtil.createTmpFile(context)
         try {
             compress(byteArray, minWidth, minHeight, quality, rotate, inSampleSize, tmpFile.absolutePath)
+            // Warn only after compression actually produced a HEIC — otherwise
+            // a HeifWriter failure (OOM, missing hardware encoder) gets
+            // misattributed to the keepExif path in bug triage.
+            warnKeepExifUnsupported(keepExif)
             outputStream.write(tmpFile.readBytes())
         } finally {
             tmpFile.delete()
@@ -143,9 +148,34 @@ class HeifHandler : FormatHandler {
         val tmpFile = TmpFileUtil.createTmpFile(context)
         try {
             compress(path, minWidth, minHeight, quality, rotate, inSampleSize, tmpFile.absolutePath)
+            warnKeepExifUnsupported(keepExif)
             outputStream.write(tmpFile.readBytes())
         } finally {
             tmpFile.delete()
+        }
+    }
+
+    // The `keepExif` parameter used to be silently ignored on the HEIC path
+    // (parameter received, never read). That is still the runtime behaviour,
+    // but is now discoverable via Log.w (which surfaces to `adb logcat`
+    // regardless of the plugin's `showLog` flag): androidx.exifinterface
+    // refuses to write EXIF to HEIF/HEIC containers ("ExifInterface only
+    // supports saving attributes for JPEG, PNG, and WebP formats"), and
+    // Android does not ship an alternative library that authors HEIF
+    // metadata boxes. Manual ISO/IEC 23008-12 box injection would be
+    // ~400 LOC and is tracked as a follow-up on issue #130.
+    // Users asking for `keepExif=true` on HEIC get a valid HEIC without
+    // EXIF instead of a crash or malformed output. See README's
+    // "keepExif" section for the platform matrix.
+    private fun warnKeepExifUnsupported(keepExif: Boolean) {
+        if (keepExif) {
+            Log.w(
+                "FlutterImageCompress",
+                "keepExif=true is not supported for HEIC output on Android " +
+                        "(androidx.exifinterface cannot save attributes to HEIF/HEIC). " +
+                        "The compressed HEIC is valid but does not carry EXIF metadata. " +
+                        "See https://github.com/fluttercandies/flutter_image_compress/issues/130"
+            )
         }
     }
 }

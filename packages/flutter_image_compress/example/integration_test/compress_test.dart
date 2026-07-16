@@ -141,8 +141,10 @@ void main() {
 
       expect(result, isNotNull, reason: 'compressAndGetFile returned null');
       final outFile = File(result!.path);
-      expect(outFile.existsSync(), isTrue,
-          reason: 'output file was not written to disk',
+      expect(
+        outFile.existsSync(),
+        isTrue,
+        reason: 'output file was not written to disk',
       );
       final outBytes = await outFile.readAsBytes();
       expectValidCompressed(
@@ -213,8 +215,11 @@ void main() {
           minHeight: 300,
           quality: 85,
         );
-        expect(jpgResult, isNotNull,
-            reason: 'round-trip HEIC->JPEG returned null',);
+        expect(
+          jpgResult,
+          isNotNull,
+          reason: 'round-trip HEIC->JPEG returned null',
+        );
         final jpgBytes = await File(jpgResult!.path).readAsBytes();
         expectValidCompressed(
           bytes: jpgBytes,
@@ -265,8 +270,11 @@ void main() {
           );
           final baseDims = await decodeDimensions(base);
           final rotDims = await decodeDimensions(rotated);
-          expect(rotDims.width, approxEquals(baseDims.height),
-              reason: 'rotate=90 should swap width/height',);
+          expect(
+            rotDims.width,
+            approxEquals(baseDims.height),
+            reason: 'rotate=90 should swap width/height',
+          );
           expect(rotDims.height, approxEquals(baseDims.width));
         },
       );
@@ -344,9 +352,12 @@ void main() {
           quality: 85,
         );
         final dims = await decodeDimensions(result);
-        expect(dims.height, greaterThan(dims.width),
-            reason:
-                'output should be portrait (h>w) because source EXIF Orientation=6',);
+        expect(
+          dims.height,
+          greaterThan(dims.width),
+          reason:
+              'output should be portrait (h>w) because source EXIF Orientation=6',
+        );
       });
     },
     // macOS uses a different decode path (NSBitmapImageRep) which does not
@@ -362,8 +373,11 @@ void main() {
         final src = await loadAssetBytes('img/transparent-background.png');
         // Confirm the source really has transparent pixels somewhere —
         // otherwise the plugin's "preserved alpha" would be meaningless.
-        expect(await imageHasAlpha(src), isTrue,
-            reason: 'source PNG has no alpha < 255 anywhere — asset issue',);
+        expect(
+          await imageHasAlpha(src),
+          isTrue,
+          reason: 'source PNG has no alpha < 255 anywhere — asset issue',
+        );
 
         final result = await FlutterImageCompress.compressWithList(
           src,
@@ -379,9 +393,12 @@ void main() {
           description: 'transparent PNG',
         );
 
-        expect(await imageHasAlpha(result), isTrue,
-            reason:
-                'output PNG has no pixel with alpha<255 — alpha channel was dropped',);
+        expect(
+          await imageHasAlpha(result),
+          isTrue,
+          reason:
+              'output PNG has no pixel with alpha<255 — alpha channel was dropped',
+        );
       },
     );
   });
@@ -396,8 +413,11 @@ void main() {
           minHeight: 400,
           quality: 90,
         );
-        expect(result, isNotNull,
-            reason: 'compressAssetImage for WebP source returned null',);
+        expect(
+          result,
+          isNotNull,
+          reason: 'compressAssetImage for WebP source returned null',
+        );
         final bytes = Uint8List.fromList(result!);
         expectValidCompressed(
           bytes: bytes,
@@ -430,7 +450,8 @@ void main() {
         final srcKeys = (await readExifKeys(src)).toSet();
         if (srcKeys.isEmpty) {
           markTestSkipped(
-              'auto-angle.jpg has no EXIF metadata reachable via test helper',);
+            'auto-angle.jpg has no EXIF metadata reachable via test helper',
+          );
           return;
         }
 
@@ -451,16 +472,22 @@ void main() {
         final keptKeys = (await readExifKeys(kept)).toSet();
         final droppedKeys = (await readExifKeys(dropped)).toSet();
 
-        expect(keptKeys, isNotEmpty,
-            reason: 'keepExif=true should retain EXIF keys',);
+        expect(
+          keptKeys,
+          isNotEmpty,
+          reason: 'keepExif=true should retain EXIF keys',
+        );
         // The load-bearing invariant: keepExif=true retains at least one
         // source-provided EXIF key that keepExif=false does not emit.
         final retainedFromSource =
             keptKeys.intersection(srcKeys).difference(droppedKeys);
-        expect(retainedFromSource, isNotEmpty,
-            reason: 'keepExif=true should retain at least one source EXIF key '
-                'that keepExif=false does not emit '
-                '(src=$srcKeys kept=$keptKeys dropped=$droppedKeys)',);
+        expect(
+          retainedFromSource,
+          isNotEmpty,
+          reason: 'keepExif=true should retain at least one source EXIF key '
+              'that keepExif=false does not emit '
+              '(src=$srcKeys kept=$keptKeys dropped=$droppedKeys)',
+        );
       });
 
       testWidgets(
@@ -493,10 +520,13 @@ void main() {
           );
           final keptKeys = (await readExifKeys(kept)).toSet();
           final survivors = srcCanaries.intersection(keptKeys);
-          expect(survivors, srcCanaries,
-              reason: 'keepExif=true should preserve every DateTime-family '
-                  'EXIF/TIFF tag present in the source '
-                  '(src=$srcCanaries survived=$survivors kept=$keptKeys)',);
+          expect(
+            survivors,
+            srcCanaries,
+            reason: 'keepExif=true should preserve every DateTime-family '
+                'EXIF/TIFF tag present in the source '
+                '(src=$srcCanaries survived=$survivors kept=$keptKeys)',
+          );
         },
       );
 
@@ -510,7 +540,8 @@ void main() {
           final srcKeys = (await readExifKeys(src)).toSet();
           if (srcKeys.isEmpty) {
             markTestSkipped(
-                'auto-angle.jpg has no EXIF/TIFF metadata reachable via helper',);
+              'auto-angle.jpg has no EXIF/TIFF metadata reachable via helper',
+            );
             return;
           }
 
@@ -546,10 +577,12 @@ void main() {
             return;
           }
           final leaked = srcIdentifying.intersection(droppedKeys);
-          expect(leaked, isEmpty,
-              reason:
-                  'keepExif=false must not leak source identifying metadata '
-                  '(leaked=$leaked droppedKeys=$droppedKeys)',);
+          expect(
+            leaked,
+            isEmpty,
+            reason: 'keepExif=false must not leak source identifying metadata '
+                '(leaked=$leaked droppedKeys=$droppedKeys)',
+          );
         },
       );
 
@@ -603,28 +636,49 @@ void main() {
             format: CompressFormat.heic,
             keepExif: true,
           );
+          // Bytes-validity assertion runs on every platform — Android
+          // included — even though the metadata-survival check below
+          // cannot: HEIC + keepExif on Android is not expected to preserve
+          // EXIF (see HeifHandler.warnKeepExifUnsupported), but the
+          // encoder must still produce a valid HEIC file.
           expectValidCompressed(
             bytes: result,
             expected: DetectedFormat.heic,
             description: 'HEIC + keepExif',
           );
 
+          // Metadata survival is only asserted on iOS/macOS. Android has
+          // no in-tree library that writes EXIF into HEIF/HEIC containers —
+          // androidx.exifinterface's saveAttributes refuses image/heic
+          // explicitly ("ExifInterface only supports saving attributes for
+          // JPEG, PNG, and WebP formats"), and there is no MediaMuxer /
+          // HeifWriter path that authors HEIF metadata boxes. HeifHandler
+          // logs a clear warning for this combination. See README's
+          // "keepExif" section for the platform matrix.
+          if (Platform.isAndroid) {
+            return;
+          }
+
           // Only assert metadata survival when the source carries one of
           // the canary tags — some CI base images may strip them.
           if (srcCanaries.isNotEmpty) {
             final keptKeys = (await readExifKeys(result)).toSet();
             final survivors = srcCanaries.intersection(keptKeys);
-            expect(survivors, srcCanaries,
-                reason: 'HEIC + keepExif=true should preserve DateTime tags '
-                    '(src=$srcCanaries survived=$survivors kept=$keptKeys)',);
+            expect(
+              survivors,
+              srcCanaries,
+              reason: 'HEIC + keepExif=true should preserve DateTime tags '
+                  '(src=$srcCanaries survived=$survivors kept=$keptKeys)',
+            );
           }
         },
       );
     },
     // Now that macOS pumps source properties through as nested sub-dicts
     // (matching iOS's direct passthrough), the keepExif invariants run on
-    // both platforms. The WebP-inner test stays iOS-only because the
-    // macOS package doesn't ship the WebP coder.
-    skip: !(Platform.isIOS || Platform.isMacOS),
+    // iOS + macOS + Android. The WebP-inner test stays iOS-only because
+    // the macOS package doesn't ship the WebP coder; Android does support
+    // WebP but its keepExif path is being fixed in a separate PR.
+    skip: !(Platform.isIOS || Platform.isMacOS || Platform.isAndroid),
   );
 }
