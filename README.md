@@ -457,17 +457,21 @@ and use a permission plugin to request permission to access SD cards on Android/
 
 ## About EXIF information
 
-Using this library, EXIF information will be removed by default.
+By default (`keepExif: false`, the default), the compressed output carries no source EXIF — only the encoder-injected minimum required by the container (image dimensions, color space).
 
-EXIF information can be retained by setting keepExif to true,
-but not `direction` information.
+With `keepExif: true`, the plugin copies source EXIF onto the compressed output. The **[keepExif section above](#keepexif)** has the full per-format-per-platform matrix; the short version is:
 
-- PNG/JPEG encoder: System API.
-- WebP encoder:
-  - [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder) on iOS.
-  - System API on Android.
-- HEIF encoder: System API.
-  - [HeifWriter](https://developer.android.com/jetpack/androidx/releases/heifwriter) on Android P+.
+- **iOS + macOS**: full sub-dict passthrough (EXIF, TIFF, GPS, IPTC, PNG chunks) via `CGImageSource → CGImageDestination`. Works for JPEG, PNG, HEIC. Not WebP (ImageIO cannot author WebP metadata).
+- **Android**: ~90-tag copy via `androidx.exifinterface`. Works for JPEG, PNG, WebP. Not HEIC (`ExifInterface` refuses HEIF write; `HeifHandler` logs a warning).
+- **Web + OpenHarmony**: not supported. The Canvas / packing pipelines strip metadata at encode time.
+
+Regardless of platform, the `Orientation` tag is normalized to `1` / `ORIENTATION_NORMAL` on the output — the pipeline bakes rotation into pixels, so preserving the source orientation would cause viewers to double-rotate.
+
+### Encoders in use
+
+- JPEG / PNG: system APIs everywhere.
+- WebP: system API on Android, [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder) on iOS, browser Canvas on Web.
+- HEIC / HEIF: system API on iOS 11+ (ImageIO). Android uses [HeifWriter](https://developer.android.com/jetpack/androidx/releases/heifwriter) on API 28+ (with hardware encoder — falls back to `UnsupportedError` if the device can't produce HEIC).
 
 ## Web
 
