@@ -33,7 +33,9 @@
         if ([ImageCompressPlugin showLog]) {
             NSLog(@"Input file could not be read (path=%@)", path);
         }
-        result(nil);
+        result([FlutterError errorWithCode:@"io_failed"
+                                   message:[NSString stringWithFormat:@"Input file could not be read (path=%@)", path]
+                                   details:nil]);
         return;
     }
 
@@ -54,7 +56,9 @@
         if ([ImageCompressPlugin showLog]) {
             NSLog(@"Input file is not a decodable image (mime=%@, path=%@)", imageType, path);
         }
-        result(nil);
+        result([FlutterError errorWithCode:@"decode_failed"
+                                   message:[NSString stringWithFormat:@"Input file is not a decodable image (mime=%@, path=%@)", imageType, path]
+                                   details:nil]);
         return;
     }
 
@@ -75,7 +79,9 @@
     }
 
     if (data == nil) {
-        result(nil);
+        result([FlutterError errorWithCode:@"encode_failed"
+                                   message:@"Encoder returned no data"
+                                   details:nil]);
         return;
     }
     result([FlutterStandardTypedData typedDataWithBytes:data]);
@@ -103,7 +109,9 @@
         if ([ImageCompressPlugin showLog]) {
             NSLog(@"Input file could not be read (path=%@)", path);
         }
-        result(nil);
+        result([FlutterError errorWithCode:@"io_failed"
+                                   message:[NSString stringWithFormat:@"Input file could not be read (path=%@)", path]
+                                   details:nil]);
         return;
     }
 
@@ -124,7 +132,9 @@
         if ([ImageCompressPlugin showLog]) {
             NSLog(@"Input file is not a decodable image (mime=%@, path=%@)", imageType, path);
         }
-        result(nil);
+        result([FlutterError errorWithCode:@"decode_failed"
+                                   message:[NSString stringWithFormat:@"Input file is not a decodable image (mime=%@, path=%@)", imageType, path]
+                                   details:nil]);
         return;
     }
 
@@ -141,7 +151,9 @@
     }
 
     if (data == nil) {
-        result(nil);
+        result([FlutterError errorWithCode:@"encode_failed"
+                                   message:@"Encoder returned no data"
+                                   details:nil]);
         return;
     }
     NSURL *targetURL = [[NSURL alloc] initFileURLWithPath:targetPath];
@@ -161,7 +173,13 @@
         }
     }
     BOOL success = [data writeToURL:targetURL atomically:YES];
-    result(success ? targetPath : nil);
+    if (success) {
+        result(targetPath);
+    } else {
+        result([FlutterError errorWithCode:@"io_failed"
+                                   message:[NSString stringWithFormat:@"Failed to write compressed data to %@", targetPath]
+                                   details:nil]);
+    }
 }
 
 

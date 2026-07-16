@@ -32,7 +32,7 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
             val formatHandler = FormatRegister.findFormat(format)
             if (formatHandler == null) {
                 log("No support format.")
-                reply(null)
+                replyError("unsupported_format", "No handler for format=$format")
                 return@execute
             }
             val targetRotate = rotate + exifRotate
@@ -53,10 +53,10 @@ class CompressListHandler(private val call: MethodCall, result: MethodChannel.Re
             } catch (e: CompressError) {
                 log(e.message)
                 if (ImageCompressPlugin.showLog) e.printStackTrace()
-                reply(null)
+                replyError("encode_failed", e.message ?: "compress failed")
             } catch (e: Exception) {
                 if (ImageCompressPlugin.showLog) e.printStackTrace()
-                reply(null)
+                replyError("unknown", e.message ?: "compress failed")
             } finally {
                 outputStream.close()
             }

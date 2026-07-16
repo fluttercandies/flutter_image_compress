@@ -42,6 +42,19 @@ class FlutterImageCompressCommon extends FlutterImageCompressPlatform {
     FlutterImageCompressPlatform.instance = FlutterImageCompressCommon();
   }
 
+  /// Wrap [MethodChannel.invokeMethod] so native `result.error(...)` /
+  /// `replyError(...)` calls surface as [CompressError] on the Dart side
+  /// instead of leaking as [PlatformException] or (worse) a silent null
+  /// return type-cast failure. The native code carries a stable failure
+  /// code (see [CompressError.code]) and a human message.
+  Future<T?> _invoke<T>(String method, [dynamic args]) async {
+    try {
+      return await _channel.invokeMethod<T>(method, args);
+    } on PlatformException catch (e) {
+      throw CompressError(e.message ?? e.code, code: e.code);
+    }
+  }
+
   @override
   Future<typed_data.Uint8List?> compressAssetImage(String assetName,
       {int minWidth = 1920,
@@ -51,10 +64,7 @@ class FlutterImageCompressCommon extends FlutterImageCompressPlatform {
       bool autoCorrectionAngle = true,
       CompressFormat format = CompressFormat.jpeg,
       bool keepExif = false}) async {
-    final support = await _validator.checkSupportPlatform(format);
-    if (!support) {
-      return null;
-    }
+    await _validator.checkSupportPlatform(format);
     final img = AssetImage(assetName);
     const config = ImageConfiguration();
     final AssetBundleImageKey key = await img.obtainKey(config);
@@ -94,11 +104,8 @@ class FlutterImageCompressCommon extends FlutterImageCompressPlatform {
     if (!File(path).existsSync()) {
       throw CompressError('Image file does not exist in $path.');
     }
-    final support = await _validator.checkSupportPlatform(format);
-    if (!support) {
-      return null;
-    }
-    final result = await _channel.invokeMethod('compressWithFile', [
+    await _validator.checkSupportPlatform(format);
+    final result = await _invoke<typed_data.Uint8List>('compressWithFile', [
       path,
       minWidth,
       minHeight,
@@ -126,11 +133,8 @@ class FlutterImageCompressCommon extends FlutterImageCompressPlatform {
     if (image.isEmpty) {
       throw CompressError('The image is empty.');
     }
-    final support = await _validator.checkSupportPlatform(format);
-    if (!support) {
-      throw UnsupportedError('The image type $format is not supported.');
-    }
-    final result = await _channel.invokeMethod('compressWithList', [
+    await _validator.checkSupportPlatform(format);
+    final result = await _invoke<typed_data.Uint8List>('compressWithList', [
       image,
       minWidth,
       minHeight,
@@ -141,6 +145,12 @@ class FlutterImageCompressCommon extends FlutterImageCompressPlatform {
       keepExif,
       inSampleSize,
     ]);
+    // Native failures now surface via `_invoke` as `CompressError`, so a null
+    // result here means the native side responded with `success(null)` — which
+    // shouldn't happen after Step 1. Guard defensively to avoid a TypeError.
+    if (result == null) {
+      throw CompressError('Compress returned no data');
+    }
     return result;
   }
 
@@ -173,11 +183,8 @@ class FlutterImageCompressCommon extends FlutterImageCompressPlatform {
       throw CompressError('Target path and source path cannot be the same.');
     }
     _validator.checkFileNameAndFormat(targetPath, format);
-    final support = await _validator.checkSupportPlatform(format);
-    if (!support) {
-      return null;
-    }
-    final String? result = await _channel.invokeMethod(
+    await _validator.checkSupportPlatform(format);
+    final String? result = await _invoke<String>(
       'compressWithFileAndGetFile',
       [
         path,

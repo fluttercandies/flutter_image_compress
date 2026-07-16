@@ -18,6 +18,16 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
     }
   }
 
+  /// See [FlutterImageCompressCommon._invoke] for rationale — native
+  /// `FlutterError` results become [CompressError] on the Dart side.
+  Future<T?> _invoke<T>(String method, [dynamic args]) async {
+    try {
+      return await _channel.invokeMethod<T>(method, args);
+    } on PlatformException catch (e) {
+      throw CompressError(e.message ?? e.code, code: e.code);
+    }
+  }
+
   @override
   Future<XFile?> compressAndGetFile(
     String path,
@@ -34,7 +44,7 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
   }) async {
     await checkSupport(format);
 
-    final dstPath = await _channel.invokeMethod('compressAndGetFile', {
+    final dstPath = await _invoke<String>('compressAndGetFile', {
       'path': path,
       'targetPath': targetPath,
       'minWidth': minWidth,
@@ -99,7 +109,7 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
   }) async {
     await checkSupport(format);
 
-    final result = await _channel.invokeMethod('compressWithFile', {
+    final result = await _invoke<Uint8List>('compressWithFile', {
       'path': path,
       'minWidth': minWidth,
       'minHeight': minHeight,
@@ -133,7 +143,7 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
   }) async {
     await checkSupport(format);
 
-    final result = await _channel.invokeMethod<Uint8List>('compressWithList', {
+    final result = await _invoke<Uint8List>('compressWithList', {
       'list': image,
       'minWidth': minWidth,
       'minHeight': minHeight,
@@ -146,7 +156,7 @@ class FlutterImageCompressMacos extends FlutterImageCompressPlatform {
     });
 
     if (result == null) {
-      throw Exception('Compress failed');
+      throw CompressError('Compress failed');
     }
 
     return result;

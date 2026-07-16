@@ -29,7 +29,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
             val formatHandler = FormatRegister.findFormat(format)
             if (formatHandler == null) {
                 log("No support format.")
-                reply(null)
+                replyError("unsupported_format", "No handler for format=$format")
                 return@execute
             }
             val outputStream = ByteArrayOutputStream()
@@ -61,7 +61,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                 reply(outputStream.toByteArray())
             } catch (e: Exception) {
                 if (ImageCompressPlugin.showLog) e.printStackTrace()
-                reply(null)
+                replyError("unknown", e.message ?: "compress failed")
             } finally {
                 outputStream.close()
             }
@@ -86,7 +86,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
             val formatHandler = FormatRegister.findFormat(format)
             if (formatHandler == null) {
                 log("No support format.")
-                reply(null)
+                replyError("unsupported_format", "No handler for format=$format")
                 return@execute
             }
             var outputStream: OutputStream? = null
@@ -119,7 +119,7 @@ class CompressFileHandler(private val call: MethodCall, result: MethodChannel.Re
                 reply(targetPath)
             } catch (e: Exception) {
                 if (ImageCompressPlugin.showLog) e.printStackTrace()
-                reply(null)
+                replyError("unknown", e.message ?: "compress failed")
             } finally {
                 outputStream?.close()
             }

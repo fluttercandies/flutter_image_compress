@@ -399,7 +399,9 @@ class Compressor {
     }
 
     if (!ok) {
-      result(nil)
+      result(FlutterError(code: "encode_failed",
+                          message: "Failed to encode compressed image to \(path)",
+                          details: nil))
       return
     }
 
@@ -418,7 +420,9 @@ class Compressor {
     }
 
     if (!ok) {
-      result(nil)
+      result(FlutterError(code: "encode_failed",
+                          message: "Failed to encode compressed image",
+                          details: nil))
       return
     }
 
