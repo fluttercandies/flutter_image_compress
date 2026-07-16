@@ -259,8 +259,21 @@ If this parameter is true, EXIF information is saved in the compressed result.
 Attention should be paid to the following points:
 
 1. Default value is false.
-2. Even if set to true, the direction attribute is not included.
-3. Only support jpg format, PNG format does not support.
+2. Even if set to true, the `Orientation` tag is normalized to `1`/`ORIENTATION_NORMAL` — the pipeline bakes rotation into pixels, so preserving the source orientation tag would cause viewers to double-rotate.
+3. Support varies by output format **and** platform:
+
+   | Output format | iOS / macOS | Android |
+   | --- | --- | --- |
+   | JPEG | ✅ full sub-dict passthrough (EXIF, TIFF, GPS, IPTC, PNG) | ✅ ~90 EXIF tags via `androidx.exifinterface` |
+   | PNG  | ✅ same passthrough | ❌ dropped — see [PNG/WebP note](#png--webp-keepexif-on-android) below |
+   | WebP | ❌ ImageIO cannot author WebP metadata; output is a valid WebP without EXIF | ❌ same as PNG |
+   | HEIC | ✅ same passthrough | ❌ `androidx.exifinterface` refuses HEIF write; the resulting HEIC is valid but has no EXIF. `HeifHandler` logs a clear warning in this case. |
+
+   The rows marked ❌ still return valid image bytes — you just do not get EXIF back. `keepExif: true` never fails the whole compression call.
+
+##### PNG / WebP keepExif on Android
+
+Android's `CommonHandler` currently only invokes `ExifKeeper` when the output format is JPEG. PNG and WebP output paths drop EXIF regardless of `keepExif`. See issue [#130](https://github.com/fluttercandies/flutter_image_compress/issues/130).
 
 ## Result
 
