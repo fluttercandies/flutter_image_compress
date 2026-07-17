@@ -1,3 +1,7 @@
+## 0.0.3+1
+
+ - **FIX**(*): translate native compress failures to CompressError instead of null ([#397](https://github.com/fluttercandies/flutter_image_compress/issues/397)). ([296af9a3](https://github.com/fluttercandies/flutter_image_compress/commit/296af9a32f04e86c1cc10a836d00baedcb0770f0))
+
 ## 0.0.3
 
  - **FEAT**: Update plugin structure for OpenHarmony ([#301](https://github.com/fluttercandies/flutter_image_compress/issues/301)). ([5e999c43](https://github.com/fluttercandies/flutter_image_compress/commit/5e999c431c5dcff880b8c217e40fa7d027ca0bdc))
