@@ -1,3 +1,13 @@
+## 2.5.0
+
+ - **REFACTOR**(common): drop go-flutter plugin, rebuild example native shell ([#368](https://github.com/fluttercandies/flutter_image_compress/issues/368)). ([6d3898b0](https://github.com/fluttercandies/flutter_image_compress/commit/6d3898b0ab1330f4d7679ab156478f70f5034cd6))
+ - **FIX**(Android): preserve source EXIF on PNG and WebP output (refs [#130](https://github.com/fluttercandies/flutter_image_compress/issues/130)) ([#395](https://github.com/fluttercandies/flutter_image_compress/issues/395)). ([4ddf1390](https://github.com/fluttercandies/flutter_image_compress/commit/4ddf1390c6fa9ef171c3c07ffb0498529bfdb455))
+ - **FIX**(iOS): preserve full source metadata on keepExif=true via direct CGImage passthrough ([#168](https://github.com/fluttercandies/flutter_image_compress/issues/168)) ([#391](https://github.com/fluttercandies/flutter_image_compress/issues/391)). ([2d6b7fe4](https://github.com/fluttercandies/flutter_image_compress/commit/2d6b7fe4b190de00e3cc298f81eb63361675d35e))
+ - **FIX**(dart): reject compressAndGetFile when source == target ([#240](https://github.com/fluttercandies/flutter_image_compress/issues/240)) ([#386](https://github.com/fluttercandies/flutter_image_compress/issues/386)). ([c1dbe754](https://github.com/fluttercandies/flutter_image_compress/commit/c1dbe754b8b441f8885343451ff7353bca6f9d78))
+ - **FIX**(iOS): don't crash on WebP + keepExif when ImageIO can't rewrite metadata ([#369](https://github.com/fluttercandies/flutter_image_compress/issues/369)). ([46e59a4b](https://github.com/fluttercandies/flutter_image_compress/commit/46e59a4b145659e2fab348e1e381ae8b80e60f94))
+ - **FEAT**(darwin): migrate to Swift Package Manager ([#323](https://github.com/fluttercandies/flutter_image_compress/issues/323)). ([a77d6c49](https://github.com/fluttercandies/flutter_image_compress/commit/a77d6c49e5118e8990b75a2a8bf6f9e869b8ccd9))
+ - **DOCS**(Android): surface HEIC + keepExif limitation via Log.w + README matrix (refs [#130](https://github.com/fluttercandies/flutter_image_compress/issues/130)) ([#394](https://github.com/fluttercandies/flutter_image_compress/issues/394)). ([3d47a609](https://github.com/fluttercandies/flutter_image_compress/commit/3d47a6094d952a560fa90d1d0889e700f902a454))
+
 ## 2.4.0
 
  - **FEAT**: remove pica from web ([#324](https://github.com/fluttercandies/flutter_image_compress/issues/324)). ([b56ce0fa](https://github.com/fluttercandies/flutter_image_compress/commit/b56ce0fa4763bf8084c26ea8e435e37e06997ba8))

@@ -1,3 +1,9 @@
+## 1.1.0
+
+ - **FIX**(*): translate native compress failures to CompressError instead of null ([#397](https://github.com/fluttercandies/flutter_image_compress/issues/397)). ([296af9a3](https://github.com/fluttercandies/flutter_image_compress/commit/296af9a32f04e86c1cc10a836d00baedcb0770f0))
+ - **FIX**(dart): validator throws in release + names the offending path ([#189](https://github.com/fluttercandies/flutter_image_compress/issues/189) [#247](https://github.com/fluttercandies/flutter_image_compress/issues/247)) ([#383](https://github.com/fluttercandies/flutter_image_compress/issues/383)). ([c8e13e2a](https://github.com/fluttercandies/flutter_image_compress/commit/c8e13e2aa1aada428260b0067fbeab5f488f00f8))
+ - **FIX**(dart): give UnsupportedFlutterImageCompress actionable error messages ([#250](https://github.com/fluttercandies/flutter_image_compress/issues/250) [#303](https://github.com/fluttercandies/flutter_image_compress/issues/303) [#235](https://github.com/fluttercandies/flutter_image_compress/issues/235)) ([#379](https://github.com/fluttercandies/flutter_image_compress/issues/379)). ([54c13e61](https://github.com/fluttercandies/flutter_image_compress/commit/54c13e611b6ed7797942502e98468b740a9cd7e9))
+
 ## 1.0.5
 
  - **DOCS**: The first version for OpenHarmony. ([5fcab8da](https://github.com/fluttercandies/flutter_image_compress/commit/5fcab8dac6277b36b7169962474e5af3cf88724b))

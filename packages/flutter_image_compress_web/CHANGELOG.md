@@ -1,3 +1,7 @@
+## 0.1.5+1
+
+ - **FIX**(web): honor minHeight in resizeWithList (match native calcScale) ([#385](https://github.com/fluttercandies/flutter_image_compress/issues/385)). ([e572f794](https://github.com/fluttercandies/flutter_image_compress/commit/e572f794dfed27ac681391dc27e0f283a8e859d7))
+
 ## 0.1.5
 
  - **FIX**: fix pica initialization to use window object instead of jsWindow for improved compatibility. ([dd5b101c](https://github.com/fluttercandies/flutter_image_compress/commit/dd5b101cfedaf3e45b1f9c056cd66c1981ce3c86))
