@@ -138,21 +138,51 @@ public class FlutterImageCompressMacosPlugin: NSObject, FlutterPlugin {
     let method = call.method
     let args = call.arguments
 
-    switch method {
-    case "showLog":
+    // showLog is a fast setter — reply on the calling thread and skip the
+    // background hop. Every branch of handle(...) must resolve `result`,
+    // otherwise the awaiting Dart future hangs forever.
+    if method == "showLog" {
       Logger.showLog(show: args as! Bool)
-    case "compressAndGetFile":
-      let dstPath = (args as! Dictionary<String, Any>)["targetPath"] as! String
-      handleResult(args, result)?.compressToPath(result, dstPath)
-      break
-    case "compressWithFile":
-      handleResult(args, result)?.compressToBytes(result)
-      break
-    case "compressWithList":
-      handleResult(args, result)?.compressToBytes(result)
-      break
-    default:
-      result(FlutterMethodNotImplemented)
+      result(1)
+      return
+    }
+
+    // Compression (decode / CGContext resize+rotate / CGImageDestination
+    // encode / disk write) is CPU- and I/O-heavy. FlutterMethodChannel
+    // dispatches on the AppKit main thread, so running the work inline
+    // stalls Flutter's UI. Offload to a background queue and marshal the
+    // FlutterResult back to the platform thread — same pattern as the
+    // Android threadPool + main-Looper Handler and iOS global-queue
+    // handlers.
+    let mainResult: FlutterResult = { value in
+      if Thread.isMainThread {
+        result(value)
+      } else {
+        DispatchQueue.main.async { result(value) }
+      }
+    }
+
+    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+      guard let self = self else {
+        // Plugin was detached before we got scheduled. Reply anyway so the
+        // Dart future doesn't hang; the engine tolerates result(...) on a
+        // torn-down channel.
+        mainResult(FlutterError(code: "plugin_detached",
+                                message: "Plugin was detached before compression could start",
+                                details: nil))
+        return
+      }
+      switch method {
+      case "compressAndGetFile":
+        let dstPath = (args as! Dictionary<String, Any>)["targetPath"] as! String
+        self.handleResult(args, mainResult)?.compressToPath(mainResult, dstPath)
+      case "compressWithFile":
+        self.handleResult(args, mainResult)?.compressToBytes(mainResult)
+      case "compressWithList":
+        self.handleResult(args, mainResult)?.compressToBytes(mainResult)
+      default:
+        mainResult(FlutterMethodNotImplemented)
+      }
     }
   }
 }
