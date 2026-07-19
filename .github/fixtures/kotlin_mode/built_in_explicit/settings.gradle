@@ -1,0 +1,13 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = "flutter_image_compress_built_in_kotlin_fixture"
+
+include ":flutter_image_compress_common"
+project(":flutter_image_compress_common").projectDir =
+    file("../../../../packages/flutter_image_compress_common/android")
