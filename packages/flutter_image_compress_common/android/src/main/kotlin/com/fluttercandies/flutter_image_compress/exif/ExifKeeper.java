@@ -64,7 +64,7 @@ public class ExifKeeper {
             ExifInterface.TAG_EXPOSURE_TIME,
             ExifInterface.TAG_F_NUMBER,
             ExifInterface.TAG_EXPOSURE_PROGRAM,
-            ExifInterface.TAG_ISO_SPEED_RATINGS,
+            ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY,
             ExifInterface.TAG_SHUTTER_SPEED_VALUE,
             ExifInterface.TAG_APERTURE_VALUE,
             ExifInterface.TAG_BRIGHTNESS_VALUE,
