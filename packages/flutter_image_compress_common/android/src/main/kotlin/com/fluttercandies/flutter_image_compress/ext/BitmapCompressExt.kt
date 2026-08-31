@@ -1,12 +1,26 @@
 package com.fluttercandies.flutter_image_compress.ext
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ColorSpace
 import android.graphics.Matrix
+import android.os.Build
 import com.fluttercandies.flutter_image_compress.ImageCompressPlugin
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import kotlin.math.max
 import kotlin.math.min
+
+/**
+ * Decode wide-gamut sources (Display P3, Adobe RGB) into sRGB so the output
+ * isn't untagged wide-gamut pixels that non-color-managed viewers render
+ * oversaturated. inPreferredColorSpace is API 26+; a no-op on older devices.
+ */
+fun BitmapFactory.Options.preferSrgbColorSpace() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        inPreferredColorSpace = ColorSpace.get(ColorSpace.Named.SRGB)
+    }
+}
 
 fun Bitmap.compress(minWidth: Int, minHeight: Int, quality: Int, rotate: Int = 0, format: Int): ByteArray {
     val outputStream = ByteArrayOutputStream()
