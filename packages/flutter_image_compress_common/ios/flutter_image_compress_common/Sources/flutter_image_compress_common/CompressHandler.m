@@ -4,7 +4,7 @@
 
 #import "CompressHandler.h"
 #import "UIImage+scale.h"
-#import "UIImage+WebP.h"
+#import <SDWebImageWebPCoder/UIImage+WebP.h>
 #import "ImageCompressPlugin.h"
 #import <SDWebImageWebPCoder/SDImageWebPCoder.h>
 
