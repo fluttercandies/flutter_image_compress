@@ -5,12 +5,12 @@ import PackageDescription
 let packageName = "flutter_image_compress_common"
 
 let package = Package(
-  name: packageName,
+  name: "flutter_image_compress_common",
   platforms: [
     .iOS("9.0"),
   ],
   products: [
-    .library(name: "flutter-image-compress-common", targets: [packageName]),
+    .library(name: "flutter-image-compress-common", targets: ["flutter_image_compress_common"]),
   ],
   dependencies: [
     .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.19.0"),
@@ -18,7 +18,7 @@ let package = Package(
   ],
   targets: [
     .target(
-      name: packageName,
+      name: "flutter_image_compress_common",
       dependencies: [
         .product(name: "SDWebImage", package: "SDWebImage"),
         .product(name: "SDWebImageWebPCoder", package: "SDWebImageWebPCoder"),
