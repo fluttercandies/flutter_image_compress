@@ -2,8 +2,6 @@
 
 import PackageDescription
 
-let packageName = "flutter_image_compress_common"
-
 let package = Package(
   name: "flutter_image_compress_common",
   platforms: [
@@ -24,7 +22,7 @@ let package = Package(
         .product(name: "SDWebImageWebPCoder", package: "SDWebImageWebPCoder"),
       ],
       cSettings: [
-        .headerSearchPath("include/\(packageName)"),
+        .headerSearchPath("include/flutter_image_compress_common"),
       ]
     ),
   ]
