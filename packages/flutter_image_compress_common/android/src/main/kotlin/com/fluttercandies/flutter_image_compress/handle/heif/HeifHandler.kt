@@ -7,6 +7,7 @@ import android.os.Build
 import android.util.Log
 import androidx.heifwriter.HeifWriter
 import com.fluttercandies.flutter_image_compress.ext.calcScale
+import com.fluttercandies.flutter_image_compress.ext.preferSrgbColorSpace
 import com.fluttercandies.flutter_image_compress.ext.rotate
 import com.fluttercandies.flutter_image_compress.handle.FormatHandler
 import com.fluttercandies.flutter_image_compress.logger.log
@@ -76,6 +77,7 @@ class HeifHandler : FormatHandler {
         options.inJustDecodeBounds = false
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
         options.inSampleSize = inSampleSize
+        options.preferSrgbColorSpace()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             @Suppress("DEPRECATION")
             options.inDither = true

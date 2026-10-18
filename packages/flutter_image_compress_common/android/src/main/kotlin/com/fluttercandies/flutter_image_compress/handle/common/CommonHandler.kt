@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import com.fluttercandies.flutter_image_compress.exif.ExifKeeper
 import com.fluttercandies.flutter_image_compress.ext.calcScale
 import com.fluttercandies.flutter_image_compress.ext.compress
+import com.fluttercandies.flutter_image_compress.ext.preferSrgbColorSpace
 import com.fluttercandies.flutter_image_compress.ext.rotate
 import com.fluttercandies.flutter_image_compress.handle.FormatHandler
 import com.fluttercandies.flutter_image_compress.logger.log
@@ -68,6 +69,7 @@ class CommonHandler(override val type: Int) : FormatHandler {
         options.inJustDecodeBounds = false
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
         options.inSampleSize = inSampleSize
+        options.preferSrgbColorSpace()
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
             @Suppress("DEPRECATION")
             options.inDither = true
@@ -122,6 +124,7 @@ class CommonHandler(override val type: Int) : FormatHandler {
             options.inJustDecodeBounds = false
             options.inPreferredConfig = Bitmap.Config.ARGB_8888
             options.inSampleSize = inSampleSize
+            options.preferSrgbColorSpace()
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
                 @Suppress("DEPRECATION")
                 options.inDither = true
